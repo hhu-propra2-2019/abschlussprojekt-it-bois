@@ -2,6 +2,30 @@ plugins {
 	id 'org.springframework.boot' version '2.2.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'com.github.spotbugs' version "3.0.0"
+	id 'checkstyle'
+}
+spotbugs{
+	ignoreFailures = true
+	effort = "max"
+	reportLevel = "high"
+	toolVersion = '4.0.0-RC1'
+}
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+	reports {
+		html {
+			enabled = true
+		}
+		xml {
+			enabled = false
+		}
+	}
+}
+
+checkstyle {
+	toolVersion = "8.28"
+	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+	ignoreFailures = true
 }
 
 group = 'mops'
