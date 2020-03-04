@@ -1,9 +1,8 @@
-package mops.gruppen2.Security;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package mops.gruppen2.security;
 
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor

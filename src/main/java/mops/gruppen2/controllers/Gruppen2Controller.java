@@ -1,15 +1,24 @@
 package mops.gruppen2.controllers;
 
-import mops.gruppen2.Security.Account;
+import javax.annotation.security.RolesAllowed;
+import mops.gruppen2.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.context.annotation.SessionScope;
 
+@SessionScope
 @Controller
 public class Gruppen2Controller {
+    /**
+     * Creates an Account.
+     *
+     * @param token
+     * @return Account with current userdata
+     */
     private Account createAccountFromPrincipal(KeycloakAuthenticationToken token) {
         KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         return new Account(
@@ -20,13 +29,17 @@ public class Gruppen2Controller {
                 token.getAccount().getRoles());
     }
 
+    /**
+     *
+     * @param token
+     * @param model
+     * @return index.html
+     */
     @GetMapping("/")
-    @Secured("ROLE_Orga")
+    @RolesAllowed({"ROLE_Orga", "ROLE_studentin", "ROLE_actuator)"})
     public String index(KeycloakAuthenticationToken token, Model model) {
         if (token != null) {
-
             model.addAttribute("account", createAccountFromPrincipal(token));
-
         }
         return "index";
     }
