@@ -1,7 +1,6 @@
 package mops.gruppen2.controllers;
 
 import javax.annotation.security.RolesAllowed;
-
 import mops.gruppen2.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -16,7 +15,7 @@ public class Gruppen2Controller {
     /**
      * Creates an Account.
      *
-     * @param token
+     * @param token Ein toller token
      * @return Account with current userdata
      */
     private Account createAccountFromPrincipal(KeycloakAuthenticationToken token) {
@@ -30,9 +29,10 @@ public class Gruppen2Controller {
                 token.getAccount().getRoles());
     }
 
-    /**
-     * @param token
-     * @param model
+    /**Zeigt die index.html an.
+     *
+     * @param token toller token
+     * @param model tolles model
      * @return index.html
      */
     @GetMapping("/")
