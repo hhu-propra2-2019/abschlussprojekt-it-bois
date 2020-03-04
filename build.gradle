@@ -13,12 +13,9 @@ spotbugs{
 	reportLevel = "high"
 	toolVersion = '4.0.0-RC1'
 }
-<<<<<<< Updated upstream
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-=======
+
 
 tasks.withType(SpotBugsTask) {
->>>>>>> Stashed changes
 	reports {
 		html {
 			enabled = true
@@ -59,14 +56,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-<<<<<<< Updated upstream
-	implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
-	implementation 'org.keycloak.bom:keycloak-adapter-bom:3.3.0.Final'
-=======
 	implementation 'mops:styleguide:2.0.0'
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
->>>>>>> Stashed changes
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
