@@ -1,1 +1,9 @@
+= Fortschritt Tag 2
 
+=== Datenbankschema
+
+Wir haben ein simplifiziertes Datenbankschema aufgebaut um die Grundfunktionalität zu implementieren und die Entitäten implementiert.
+
+=== Dockerfile
+
+Wir haben ein Dockerfile geschrieben, welches ein jar-file baut ausführt.
