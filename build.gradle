@@ -15,7 +15,7 @@ spotbugs{
 }
 
 
-tasks.withType(SpotBugsTask) {
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
 	reports {
 		html {
 			enabled = true
@@ -47,6 +47,12 @@ configurations {
 }
 
 repositories {
+	maven {
+		url = 'https://s3.cs.hhu.de/public/mops/'
+		metadataSources {
+			artifact()
+		}
+	}
 	mavenCentral()
 }
 
