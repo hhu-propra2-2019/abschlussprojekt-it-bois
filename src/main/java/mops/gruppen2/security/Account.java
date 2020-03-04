@@ -9,6 +9,7 @@ import lombok.Getter;
 public class Account {
     private final String name;
     private final String email;
+    private final String image;
     private final String givenname;
     private final String familyname;
     private final Set<String> roles;
