@@ -1,1 +1,13 @@
+== API
+
+- Swagger2 für Springboot hinzugefügt und einen Beispielcontroller mit einer Produktliste erstellt.
+
+
+== Entities
+-   Entities für die Logik in der Java application erstellt
+-   ToDo: DTO klassen für das handleln der Datenbank erstellen
+
+== Checkstyle
+- nerviges Problem mit Checkstyle gefixt bei dem die Imports immer alphabetisch sortiert werden mussten(!?)
+
 
