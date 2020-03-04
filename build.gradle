@@ -11,6 +11,7 @@ spotbugs{
 	reportLevel = "high"
 	toolVersion = '4.0.0-RC1'
 }
+
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
 	reports {
 		html {
@@ -43,6 +44,12 @@ configurations {
 }
 
 repositories {
+	maven {
+		url = 'https://s3.cs.hhu.de/public/mops/'
+		metadataSources {
+			artifact()
+		}
+	}
 	mavenCentral()
 }
 
@@ -52,6 +59,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'mops:styleguide:2.0.0'
 	implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
 	implementation 'org.keycloak.bom:keycloak-adapter-bom:3.3.0.Final'
 	compileOnly 'org.projectlombok:lombok'
