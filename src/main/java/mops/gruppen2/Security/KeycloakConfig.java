@@ -1,5 +1,6 @@
-package mops.gruppen2;
+package mops.gruppen2.Security;
 
+import mops.gruppen2.Security.SecurityConfig;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

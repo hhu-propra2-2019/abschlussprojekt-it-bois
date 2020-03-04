@@ -1,4 +1,4 @@
-package mops.gruppen2;
+package mops.gruppen2.Security;
 
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
