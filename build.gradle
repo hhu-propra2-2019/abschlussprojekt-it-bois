@@ -14,15 +14,10 @@ spotbugs{
 	toolVersion = '4.0.0-RC1'
 }
 
-
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
+tasks.withType(SpotBugsTask) {
 	reports {
-		html {
-			enabled = true
-		}
-		xml {
-			enabled = false
-		}
+		xml.enabled = false
+		html.enabled = true
 	}
 }
 
