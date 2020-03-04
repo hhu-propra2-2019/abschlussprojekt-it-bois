@@ -1,3 +1,14 @@
+
+= Fortschritt Tag 2
+
+=== Datenbankschema
+
+Wir haben ein simplifiziertes Datenbankschema aufgebaut um die Grundfunktionalität zu implementieren und die Entitäten implementiert.
+
+=== Dockerfile
+
+Wir haben ein Dockerfile geschrieben, welches ein jar-file baut ausführt.
+
 == API
 
 - Swagger2 für Springboot hinzugefügt und einen Beispielcontroller mit einer Produktliste erstellt.
@@ -9,5 +20,3 @@
 
 == Checkstyle
 - nerviges Problem mit Checkstyle gefixt bei dem die Imports immer alphabetisch sortiert werden mussten(!?)
-
-
