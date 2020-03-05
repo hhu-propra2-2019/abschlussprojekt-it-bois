@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: 
       - master
+    paths-ignore:
+      - 'documentation/**'
+      - 'README.adoc'
+      - 'Dockerfile'
 jobs:
   build:
     runs-on: ubuntu-latest
