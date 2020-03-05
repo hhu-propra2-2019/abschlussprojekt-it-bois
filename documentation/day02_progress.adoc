@@ -20,3 +20,7 @@ Wir haben ein Dockerfile geschrieben, welches ein jar-file baut ausführt.
 
 == Checkstyle
 - nerviges Problem mit Checkstyle gefixt bei dem die Imports immer alphabetisch sortiert werden mussten(!?)
+
+== KeyCloak
+- implementiert, dass man mit einer Rolle angemeldet sein muss, um auf die index.html zu gelangen.
+- @Sessionscope mit rein gepackt, noch nicht 100% sicher ob es funktioniert
