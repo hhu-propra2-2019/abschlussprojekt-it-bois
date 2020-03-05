@@ -1,1 +1,18 @@
+= Fortschritt Tag 2
 
+== Datenbankschema
+
+Mit Jens' Input haben wir uns beim Datenbankschema umentschieden. Wir werden eine Tabelle nutzen die die alle Operationen chronologisch speichert. Die Operationen beinhalten:
+  - add Student
+  - del Student
+  - create Group
+  - del Group
+  - addAdmin Student
+  - delAdmin Student
+ (These Operations Operations are not final and can be subject to change ;P)
+Sie soll nach dem Prinzip funktionieren wie in DB.png
+Dazu kommen noch weitere Spalten wie StudentID, StudentName und GroupID. So kann eine einfache Gruppierung anhand der Identifier stattfinden.
+
+== Schnittstelle (Idee)
+
+Wir wollen anderen Gruppen die gesamte history, abhängig von der letzten ID die sie an uns mit einem Request schicken, schicken. Die Implementierung und das Handling in ihrem eigenen Modul wollen wir momentan noch ihnen überlassen. Also würden wir die Daten nicht Verarbeiten bevor wir sie rausgeben. Falls das Verarbeiten der Daten am Ende der Nutzer zu lange Dauert könnte man darüber nachdenken die Daten im eigenen Modul zu cachen und kompakter rauszugeben
