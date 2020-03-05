@@ -2,6 +2,8 @@ package mops.gruppen2.controllers;
 
 import javax.annotation.security.RolesAllowed;
 
+import mops.gruppen2.entities.Gruppe;
+import mops.gruppen2.entities.GruppeRepository;
 import mops.gruppen2.entities.Teilnehmer;
 import mops.gruppen2.security.Account;
 import org.keycloak.KeycloakPrincipal;
@@ -47,8 +49,8 @@ public class Gruppen2Controller {
     }
 
     @PostMapping("/")
-    public String addTeilnehmer(@ModelAttribute Teilnehmer teilnehmer) {
-        System.out.println(teilnehmer);
+    public String addGruppe(@ModelAttribute Gruppe gruppe) {
+        System.out.println(gruppe);
         return "redirect:/";
     }
 }

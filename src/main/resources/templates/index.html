@@ -15,13 +15,16 @@
     </nav>
 </header>
 <main th:fragment="bodycontent">
-    <form action="/" method="post">
-        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden">
-        <input th:value="${vorname}" type="text" id="vorname" placeholder="vorname">
-        <input th:value="${nachname}" type="text" id="nachname" placeholder="nachname">
-        <input type="email" id="mail" placeholder="mail">
-        <button type="submit">submit</button>
-    </form>
+    <div class="container">
+        <h1>Gruppenerstellung</h1>
+        <form method="post" action="/">
+            <label>Titel der Gruppe</label> <br>
+            <input type="text" th:value="${titel}" name="titel"> <br>
+            <label>Beschreibung der Gruppe</label> <br>
+            <input type="text" th:value="${beschreibung}" name="beschreibung"> <br>
+            <button type="submit">weiter</button>
+        </form>
+    </div>
 </main>
 </body>
 </html>
