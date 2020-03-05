@@ -13,7 +13,8 @@ Mit Jens' Input haben wir uns beim Datenbankschema umentschieden. Wir werden ein
 
  (These Operations Operations are not final and can be subject to change ;P)
 
-Sie soll nach dem Prinzip funktionieren wie in DB.png
+Sie soll nach dem Prinzip funktionieren wie in DB.pdf
+
 Dazu kommen noch weitere Spalten wie StudentID, StudentName und GroupID. So kann eine einfache Gruppierung anhand der Identifier stattfinden.
 
 == Schnittstelle (Idee)
