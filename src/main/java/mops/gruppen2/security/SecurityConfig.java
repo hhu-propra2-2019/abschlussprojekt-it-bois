@@ -61,11 +61,16 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .hasRole("monitoring")
                 .and()
                 .authorizeRequests()
-                .antMatchers("h2-console/**")
+                .antMatchers("/h2-console/**")
                 .permitAll()
                 .anyRequest()
                 .permitAll();
+
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
+
+
 
     /**
      * Declaring this class enables us to use the Spring specific
