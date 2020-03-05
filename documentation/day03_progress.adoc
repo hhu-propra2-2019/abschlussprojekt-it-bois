@@ -3,12 +3,12 @@
 == Datenbankschema
 
 Mit Jens' Input haben wir uns beim Datenbankschema umentschieden. Wir werden eine Tabelle nutzen die die alle Operationen chronologisch speichert. Die Operationen beinhalten:
-  - add Student
-  - del Student
-  - create Group
-  - del Group
-  - addAdmin Student
-  - delAdmin Student
+- add Student
+- del Student
+- create Group
+- del Group
+- addAdmin Student
+- delAdmin Student
  (These Operations Operations are not final and can be subject to change ;P)
 Sie soll nach dem Prinzip funktionieren wie in DB.png
 Dazu kommen noch weitere Spalten wie StudentID, StudentName und GroupID. So kann eine einfache Gruppierung anhand der Identifier stattfinden.
