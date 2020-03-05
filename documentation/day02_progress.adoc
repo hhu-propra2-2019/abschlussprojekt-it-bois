@@ -20,3 +20,7 @@ Wir haben ein Dockerfile geschrieben, welches ein jar-file baut ausführt.
 
 == Checkstyle
 - nerviges Problem mit Checkstyle gefixt bei dem die Imports immer alphabetisch sortiert werden mussten(!?)
+
+== Webdesign
+- Wir haben an der index.html gearbeitet. Es gab jedoch Probleme mit Spring Security, weshalb die Änderungen nicht hochgeladen wurden.
+  Der Fehler wurde jedoch nun gefunden.
