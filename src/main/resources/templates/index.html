@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Name des Subsystems', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
     <title>Name des Subsystems</title>
@@ -15,7 +15,13 @@
     </nav>
 </header>
 <main th:fragment="bodycontent">
-    <!-- Restlichen Inhalt hier einfügen! -->
+    <form action="/" method="post">
+        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden">
+        <input th:value="${vorname}" type="text" id="vorname" placeholder="vorname">
+        <input th:value="${nachname}" type="text" id="nachname" placeholder="nachname">
+        <input type="email" id="mail" placeholder="mail">
+        <button type="submit">submit</button>
+    </form>
 </main>
 </body>
 </html>

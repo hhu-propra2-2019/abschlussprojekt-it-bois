@@ -1,12 +1,16 @@
 package mops.gruppen2.controllers;
 
 import javax.annotation.security.RolesAllowed;
+
+import mops.gruppen2.entities.Teilnehmer;
 import mops.gruppen2.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.context.annotation.SessionScope;
 
 @SessionScope
@@ -40,5 +44,11 @@ public class Gruppen2Controller {
     public String index(KeycloakAuthenticationToken token, Model model) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         return "index";
+    }
+
+    @PostMapping("/")
+    public String addTeilnehmer(@ModelAttribute Teilnehmer teilnehmer) {
+        System.out.println(teilnehmer);
+        return "redirect:/";
     }
 }

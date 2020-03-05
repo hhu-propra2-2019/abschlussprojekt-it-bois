@@ -13,4 +13,9 @@ public class Teilnehmer {
 	String nachname;
 	String email;
 	List<Gruppe> Gruppen;
+
+	public Teilnehmer(String vorname, String nachname) {
+		this.vorname = vorname;
+		this.nachname = nachname;
+	}
 }

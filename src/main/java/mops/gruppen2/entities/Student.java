@@ -7,4 +7,8 @@ import java.util.List;
 
 public class Student extends Teilnehmer{
 
+    public Student(String vorname, String nachname) {
+        super(vorname, nachname);
+    }
+
 }
