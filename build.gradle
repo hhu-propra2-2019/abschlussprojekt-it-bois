@@ -10,7 +10,6 @@ plugins {
 spotbugs{
 	ignoreFailures = true
 	effort = "max"
-	reportLevel = "high"
 	toolVersion = '4.0.0-RC1'
 }
 
