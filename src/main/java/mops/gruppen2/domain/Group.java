@@ -18,50 +18,50 @@ import java.util.Map;
 @Data
 public class Group extends Aggregate {
 	long id;
-	String titel;
-	String beschreibung;
-	List<User> teilnehmersList;
-	Map<User, Role> rollenList;
+	String title;
+	String description;
+	List<User> members;
+	Map<User, Role> roles;
 
 	public void applyEvent(CreateGroupEvent event){
-		this.id = event.getGruppe_id();
-		this.titel = event.getTitel();
-		this.beschreibung = event.getBeschreibung();
-		this.teilnehmersList = new ArrayList<>();
-		this.rollenList = new HashMap<>();
+		this.id = event.getGroup_id();
+		this.title = event.getGroupTitle();
+		this.description = event.getGroupDescription();
+		this.members = new ArrayList<>();
+		this.roles = new HashMap<>();
 	}
 
 	public void applyEvent(UpdateRoleEvent event) {
-		teilnehmersList.stream()
-				.filter(user -> user.getId().equals(event.getUser_id()))
+		members.stream()
+				.filter(user -> user.getUser_id().equals(event.getUser_id()))
 				.findFirst()
-				.ifPresentOrElse(user -> rollenList.put(user, event.getRole()),
+				.ifPresentOrElse(user -> roles.put(user, event.getNewRole()),
 						() -> System.out.println("UserNotFoundException"));
 	}
 
 	public void  applyEvent(AddUserEvent event){
 		User user = new User();
 
-		user.setId(event.getUser_id());
-		user.setVorname(event.getVorname());
-		user.setNachname(event.getNachname());
+		user.setUser_id(event.getUser_id());
+		user.setGivenname(event.getGivenname());
+		user.setFamilyname(event.getFamilyname());
 		user.setEmail(event.getEmail());
 
-		this.teilnehmersList.add(user);
+		this.members.add(user);
 	}
 
 	public void applyEvent(UpdateGroupTitleEvent event) {
-		this.titel = event.getTitel();
+		this.title = event.getNewGroupTitle();
 	}
 
 	public void applyEvent(UpdateGroupDescriptionEvent event) {
-		this.beschreibung = event.getBeschreibung();
+		this.description = event.getNewGroupDescription();
 	}
 
 	public void applyEvent(DeleteUserEvent event) {
-		for (User user : teilnehmersList) {
-			if (user.getId().equals(event.getUser_id())) {
-				this.teilnehmersList.remove(user);
+		for (User user : members) {
+			if (user.getUser_id().equals(event.getUser_id())) {
+				this.members.remove(user);
 				break;
 			}
 		}

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Event {
-	long id;
-	long gruppe_id;
+	long event_id;
+	long group_id;
 	String user_id;
 }

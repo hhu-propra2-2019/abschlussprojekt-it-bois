@@ -20,7 +20,6 @@ class GroupTest {
 
     @BeforeEach
     public void setUp(){
-
     }
 
 
@@ -32,20 +31,16 @@ class GroupTest {
     void applyAddUserEvent(){
         Group group = new Group();
         Group testGroup = new Group();
-        User user = new User();
+        User user = new User("prof", "jens", "bendi", "hi@gmail.com");
         addUserEvent = new AddUserEvent(1L,1L,"prof","jens","bendi", "hi@gmail.com");
         createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
 
         group.applyEvent(createGroupEvent);
         group.applyEvent(addUserEvent);
         testGroup.applyEvent(createGroupEvent);
-        user.setId("prof");
-        user.setVorname("jens");
-        user.setNachname("bendi");
-        user.setEmail("hi@gmail.com");
-        List<User> testTeil= new ArrayList<>();
+        List<User> testTeil = new ArrayList<>();
         testTeil.add(user);
-        testGroup.setTeilnehmersList(testTeil);
+        testGroup.setMembers(testTeil);
 
         assertEquals(testGroup, group);
     }
@@ -64,8 +59,8 @@ class GroupTest {
         group.applyEvent(new UpdateRoleEvent(1L, 1L, "5L", org));
 
         // Assert
-        assertThat(group.getRollenList())
-                .containsOnlyKeys(group.getTeilnehmersList().get(0))
+        assertThat(group.getRoles())
+                .containsOnlyKeys(group.getMembers().get(0))
                 .containsValue(org);
     }
 
@@ -79,10 +74,10 @@ class GroupTest {
 
         Group group2 = new Group();
         group2.id = 2L;
-        group2.titel = "hello";
-        group2.beschreibung = "foo";
-        group2.teilnehmersList = new ArrayList<>();
-        group2.rollenList = new HashMap<>();
+        group2.title = "hello";
+        group2.description = "foo";
+        group2.members = new ArrayList<>();
+        group2.roles = new HashMap<>();
 
         assertEquals(group2, group1);
     }

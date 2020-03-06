@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class UpdateGroupTitleEvent extends Event {
-    String titel;
+    String newGroupTitle;
 
-    public UpdateGroupTitleEvent(long id, long gruppe_id, String user_id, String titel) {
-        super(id, gruppe_id, user_id);
-        this.titel = titel;
+    public UpdateGroupTitleEvent(long event_id, long group_id, String user_id, String newGroupTitle) {
+        super(event_id, group_id, user_id);
+        this.newGroupTitle = newGroupTitle;
     }
 }

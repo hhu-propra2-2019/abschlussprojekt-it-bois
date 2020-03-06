@@ -8,9 +8,11 @@ import java.util.List;
 @Service
 public class GroupService {
 
-	Group buildGroup(List<Event> eventList){
+	Group buildGroupFromEvents(List<Event> eventList){
 		Group newGroup = new Group();
+
 		eventList.forEach(newGroup::applyEvent);
+
 		return newGroup;
 	}
 }

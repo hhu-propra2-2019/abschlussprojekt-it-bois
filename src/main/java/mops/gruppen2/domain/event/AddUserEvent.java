@@ -4,12 +4,12 @@ import lombok.Getter;
 
 @Getter
 public class AddUserEvent extends Event{
-	String vorname, nachname, email;
+	String givenname, familyname, email;
 
-	public AddUserEvent(long id, long gruppe_id, String user_id, String vorname, String nachname, String email) {
-		super(id, gruppe_id, user_id);
-		this.vorname = vorname;
-		this.nachname = nachname;
+	public AddUserEvent(long event_id, long group_id, String user_id, String givenname, String familyname, String email) {
+		super(event_id, group_id, user_id);
+		this.givenname = givenname;
+		this.familyname = familyname;
 		this.email = email;
 	}
 }
