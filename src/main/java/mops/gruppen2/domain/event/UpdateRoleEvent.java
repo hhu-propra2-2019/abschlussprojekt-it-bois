@@ -1,12 +1,14 @@
 package mops.gruppen2.domain.event;
 
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 import mops.gruppen2.domain.Role;
 
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Value
 public class UpdateRoleEvent extends Event {
 
-    private final Role newRole;
+    Role newRole;
 
     public UpdateRoleEvent(long event_id, long group_id, String user_id, Role newRole) {
         super(event_id, group_id, user_id);

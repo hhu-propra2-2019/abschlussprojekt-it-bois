@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,21 +27,39 @@ class GroupTest {
     }
 
     @Test
+    void applyCreateGroupEvent() {
+        String userId = "asd";
+        CreateGroupEvent event = new CreateGroupEvent(1L,2,userId, "hello", "foo");
+
+        Group group1 = new Group();
+        group1.applyEvent(event);
+
+        Group group2 = new Group();
+        group2.id = 2L;
+        group2.title = "hello";
+        group2.description = "foo";
+        group2.members = new ArrayList<>();
+        group2.roles = new HashMap<>();
+
+        assertEquals(group2, group1);
+    }
+
+    @Test
     void applyAddUserEvent(){
         Group group = new Group();
-        Group testGroup = new Group();
+        // Group testGroup = new Group();
         User user = new User("prof", "jens", "bendi", "hi@gmail.com");
-        addUserEvent = new AddUserEvent(1L,1L,"prof","jens","bendi", "hi@gmail.com");
         createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
+        addUserEvent = new AddUserEvent(1L,1L, user);
 
         group.applyEvent(createGroupEvent);
         group.applyEvent(addUserEvent);
-        testGroup.applyEvent(createGroupEvent);
-        List<User> testTeil = new ArrayList<>();
-        testTeil.add(user);
-        testGroup.setMembers(testTeil);
+        // testGroup.applyEvent(createGroupEvent);
+        // List<User> testTeil = new ArrayList<>();
+        // testTeil.add(user);
+        // testGroup.setMembers(testTeil);
 
-        assertEquals(testGroup, group);
+        assertThat(group.getMembers().get(0)).isEqualTo(user);
     }
 
     // Verwendet CreateGroupEvent und AddUserEvent
@@ -62,24 +79,6 @@ class GroupTest {
         assertThat(group.getRoles())
                 .containsOnlyKeys(group.getMembers().get(0))
                 .containsValue(org);
-    }
-
-    @Test
-    void applyCreteGroupEvent() {
-        String userId = "asd";
-        CreateGroupEvent event = new CreateGroupEvent(1L,2,userId, "hello", "foo");
-
-        Group group1 = new Group();
-        group1.applyEvent(event);
-
-        Group group2 = new Group();
-        group2.id = 2L;
-        group2.title = "hello";
-        group2.description = "foo";
-        group2.members = new ArrayList<>();
-        group2.roles = new HashMap<>();
-
-        assertEquals(group2, group1);
     }
 
 }

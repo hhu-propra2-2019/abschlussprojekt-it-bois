@@ -1,8 +1,10 @@
 package mops.gruppen2.domain.event;
 
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Value
 public class DeleteUserEvent extends Event{
 
     public DeleteUserEvent(long event_id, long group_id, String user_id) {

@@ -1,10 +1,10 @@
 package mops.gruppen2.domain.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
+import lombok.experimental.NonFinal;
 
-@Getter
-@AllArgsConstructor
+@Value
+@NonFinal
 public class Event {
 	long event_id;
 	long group_id;

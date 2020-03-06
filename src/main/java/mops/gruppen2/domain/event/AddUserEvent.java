@@ -1,8 +1,11 @@
 package mops.gruppen2.domain.event;
 
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import mops.gruppen2.domain.User;
 
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Value
 public class AddUserEvent extends Event{
 	String givenname, familyname, email;
 
@@ -11,5 +14,12 @@ public class AddUserEvent extends Event{
 		this.givenname = givenname;
 		this.familyname = familyname;
 		this.email = email;
+	}
+
+	public AddUserEvent(long event_id, long group_id, User user) {
+		super(event_id, group_id, user.getUser_id());
+		this.givenname = user.getGivenname();
+		this.familyname = user.getFamilyname();
+		this.email = user.getEmail();
 	}
 }
