@@ -67,18 +67,17 @@ class GroupTest {
     void updateRoleForExistingUser() {
         // Arrange
         Group group = new Group();
-        Org org = new Org();
 
         group.applyEvent(new CreateGroupEvent(1L, 1L, "1L", "gruppe1", "Eine Testgruppe"));
         group.applyEvent(new AddUserEvent(1L, 1L, "5L", "Peter", "Pan", "123@mail.de"));
 
         // Act
-        group.applyEvent(new UpdateRoleEvent(1L, 1L, "5L", org));
+        group.applyEvent(new UpdateRoleEvent(1L, 1L, "5L", Role.ORGA));
 
         // Assert
         assertThat(group.getRoles())
                 .containsOnlyKeys(group.getMembers().get(0))
-                .containsValue(org);
+                .containsValue(Role.ORGA);
     }
 
 }
