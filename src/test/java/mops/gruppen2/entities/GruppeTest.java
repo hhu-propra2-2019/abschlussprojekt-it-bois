@@ -32,13 +32,13 @@ class GruppeTest {
         Gruppe gruppe = new Gruppe();
         Gruppe testGruppe = new Gruppe();
         Teilnehmer teilnehmer = new Teilnehmer();
-        addUser = new AddUser(1L,1L,1L,"jens","bendi", "hi@gmail.com");
-        createGroupEvent = new CreateGroupEvent(1L,1L,1L, "hi", "foo");
+        addUser = new AddUser(1L,1L,"1l","jens","bendi", "hi@gmail.com");
+        createGroupEvent = new CreateGroupEvent(1L,1L,"1l", "hi", "foo");
 
         gruppe.applyEvent(createGroupEvent);
         gruppe.applyEvent(addUser);
         testGruppe.applyEvent(createGroupEvent);
-        teilnehmer.setId(1L);
+        teilnehmer.setId("1l");
         teilnehmer.setVorname("jens");
         teilnehmer.setNachname("bendi");
         teilnehmer.setEmail("hi@gmail.com");
