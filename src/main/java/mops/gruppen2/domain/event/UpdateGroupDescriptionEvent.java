@@ -3,6 +3,9 @@ package mops.gruppen2.domain.event;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+/**
+ * Ändert nur die Gruppenbeschreibung.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Value
 public class UpdateGroupDescriptionEvent extends Event {

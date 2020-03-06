@@ -5,6 +5,9 @@ import mops.gruppen2.domain.event.Event;
 
 import java.lang.reflect.Method;
 
+/**
+ * Repräsentiert viele Events als aggregiertes Objekt.
+ */
 public abstract class Aggregate {
 
     @Getter
@@ -17,7 +20,7 @@ public abstract class Aggregate {
     /**
      * Ruft die spezifische applyEvent-Methode im entsprechenden Aggregat auf.
      *
-     * @param event Einzelne Änderung an dem Aggregat
+     * @param event Event, welches aggregiert wird
      */
     public void applyEvent(Event event) {
         try {

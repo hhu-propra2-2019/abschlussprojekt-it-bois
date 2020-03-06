@@ -4,6 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import mops.gruppen2.domain.Role;
 
+/**
+ * Aktualisiert die Gruppenrolle eines Teilnehmers.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Value
 public class UpdateRoleEvent extends Event {

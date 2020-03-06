@@ -2,7 +2,6 @@ package mops.gruppen2.domain;
 
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
-import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -35,7 +34,7 @@ class GroupTest {
 
     // Verwendet CreateGroupEvent
     @Test
-    void addSingleUser(){
+    void addSingleUser() {
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
         Group group = new Group(createGroupEvent);
 
@@ -51,18 +50,26 @@ class GroupTest {
     void updateRoleForExistingUser() {
         // Arrange
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L, 1L, "1L", "gruppe1", "Eine Testgruppe");
-        Event addUserEvent = new AddUserEvent(1L, 1L, "5L", "Peter", "Pan", "123@mail.de");
+        AddUserEvent addUserEvent = new AddUserEvent(1L, 1L, "5L", "Peter", "Pan", "123@mail.de");
 
         Group group = new Group(createGroupEvent);
         group.applyEvent(addUserEvent);
 
+        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(1L, 1L, "5L", Role.ORGA);
+
         // Act
-        group.applyEvent(new UpdateRoleEvent(1L, 1L, "5L", Role.ORGA));
+        group.applyEvent(updateRoleEvent);
 
         // Assert
         assertThat(group.getRoles())
                 .containsOnlyKeys(group.getMembers().get(0))
                 .containsValue(Role.ORGA);
+    }
+
+    @Disabled
+    @Test
+    void updateRoleForNonExistingUser() {
+
     }
 
 }

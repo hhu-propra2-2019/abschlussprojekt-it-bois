@@ -16,7 +16,7 @@ public class Gruppen2Application {
     }
 
     @Bean
-    public Docket productAPI(){
+    public Docket productAPI() {
         return new Docket(DocumentationType.SWAGGER_2).select()
                 .apis(RequestHandlerSelectors.basePackage("mops.gruppen2")).build();
     }
