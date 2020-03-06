@@ -2,62 +2,46 @@ package mops.gruppen2.domain;
 
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
+import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GroupTest {
-
-    AddUserEvent addUserEvent;
-    CreateGroupEvent createGroupEvent;
 
     @BeforeEach
     public void setUp(){
     }
 
 
+    @Disabled
     @Test
     void applyEvent() {
     }
 
     @Test
-    void applyCreateGroupEvent() {
-        String userId = "asd";
-        CreateGroupEvent event = new CreateGroupEvent(1L,2,userId, "hello", "foo");
+    void createSingleGroup() {
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L,2, "asd", "hello", "foo");
 
-        Group group1 = new Group();
-        group1.applyEvent(event);
+        Group group = new Group(createGroupEvent);
 
-        Group group2 = new Group();
-        group2.id = 2L;
-        group2.title = "hello";
-        group2.description = "foo";
-        group2.members = new ArrayList<>();
-        group2.roles = new HashMap<>();
-
-        assertEquals(group2, group1);
+        assertThat(group.getDescription()).isEqualTo("foo");
+        assertThat(group.getTitle()).isEqualTo("hello");
+        assertThat(group.getId()).isEqualTo(2);
     }
 
+    // Verwendet CreateGroupEvent
     @Test
-    void applyAddUserEvent(){
-        Group group = new Group();
-        // Group testGroup = new Group();
-        User user = new User("prof", "jens", "bendi", "hi@gmail.com");
-        createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
-        addUserEvent = new AddUserEvent(1L,1L, user);
+    void addSingleUser(){
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
+        Group group = new Group(createGroupEvent);
 
-        group.applyEvent(createGroupEvent);
+        User user = new User("prof", "jens", "bendi", "hi@gmail.com");
+        AddUserEvent addUserEvent = new AddUserEvent(1L,1L, user);
         group.applyEvent(addUserEvent);
-        // testGroup.applyEvent(createGroupEvent);
-        // List<User> testTeil = new ArrayList<>();
-        // testTeil.add(user);
-        // testGroup.setMembers(testTeil);
 
         assertThat(group.getMembers().get(0)).isEqualTo(user);
     }
@@ -66,10 +50,11 @@ class GroupTest {
     @Test
     void updateRoleForExistingUser() {
         // Arrange
-        Group group = new Group();
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L, 1L, "1L", "gruppe1", "Eine Testgruppe");
+        Event addUserEvent = new AddUserEvent(1L, 1L, "5L", "Peter", "Pan", "123@mail.de");
 
-        group.applyEvent(new CreateGroupEvent(1L, 1L, "1L", "gruppe1", "Eine Testgruppe"));
-        group.applyEvent(new AddUserEvent(1L, 1L, "5L", "Peter", "Pan", "123@mail.de"));
+        Group group = new Group(createGroupEvent);
+        group.applyEvent(addUserEvent);
 
         // Act
         group.applyEvent(new UpdateRoleEvent(1L, 1L, "5L", Role.ORGA));

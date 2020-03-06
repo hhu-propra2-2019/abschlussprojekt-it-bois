@@ -12,14 +12,13 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper=false)
 @Getter
 public class Group extends Aggregate {
-	long id;
-	String title;
-	String description;
-	List<User> members;
-	Map<User, Role> roles;
+	private String title;
+	private String description;
+	private List<User> members;
+	private Map<User, Role> roles;
 
-	private void applyEvent(CreateGroupEvent event){
-		this.id = event.getGroup_id();
+	public Group(CreateGroupEvent event) {
+		super(event.getGroup_id());
 		this.title = event.getGroupTitle();
 		this.description = event.getGroupDescription();
 		this.members = new ArrayList<>();
