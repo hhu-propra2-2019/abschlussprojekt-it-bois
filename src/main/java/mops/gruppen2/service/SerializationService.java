@@ -1,4 +1,4 @@
-package mops.gruppen2.services;
+package mops.gruppen2.service;
 
 import org.springframework.stereotype.Service;
 

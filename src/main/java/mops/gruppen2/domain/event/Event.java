@@ -1,4 +1,4 @@
-package mops.gruppen2.events;
+package mops.gruppen2.domain.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

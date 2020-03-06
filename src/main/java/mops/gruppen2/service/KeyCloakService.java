@@ -1,4 +1,4 @@
-package mops.gruppen2.services;
+package mops.gruppen2.service;
 
 import mops.gruppen2.security.Account;
 import org.keycloak.KeycloakPrincipal;

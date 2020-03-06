@@ -14,7 +14,7 @@ endif::[]
 == Gruppenbildung
 
 Für das Abschlussprojekt bilden Sie bitte eine Gruppe im GitHub Classroom, die
-aus 7 bis 9 Personen besteht und laden eine entsprechende `gruppe.yml` in AUAS
+aus 7 bis 9 Personen besteht und laden eine entsprechende `group.yml` in AUAS
 hoch. Im Gegensatz zu den normalen Blättern haben Sie volle
 Administrationsrechte und alle Projekte sind öffentlich um den Austausch mit
 anderen Gruppen bei Integrationen zwischen Anwendungen einfacher zu gestalten.
@@ -22,18 +22,18 @@ anderen Gruppen bei Integrationen zwischen Anwendungen einfacher zu gestalten.
 IMPORTANT: Bitte entfernen Sie nicht die Organisatoren aus Ihrem Projekt.
 
 NOTE: Sie finden neben dieser README eine
-link:gruppe.yml[Beispiel-Gruppe-YML-Datei]. Füllen Sie diese aus, checken Sie
+link:group.yml[Beispiel-Gruppe-YML-Datei]. Füllen Sie diese aus, checken Sie
 sie ein.
 
 IMPORTANT: Erstellen Sie direkt eine Abgabe in AUAS. Diese ist *essentiell* für
 die Teilnahme am Praktikum. Diesmal muss die Abgabe eine ZIP-Datei sein. Die
-ZIP-Datei soll die `gruppe.yml` und eine _optionale_ Beschreibung eines eigenen
+ZIP-Datei soll die `group.yml` und eine _optionale_ Beschreibung eines eigenen
 Systems für MOPS beinhalten. Sie können natürlich auch einfach die
 vorgeschlagenen Systeme wählen und müssen keine eigenen Systeme entwerfen.
 
 == Systeme
 
-*Die folgenden Beschreibungen sind keine Spezifikationen, die den Funktionsumfang der Projekte festlegen,* sondern nur ein "Braindump" von den Ideen, die mir zu dem entsprechenden System gekommen sind. Die Beschreibungen sollen Ihnen primär helfen, Systeme auszusuchen, die Sie umsetzen möchten. Wenn Sie einen eigenen Vorschlag für ein System haben, können Sie das auch gerne vorschlagen. Sie müssen dann zusammen mit der `gruppe.yml` Datei einen kurzen Pitch (in etwa wie in diesem Dokument) einreichen, damit wir uns vorstellen können, was Sie machen wollen und den Umfang begutachten.
+*Die folgenden Beschreibungen sind keine Spezifikationen, die den Funktionsumfang der Projekte festlegen,* sondern nur ein "Braindump" von den Ideen, die mir zu dem entsprechenden System gekommen sind. Die Beschreibungen sollen Ihnen primär helfen, Systeme auszusuchen, die Sie umsetzen möchten. Wenn Sie einen eigenen Vorschlag für ein System haben, können Sie das auch gerne vorschlagen. Sie müssen dann zusammen mit der `group.yml` Datei einen kurzen Pitch (in etwa wie in diesem Dokument) einreichen, damit wir uns vorstellen können, was Sie machen wollen und den Umfang begutachten.
 
 === Online Modulhandbuch
 Im Modulhandbuch werden die Beschreibungen für Veranstaltungen angegeben. Die Beschreibungen werden von den Dozierenden angelegt und werden von einer Verantwortlichen geprüft und dann freigeschaltet.

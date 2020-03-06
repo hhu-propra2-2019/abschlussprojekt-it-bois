@@ -1,4 +1,4 @@
-package mops.gruppen2.controllers;
+package mops.gruppen2.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;

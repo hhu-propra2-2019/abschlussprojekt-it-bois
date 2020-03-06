@@ -1,10 +1,10 @@
-package mops.gruppen2.entities;
+package mops.gruppen2.domain;
 
-import mops.gruppen2.events.Event;
+import mops.gruppen2.domain.event.Event;
 
 import java.lang.reflect.Method;
 
-public abstract class Aggregat {
+public abstract class Aggregate {
 
     /**
      * Ruft die spezifische applyEvent-Methode im entsprechenden Aggregat auf.
