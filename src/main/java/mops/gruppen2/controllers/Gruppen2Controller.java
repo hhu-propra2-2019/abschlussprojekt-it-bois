@@ -53,4 +53,14 @@ public class Gruppen2Controller {
         System.out.println(gruppe);
         return "redirect:/";
     }
+
+    @GetMapping("/createGroup")
+    public String createGruppe(){
+        return "test";
+    }
+
+    @GetMapping("/findGroup")
+    public String findGruppe(){
+        return "search";
+    }
 }

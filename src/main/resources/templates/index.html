@@ -13,10 +13,13 @@
         <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
             <ul>
                 <li class="active">
-                    <a th:href="@{/home}" href="/home">Home</a>
+                    <a th:href="@{/}" href="/">Gruppen</a>
                 </li>
                 <li>
-                    <a th:href="@{/account}" href="/account">Account</a>
+                    <a th:href="@{/createGroup}" href="/createGroup">Erstellen</a>
+                </li>
+                <li>
+                    <a th:href="@{/findGroup}" href="/findGroup">Suche</a>
                 </li>
             </ul>
         </nav>
