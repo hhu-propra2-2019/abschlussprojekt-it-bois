@@ -10,12 +10,8 @@ import java.util.List;
 public class Gruppe {
 	@Id
 	Long id;
-	String titel;
-	String beschreibung;
+	private String titel;
+	private String beschreibung;
 	List<Teilnehmer> teilnehmersList;
 
-	public Gruppe (String titel, String beschreibung){
-		this.titel = titel;
-		this.beschreibung = beschreibung;
-	}
 }

@@ -10,14 +10,21 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
-        <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
-    </nav>
+        <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+            <ul>
+                <li class="active">
+                    <a th:href="@{/home}" href="/home">Home</a>
+                </li>
+                <li>
+                    <a th:href="@{/account}" href="/account">Account</a>
+                </li>
+            </ul>
+        </nav>
 </header>
 <main th:fragment="bodycontent">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 rounded-sm text-center" style="background-color: grey">
+            <div class="col-lg-6 rounded-sm text-center m-0">
                 <h1>Gruppenerstellung</h1>
                 <form method="post" action="/">
                     <div class="form-group">
