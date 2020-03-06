@@ -25,26 +25,7 @@
         </nav>
 </header>
 <main th:fragment="bodycontent">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 rounded-sm text-center m-0">
-                <h1>Gruppenerstellung</h1>
-                <form method="post" action="/">
-                    <div class="form-group">
-                        <label>Titel der Gruppe</label>
-                        <input class="form-control" type="text" th:value="${titel}" name="titel" placeholder="Titel der Gruppe">
-                    </div>
-                    <div class="form-group">
-                        <label>Beschreibung der Gruppe</label>
-                        <input class="form-control" type="text" th:value="${beschreibung}" name="beschreibung" placeholder="Beschreibung der Gruppe">
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-outline-dark">weiter</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+
 </main>
 </body>
 </html>
