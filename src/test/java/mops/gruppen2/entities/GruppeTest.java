@@ -9,9 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GruppeTest {
 
@@ -55,17 +54,17 @@ class GruppeTest {
     void updateRoleForExistingUser() {
         // Arrange
         Gruppe gruppe = new Gruppe();
+        Orga orga = new Orga();
 
         gruppe.applyEvent(new CreateGroupEvent(1L, 1L, "1L", "gruppe1", "Eine Testgruppe"));
         gruppe.applyEvent(new AddUser(1L, 1L, "5L", "Peter", "Pan", "123@mail.de"));
 
-
         // Act
-        gruppe.applyEvent(new UpdateRoleEvent(1L, 1L, "1L", new Orga()));
+        gruppe.applyEvent(new UpdateRoleEvent(1L, 1L, "5L", orga));
 
         // Assert
         assertThat(gruppe.getRollenList())
                 .containsOnlyKeys(gruppe.getTeilnehmersList().get(0))
-                .containsValue(new Orga());
+                .containsValue(orga);
     }
 }
