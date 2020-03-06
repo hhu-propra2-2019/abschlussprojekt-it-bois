@@ -6,6 +6,11 @@ import java.lang.reflect.Method;
 
 public abstract class Aggregat {
 
+    /**
+     * Ruft die spezifische applyEvent-Methode im entsprechenden Aggregat auf.
+     *
+     * @param event
+     */
     public void applyEvent(Event event) {
         try {
             Method method = this.getClass().getDeclaredMethod("applyEvent", event.getClass());

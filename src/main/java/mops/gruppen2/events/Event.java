@@ -8,5 +8,5 @@ import lombok.Getter;
 public class Event {
 	long id;
 	long gruppe_id;
-	long user_id;
+	String user_id;
 }
