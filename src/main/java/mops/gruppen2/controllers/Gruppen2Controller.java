@@ -1,24 +1,36 @@
 package mops.gruppen2.controllers;
 
-import mops.gruppen2.services.KeyCloakService;
+import javax.annotation.security.RolesAllowed;
+
+import mops.gruppen2.entities.Gruppe;
+import mops.gruppen2.security.Account;
+import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.context.annotation.SessionScope;
 
-import javax.annotation.security.RolesAllowed;
-
+@SessionScope
 @Controller
-@RequestMapping("/gruppen2")
 public class Gruppen2Controller {
-
-    private final KeyCloakService keyCloakService;
-
-    public Gruppen2Controller(KeyCloakService keyCloakService) {
-        this.keyCloakService = keyCloakService;
+    /**
+     * Creates an Account.
+     *
+     * @param token Ein toller token
+     * @return Account with current userdata
+     */
+    private Account createAccountFromPrincipal(KeycloakAuthenticationToken token) {
+        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        return new Account(
+                principal.getName(),
+                principal.getKeycloakSecurityContext().getIdToken().getEmail(),
+                null,
+                principal.getKeycloakSecurityContext().getIdToken().getGivenName(),
+                principal.getKeycloakSecurityContext().getIdToken().getFamilyName(),
+                token.getAccount().getRoles());
     }
 
     /**Zeigt die index.html an.
@@ -27,10 +39,26 @@ public class Gruppen2Controller {
      * @param model tolles model
      * @return index.html
      */
+    @GetMapping("/")
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
-    @GetMapping("")
     public String index(KeycloakAuthenticationToken token, Model model) {
-        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        model.addAttribute("account", createAccountFromPrincipal(token));
         return "index";
+    }
+
+    @PostMapping("/")
+    public String addGruppe(@ModelAttribute Gruppe gruppe) {
+        System.out.println(gruppe);
+        return "redirect:/";
+    }
+
+    @GetMapping("/createGroup")
+    public String createGruppe(){
+        return "create";
+    }
+
+    @GetMapping("/findGroup")
+    public String findGruppe(){
+        return "search";
     }
 }
