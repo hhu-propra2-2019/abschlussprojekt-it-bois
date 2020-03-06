@@ -1,9 +1,8 @@
 package mops.gruppen2.services;
 
-import mops.gruppen2.Events.CreateGroupEvent;
-import mops.gruppen2.Events.Event;
+import mops.gruppen2.events.CreateGroupEvent;
+import mops.gruppen2.events.Event;
 import mops.gruppen2.entities.Gruppe;
-import mops.gruppen2.repositories.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
