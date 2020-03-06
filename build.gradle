@@ -10,7 +10,6 @@ plugins {
 spotbugs{
 	ignoreFailures = true
 	effort = "max"
-	reportLevel = "high"
 	toolVersion = '4.0.0-RC1'
 }
 
@@ -59,7 +58,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
 	implementation 'org.keycloak.bom:keycloak-adapter-bom:3.3.0.Final'
-	implementation 'mops:styleguide:2.0.1'
+	implementation 'mops:styleguide:2.1.0'
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
 	compileOnly 'org.projectlombok:lombok'
