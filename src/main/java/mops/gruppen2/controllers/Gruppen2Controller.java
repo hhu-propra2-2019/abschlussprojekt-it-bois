@@ -3,8 +3,6 @@ package mops.gruppen2.controllers;
 import javax.annotation.security.RolesAllowed;
 
 import mops.gruppen2.entities.Gruppe;
-import mops.gruppen2.entities.GruppeRepository;
-import mops.gruppen2.entities.Teilnehmer;
 import mops.gruppen2.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -56,7 +54,7 @@ public class Gruppen2Controller {
 
     @GetMapping("/createGroup")
     public String createGruppe(){
-        return "test";
+        return "create";
     }
 
     @GetMapping("/findGroup")
