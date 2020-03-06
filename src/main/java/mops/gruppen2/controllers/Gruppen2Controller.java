@@ -5,12 +5,14 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.annotation.SessionScope;
 
 import javax.annotation.security.RolesAllowed;
 
 @SessionScope
 @Controller
+@RequestMapping("/gruppen2")
 public class Gruppen2Controller {
 
     private final KeyCloakService keyCloakService;
@@ -25,8 +27,8 @@ public class Gruppen2Controller {
      * @param model tolles model
      * @return index.html
      */
-    @GetMapping("/")
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @GetMapping("")
     public String index(KeycloakAuthenticationToken token, Model model) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         return "index";
