@@ -6,6 +6,7 @@ import mops.gruppen2.events.AddUser;
 import mops.gruppen2.events.CreateGroupEvent;
 import mops.gruppen2.events.UpdateGroupDescriptionEvent;
 import mops.gruppen2.events.UpdateGroupTitleEvent;
+import mops.gruppen2.events.DeleteUserEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +44,15 @@ public class Gruppe extends Aggregat {
 
 	public void applyEvent(UpdateGroupDescriptionEvent event) {
 		this.beschreibung = event.getBeschreibung();
+		this.teilnehmersList = new ArrayList<>();
+	}
+
+	public void applyEvent(DeleteUserEvent event) {
+		for (Teilnehmer teilnehmer: teilnehmersList) {
+			if (teilnehmer.getId().equals(event.getUser_id())) {
+				this.teilnehmersList.remove(teilnehmer);
+				break;
+			}
+		}
 	}
 }

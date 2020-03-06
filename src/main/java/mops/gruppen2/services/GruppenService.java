@@ -12,6 +12,18 @@ import java.util.List;
 @Service
 public class GruppenService {
 
+	CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L,1L,1L,"hello", "foo");
+	AddUser addUser = new AddUser(1L, 1L, 1L, "jens","bendiest","jb@gmail.ru");
+	DeleteUserEvent deleteUserEvent = new DeleteUserEvent(1L, 1L, 1L);
+
+	public GruppenService(){
+		List<Event> eventList = new ArrayList<>();
+		eventList.add(createGroupEvent);
+		eventList.add(addUser);
+		eventList.add(deleteUserEvent);
+		Gruppe newGroup = buildGroup(eventList);
+	}
+
 	Gruppe buildGroup(List<Event> eventList){
 		Gruppe newGroup = new Gruppe();
 		eventList.forEach(newGroup::applyEvent);
