@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper=false)
 @Data
 public class Gruppe extends Aggregat {
 	long id;
@@ -24,7 +24,7 @@ public class Gruppe extends Aggregat {
 	Map<Teilnehmer, Rolle> rollenList;
 
 	public void applyEvent(CreateGroupEvent event){
-		this.id = event.getId();
+		this.id = event.getGruppe_id();
 		this.titel = event.getTitel();
 		this.beschreibung = event.getBeschreibung();
 		this.teilnehmersList = new ArrayList<>();

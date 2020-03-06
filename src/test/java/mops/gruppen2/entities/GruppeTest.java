@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,13 +33,13 @@ class GruppeTest {
         Gruppe gruppe = new Gruppe();
         Gruppe testGruppe = new Gruppe();
         Teilnehmer teilnehmer = new Teilnehmer();
-        addUser = new AddUser(1L,1L,1L,"jens","bendi", "hi@gmail.com");
-        createGroupEvent = new CreateGroupEvent(1L,1L,1L, "hi", "foo");
+        addUser = new AddUser(1L,1L,"prof","jens","bendi", "hi@gmail.com");
+        createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
 
         gruppe.applyEvent(createGroupEvent);
         gruppe.applyEvent(addUser);
         testGruppe.applyEvent(createGroupEvent);
-        teilnehmer.setId(1L);
+        teilnehmer.setId("prof");
         teilnehmer.setVorname("jens");
         teilnehmer.setNachname("bendi");
         teilnehmer.setEmail("hi@gmail.com");
@@ -67,4 +68,23 @@ class GruppeTest {
                 .containsOnlyKeys(gruppe.getTeilnehmersList().get(0))
                 .containsValue(orga);
     }
+
+    @Test
+    void applyCreteGroupEvent() {
+        String userId = "asd";
+        CreateGroupEvent event = new CreateGroupEvent(1L,2,userId, "hello", "foo");
+
+        Gruppe gruppe1 = new Gruppe();
+        gruppe1.applyEvent(event);
+
+        Gruppe gruppe2 = new Gruppe();
+        gruppe2.id = 2L;
+        gruppe2.titel = "hello";
+        gruppe2.beschreibung = "foo";
+        gruppe2.teilnehmersList = new ArrayList<>();
+        gruppe2.rollenList = new HashMap<>();
+
+        assertEquals(gruppe2, gruppe1);
+    }
+
 }
