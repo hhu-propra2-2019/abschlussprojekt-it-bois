@@ -1,6 +1,7 @@
 package mops.gruppen2.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import mops.gruppen2.events.AddUser;
 import mops.gruppen2.events.CreateGroupEvent;
 import mops.gruppen2.events.UpdateGroupDescriptionEvent;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class Gruppe extends Aggregat {
 	long id;
 	String titel;
@@ -21,6 +23,7 @@ public class Gruppe extends Aggregat {
 	}
 
 	public void applyEvent(CreateGroupEvent event){
+		this.id = event.getGruppe_id();
 		this.titel = event.getTitel();
 		this.beschreibung = event.getBeschreibung();
 	}
