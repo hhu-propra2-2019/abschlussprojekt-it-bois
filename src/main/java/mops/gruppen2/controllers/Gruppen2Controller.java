@@ -2,8 +2,10 @@ package mops.gruppen2.controllers;
 
 import javax.annotation.security.RolesAllowed;
 import mops.gruppen2.security.Account;
+import mops.gruppen2.services.GruppenService;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.context.annotation.SessionScope;
 @SessionScope
 @Controller
 public class Gruppen2Controller {
+    @Autowired
+    GruppenService gruppenService;
     /**
      * Creates an Account.
      *
