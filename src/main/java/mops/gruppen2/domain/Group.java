@@ -4,55 +4,68 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import mops.gruppen2.domain.event.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@EqualsAndHashCode(callSuper=false)
+/**
+ * Repräsentiert den aggregierten Zustand einer Gruppe.
+ */
+@EqualsAndHashCode(callSuper = false)
 @Getter
 public class Group extends Aggregate {
-	private String title;
-	private String description;
-	private List<User> members;
-	private Map<User, Role> roles;
+    private String title;
+    private String description;
+    private List<User> members;
+    private Map<User, Role> roles;
 
-	public Group(CreateGroupEvent event) {
-		super(event.getGroup_id());
-		this.title = event.getGroupTitle();
-		this.description = event.getGroupDescription();
-		this.members = new ArrayList<>();
-		this.roles = new HashMap<>();
-	}
+    public Group(CreateGroupEvent event) {
+        super(event.getGroup_id());
+        this.title = event.getGroupTitle();
+        this.description = event.getGroupDescription();
+        this.members = new ArrayList<>();
+        this.roles = new HashMap<>();
+    }
 
-	private void applyEvent(UpdateRoleEvent event) {
-		members.stream()
-				.filter(user -> user.getUser_id().equals(event.getUser_id()))
-				.findFirst()
-				.ifPresentOrElse(user -> roles.put(user, event.getNewRole()),
-						() -> System.out.println("UserNotFoundException"));
-	}
+    private void applyEvent(UpdateRoleEvent event) {
+        User user;
 
-	private void applyEvent(AddUserEvent event){
-		User user = new User(event.getUser_id(), event.getGivenname(), event.getFamilyname(), event.getEmail());
+        Optional<User> userOptional = members.stream()
+                .filter(u -> u.getUser_id().equals(event.getUser_id()))
+                .findFirst();
 
-		this.members.add(user);
-	}
+        if (userOptional.isPresent()) {
+            user = userOptional.get();
+        } else {
+            System.out.println("UserNotFoundException");
+            return;
+        }
 
-	private void applyEvent(UpdateGroupTitleEvent event) {
-		this.title = event.getNewGroupTitle();
-	}
+        if (roles.containsKey(user) && event.getNewRole() == Role.STUDENT) {
+            roles.remove(user);
+        } else {
+            roles.put(user, event.getNewRole());
+        }
+    }
 
-	private void applyEvent(UpdateGroupDescriptionEvent event) {
-		this.description = event.getNewGroupDescription();
-	}
+    private void applyEvent(AddUserEvent event) {
+        User user = new User(event.getUser_id(), event.getGivenname(), event.getFamilyname(), event.getEmail());
 
-	private void applyEvent(DeleteUserEvent event) {
-		for (User user : members) {
-			if (user.getUser_id().equals(event.getUser_id())) {
-				this.members.remove(user);
-				break;
-			}
-		}
-	}
+        this.members.add(user);
+    }
+
+    private void applyEvent(UpdateGroupTitleEvent event) {
+        this.title = event.getNewGroupTitle();
+    }
+
+    private void applyEvent(UpdateGroupDescriptionEvent event) {
+        this.description = event.getNewGroupDescription();
+    }
+
+    private void applyEvent(DeleteUserEvent event) {
+        for (User user : members) {
+            if (user.getUser_id().equals(event.getUser_id())) {
+                this.members.remove(user);
+                break;
+            }
+        }
+    }
 }
