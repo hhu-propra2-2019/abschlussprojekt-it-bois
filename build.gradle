@@ -65,9 +65,10 @@ dependencies {
 	implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
 	implementation 'org.keycloak.bom:keycloak-adapter-bom:3.3.0.Final'
 	implementation 'mops:styleguide:2.1.0'
-
 	implementation 'io.springfox:springfox-swagger2:2.9.2'
 	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'org.slf4j:slf4j-simple:1.7.30'
+	implementation 'com.github.javafaker:javafaker:1.0.2'
 
 	compile 'org.springframework.boot:spring-boot-starter-web'
 
