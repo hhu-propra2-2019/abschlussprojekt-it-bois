@@ -4,9 +4,18 @@ plugins {
 	id 'org.springframework.boot' version '2.2.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
-	id 'com.github.spotbugs' version "3.0.0"
+
+	id 'com.github.spotbugs' version '3.0.0'
 	id 'checkstyle'
+
+	id 'com.github.johnrengelman.processes' version '0.5.0'
+	id 'org.springdoc.openapi-gradle-plugin' version '1.0.0'
 }
+
+group = 'mops'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
 spotbugs{
 	ignoreFailures = true
 	effort = "max"
@@ -25,10 +34,6 @@ checkstyle {
 	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 	ignoreFailures = true
 }
-
-group = 'mops'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 configurations {
 	developmentOnly
@@ -56,21 +61,27 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	
 	implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
 	implementation 'org.keycloak.bom:keycloak-adapter-bom:3.3.0.Final'
 	implementation 'mops:styleguide:2.1.0'
-	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
-	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
+
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+
+	compile 'org.springframework.boot:spring-boot-starter-web'
+
 	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'org.assertj:assertj-core:3.15.0'
-	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.h2database:h2'
+
+	testImplementation 'org.assertj:assertj-core:3.15.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation 'org.springframework.security:spring-security-test'
-	compile('org.springframework.boot:spring-boot-starter-web')
+	testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.1'
 }
 
 test {
