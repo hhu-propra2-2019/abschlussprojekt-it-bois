@@ -74,8 +74,6 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable();
     }
 
-
-
     /**
      * Declaring this class enables us to use the Spring specific
      * {@link org.springframework.security.access.annotation.Secured} annotation
