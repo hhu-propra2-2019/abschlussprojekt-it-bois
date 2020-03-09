@@ -23,9 +23,10 @@ class GroupTest {
 
     @Test
     void createSingleGroup() {
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L,2, "asd", "hello", "foo");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,2, "asd", "hello", "foo");
 
-        Group group = new Group(createGroupEvent);
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
 
         assertThat(group.getDescription()).isEqualTo("foo");
         assertThat(group.getTitle()).isEqualTo("hello");
@@ -35,11 +36,12 @@ class GroupTest {
     // Verwendet CreateGroupEvent
     @Test
     void addSingleUser() {
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
-        Group group = new Group(createGroupEvent);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
 
         User user = new User("prof", "jens", "bendi", "hi@gmail.com");
-        AddUserEvent addUserEvent = new AddUserEvent(1L,1L, user);
+        AddUserEvent addUserEvent = new AddUserEvent(1,1, user);
         group.applyEvent(addUserEvent);
 
         assertThat(group.getMembers().get(0)).isEqualTo(user);
@@ -52,7 +54,8 @@ class GroupTest {
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L, 1L, "1L", "gruppe1", "Eine Testgruppe");
         AddUserEvent addUserEvent = new AddUserEvent(1L, 1L, "5L", "Peter", "Pan", "123@mail.de");
 
-        Group group = new Group(createGroupEvent);
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
         group.applyEvent(addUserEvent);
 
         UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(1L, 1L, "5L", Role.ORGA);

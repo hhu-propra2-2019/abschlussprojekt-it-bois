@@ -25,6 +25,7 @@ public class Group extends Aggregate {
     private void applyEvent(CreateGroupEvent event) {
         title = event.getGroupTitle();
         description = event.getGroupDescription();
+        id = event.getGroup_id();
     }
 
     private void applyEvent(UpdateRoleEvent event) {

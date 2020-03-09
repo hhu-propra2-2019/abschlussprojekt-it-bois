@@ -8,9 +8,9 @@ import java.lang.reflect.Method;
 /**
  * Repräsentiert viele Events als aggregiertes Objekt.
  */
+@Getter
 public abstract class Aggregate {
 
-    @Getter
     protected long id;
 
     /**
