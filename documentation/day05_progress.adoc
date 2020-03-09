@@ -1,0 +1,4 @@
+= Fortschritt Tag 4
+
+== Event -> Group
+Hier haben wir uns mit der übersetzung von den Events zu den Gruppen klassen beschäftigt und Exeptions entwickelt. Auch einige User-cases wie doppeltes einfügen von Gruppenmitgliedern wir jetzt abgefangen. Außerdem wurden Test dazu geschrieben.
