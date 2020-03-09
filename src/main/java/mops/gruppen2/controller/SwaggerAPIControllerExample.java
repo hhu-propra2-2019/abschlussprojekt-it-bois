@@ -55,14 +55,16 @@ public class SwaggerAPIControllerExample {
 
     @GetMapping("/json")
     public void json() {
+        AddUserEvent aEvent = new AddUserEvent(
+                1,
+                1,
+                "Eins",
+                faker.leagueOfLegends().location(),
+                faker.name().lastName(),
+                "123@email.de");
         try {
-            serializationService.serializeEvent(new AddUserEvent(
-                    1,
-                    1,
-                    "Eins",
-                    faker.leagueOfLegends().location(),
-                    faker.name().lastName(),
-                    "123@email.de"));
+            serializationService.serializeEvent(aEvent);
+            serializationService.saveEvent(aEvent);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

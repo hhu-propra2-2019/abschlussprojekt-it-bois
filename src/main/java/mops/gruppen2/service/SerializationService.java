@@ -2,6 +2,7 @@ package mops.gruppen2.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mops.gruppen2.domain.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.slf4j.Logger;
@@ -26,5 +27,18 @@ public class SerializationService {
         String json =  mapper.writeValueAsString(event);
         log.info(json);
         return json;
+    }
+
+    public void saveEvent(Event event){
+        try {
+            EventDTO eventDTO = new EventDTO();
+            eventDTO.setGroup_id(event.getGroup_id());
+            eventDTO.setUser_id(event.getUser_id());
+            eventDTO.setEvent_payload(serializeEvent(event));
+            eventStore.save(eventDTO);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
     }
 }
