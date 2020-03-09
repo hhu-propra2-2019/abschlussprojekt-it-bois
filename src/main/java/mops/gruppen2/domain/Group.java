@@ -2,6 +2,8 @@ package mops.gruppen2.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import mops.gruppen2.domain.Exceptions.UserAlreadyExistsException;
+import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.event.*;
 
 import java.util.*;
@@ -28,7 +30,7 @@ public class Group extends Aggregate {
         id = event.getGroup_id();
     }
 
-    private void applyEvent(UpdateRoleEvent event) {
+    private void applyEvent(UpdateRoleEvent event) throws UserNotFoundException {
         User user;
 
         Optional<User> userOptional = members.stream()
@@ -38,8 +40,7 @@ public class Group extends Aggregate {
         if (userOptional.isPresent()) {
             user = userOptional.get();
         } else {
-            System.out.println("UserNotFoundException");
-            return;
+            throw new UserNotFoundException("Nutzer wurde nicht gefunden!");
         }
 
         if (roles.containsKey(user) && event.getNewRole() == Role.STUDENT) {
@@ -49,10 +50,14 @@ public class Group extends Aggregate {
         }
     }
 
-    private void applyEvent(AddUserEvent event) {
+    private void applyEvent(AddUserEvent event) throws UserAlreadyExistsException {
         User user = new User(event.getUser_id(), event.getGivenname(), event.getFamilyname(), event.getEmail());
 
-        this.members.add(user);
+        if (!this.members.contains(user)) {
+            this.members.add(user);
+        } else {
+            throw new UserAlreadyExistsException("Nutzer bereits in Gruppe vorhanden!");
+        }
     }
 
     private void applyEvent(UpdateGroupTitleEvent event) {
@@ -63,12 +68,13 @@ public class Group extends Aggregate {
         this.description = event.getNewGroupDescription();
     }
 
-    private void applyEvent(DeleteUserEvent event) {
-        for (User user : members) {
-            if (user.getUser_id().equals(event.getUser_id())) {
-                this.members.remove(user);
-                break;
-            }
+    private void applyEvent(DeleteUserEvent event) throws UserNotFoundException{
+        User user = new User(event.getUser_id(), "","","");
+
+        if (this.members.contains(user)) {
+            this.members.remove(user);
+        } else {
+            throw new UserNotFoundException("Nutzer wurde nicht gefunden!");
         }
     }
 }

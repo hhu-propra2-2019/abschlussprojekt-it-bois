@@ -1,5 +1,6 @@
 package mops.gruppen2.service;
 
+import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.event.Event;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,13 @@ public class GroupService {
     Group buildGroupFromEvents(List<Event> eventList) {
         Group newGroup = new Group();
 
-        eventList.forEach(newGroup::applyEvent);
+        try {
+            for (Event event : eventList) {
+                newGroup.applyEvent(event);
+            }
+        }catch (EventException e){
+            e.printStackTrace();
+        }
 
         return newGroup;
     }
