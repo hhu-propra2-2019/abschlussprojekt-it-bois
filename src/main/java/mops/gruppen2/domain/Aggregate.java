@@ -1,15 +1,22 @@
-package mops.gruppen2.entities;
+package mops.gruppen2.domain;
 
-import mops.gruppen2.events.Event;
+import lombok.Getter;
+import mops.gruppen2.domain.event.Event;
 
 import java.lang.reflect.Method;
 
-public abstract class Aggregat {
+/**
+ * Repräsentiert viele Events als aggregiertes Objekt.
+ */
+@Getter
+public abstract class Aggregate {
+
+    protected long id;
 
     /**
      * Ruft die spezifische applyEvent-Methode im entsprechenden Aggregat auf.
      *
-     * @param event
+     * @param event Event, welches aggregiert wird
      */
     public void applyEvent(Event event) {
         try {
