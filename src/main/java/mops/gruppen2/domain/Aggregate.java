@@ -11,11 +11,7 @@ import java.lang.reflect.Method;
 public abstract class Aggregate {
 
     @Getter
-    protected final long id;
-
-    protected Aggregate(long id) {
-        this.id = id;
-    }
+    protected long id;
 
     /**
      * Ruft die spezifische applyEvent-Methode im entsprechenden Aggregat auf.

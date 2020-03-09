@@ -14,15 +14,17 @@ import java.util.*;
 public class Group extends Aggregate {
     private String title;
     private String description;
-    private List<User> members;
-    private Map<User, Role> roles;
+    private final List<User> members;
+    private final Map<User, Role> roles;
 
-    public Group(CreateGroupEvent event) {
-        super(event.getGroup_id());
-        this.title = event.getGroupTitle();
-        this.description = event.getGroupDescription();
+    public Group() {
         this.members = new ArrayList<>();
         this.roles = new HashMap<>();
+    }
+
+    private void applyEvent(CreateGroupEvent event) {
+        title = event.getGroupTitle();
+        description = event.getGroupDescription();
     }
 
     private void applyEvent(UpdateRoleEvent event) {
