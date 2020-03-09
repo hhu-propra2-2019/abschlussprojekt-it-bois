@@ -53,7 +53,7 @@ public class SwaggerAPIControllerExample {
         return "Product saved successfully";
     }
 
-    @GetMapping("/json")
+    /*@GetMapping("/json")       //just for testing
     public void json() {
         AddUserEvent aEvent = new AddUserEvent(
                 1,
@@ -68,5 +68,5 @@ public class SwaggerAPIControllerExample {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
