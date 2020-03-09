@@ -15,7 +15,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/products")
-public class SwaggerAPIControllerExample {
+public class SwaggerAPIController {
 
     private final Faker faker = new Faker();
     private final List<ProductSwaggerExample> products = new ArrayList<>();
