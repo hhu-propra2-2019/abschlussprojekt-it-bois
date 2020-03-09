@@ -18,8 +18,7 @@ public class GroupService {
      */
     Group buildGroupFromEvents(List<Event> eventList) {
         Group newGroup = new Group();
-
-        eventList.forEach(newGroup::applyEvent);
+        newGroup.apply(eventList);
 
         return newGroup;
     }
