@@ -66,7 +66,7 @@ class GroupTest {
         });
 
 
-        //assertThat(group.getMembers().size()).isEqualTo(1);
+        assertThat(group.getMembers().size()).isEqualTo(1);
     }
 
     @Test
@@ -82,6 +82,19 @@ class GroupTest {
         group.applyEvent(deleteUserEvent);
 
         assertThat(group.getMembers().size()).isEqualTo(0);
+    }
+
+    @Test
+    void deleteUserThatDoesNotExists() throws Exception{
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1, 2, "Prof", "Tolle Gruppe", "Tolle Beshreibung");
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
+
+        DeleteUserEvent deleteUserEvent = new DeleteUserEvent(3, 2, "Prof");
+
+        Assertions.assertThrows(UserNotFoundException.class, () ->{
+            group.applyEvent(deleteUserEvent);
+        });
     }
 
     // Verwendet CreateGroupEvent und AddUserEvent
