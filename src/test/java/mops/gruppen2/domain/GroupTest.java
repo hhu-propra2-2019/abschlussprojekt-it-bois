@@ -1,10 +1,8 @@
 package mops.gruppen2.domain;
 
 import mops.gruppen2.domain.Exceptions.UserAlreadyExistsException;
-import mops.gruppen2.domain.event.AddUserEvent;
-import mops.gruppen2.domain.event.CreateGroupEvent;
-import mops.gruppen2.domain.event.DeleteUserEvent;
-import mops.gruppen2.domain.event.UpdateRoleEvent;
+import mops.gruppen2.domain.Exceptions.UserNotFoundException;
+import mops.gruppen2.domain.event.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -19,7 +17,6 @@ class GroupTest {
     }
 
 
-    @Disabled
     @Test
     void applyEvent() {
     }
@@ -109,10 +106,39 @@ class GroupTest {
                 .containsValue(Role.ORGA);
     }
 
-    @Disabled
     @Test
-    void updateRoleForNonExistingUser() {
+    void updateRoleForNonExistingUser() throws Exception{
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L, 1L, "1L", "gruppe1", "Eine Testgruppe");
+        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(345L, 33 , "coolerUser", Role.ADMIN);
 
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
+        Assertions.assertThrows(UserNotFoundException.class, () ->{
+            group.applyEvent(updateRoleEvent);
+        });
     }
 
+    @Test
+    void updateTitle() throws Exception{
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
+
+        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(2, 1, "Klaus", "Toller Titel");
+        group.applyEvent(updateGroupTitleEvent);
+
+        assertThat(group.getTitle()).isEqualTo("Toller Titel");
+    }
+
+    @Test
+    void updateBeschreibung() throws Exception{
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
+
+        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(2, 1, "Peter", "Tolle Beschreibung");
+        group.applyEvent(updateGroupDescriptionEvent);
+
+        assertThat(group.getDescription()).isEqualTo("Tolle Beschreibung");
+    }
 }
