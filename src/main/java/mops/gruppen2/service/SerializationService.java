@@ -24,9 +24,7 @@ public class SerializationService {
 
     public String serializeEvent(Event event) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        String json =  mapper.writeValueAsString(event);
-        log.info(json);
-        return json;
+        return mapper.writeValueAsString(event);
     }
 
     public void saveEvent(Event event){
@@ -44,7 +42,6 @@ public class SerializationService {
 
     public Event deserializeEvent(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        Event event = mapper.readValue(json, Event.class);
-        return event;
+        return mapper.readValue(json, Event.class);
     }
 }
