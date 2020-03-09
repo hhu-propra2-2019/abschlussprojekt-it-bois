@@ -1,10 +1,13 @@
 package mops.gruppen2.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import mops.gruppen2.domain.ProductSwaggerExample;
+import mops.gruppen2.domain.event.AddUserEvent;
+import mops.gruppen2.service.SerializationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,6 +22,11 @@ public class SwaggerAPIControllerExample {
 
     private final Faker faker = new Faker();
     private final List<ProductSwaggerExample> products = new ArrayList<>();
+    private final SerializationService serializationService;
+
+    public SwaggerAPIControllerExample(SerializationService serializationService) {
+        this.serializationService = serializationService;
+    }
 
     @GetMapping("/get/all")
     @ApiOperation(value = "Erzeugt eine Liste mit allen gespeicherten Produkten")
@@ -43,5 +51,20 @@ public class SwaggerAPIControllerExample {
         products.add(new ProductSwaggerExample(faker.food().ingredient(), "Empty"));
 
         return "Product saved successfully";
+    }
+
+    @GetMapping("/json")
+    public void json() {
+        try {
+            serializationService.serializeEvent(new AddUserEvent(
+                    1,
+                    1,
+                    "Eins",
+                    faker.leagueOfLegends().location(),
+                    faker.name().lastName(),
+                    "123@email.de"));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

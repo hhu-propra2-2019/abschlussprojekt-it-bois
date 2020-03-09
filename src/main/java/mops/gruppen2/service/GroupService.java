@@ -12,14 +12,12 @@ public class GroupService {
     /**
      * Konstruiert eine vollständige Gruppe aus Events, welche dieselbe Gruppe betreffen.
      *
-     * @param event Initiales CreateGroup-Event
-     * @param eventList Die restlichen Events für diese Gruppe
+     * @param eventList Die Events für diese Gruppe
      * @return Gruppe auf aktuellem Stand
      */
     Group buildGroupFromEvents(List<Event> eventList) {
         Group newGroup = new Group();
         newGroup.apply(eventList);
-
         return newGroup;
     }
 }
