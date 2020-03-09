@@ -11,3 +11,6 @@ Wir haben damit angefangen den Input über die UI zu interpretieren, dabei haben
 
 == Tests
 Wir haben mit ArchUnit-Tests die Programm-Architektur überprüft und festgelegt.
+
+== Templates und UI
+Wir haben die Templates für search.html und create.html erweitert.
