@@ -52,7 +52,7 @@ public class SwaggerAPIControllerExample {
 
         return "Product saved successfully";
     }
-
+/*
     @GetMapping("/json")
     public void json() {
         AddUserEvent aEvent = new AddUserEvent(

@@ -1,6 +1,8 @@
 package mops.gruppen2.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import mops.gruppen2.builder.EventBuilder;
+import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,13 +11,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class SerializationServiceTest {
 
 	EventRepository eventRepository;
+	Event event;
 
 	@BeforeEach
-	public void setUp() {
+	public void setUp(){
 	}
 
 
@@ -37,7 +41,7 @@ class SerializationServiceTest {
 
 	@Test
 	void deserializeAddUserEvent() {
-		SerializationService serializationService = new SerializationService();
+		SerializationService serializationService = new SerializationService(mock(EventRepository.class));
 
 		Event event = EventBuilder.randomAddUserEvent();
 
