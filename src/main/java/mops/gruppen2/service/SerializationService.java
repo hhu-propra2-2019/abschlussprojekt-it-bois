@@ -24,10 +24,11 @@ public class SerializationService {
 
     public String serializeEvent(Event event) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        String json =  mapper.writeValueAsString(event);
-        log.info(json);
-        return json;
+        return mapper.writeValueAsString(event);
     }
 
-
+    public Event deserializeEvent(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, Event.class);
+    }
 }
