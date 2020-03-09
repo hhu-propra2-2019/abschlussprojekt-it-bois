@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class UpdateGroupDescriptionEvent extends Event {
     String newGroupDescription;
 
-    public UpdateGroupDescriptionEvent(long event_id, long group_id, String user_id, String newGroupDescription) {
+    public UpdateGroupDescriptionEvent(Long event_id, Long group_id, String user_id, String newGroupDescription) {
         super(event_id, group_id, user_id);
         this.newGroupDescription = newGroupDescription;
     }

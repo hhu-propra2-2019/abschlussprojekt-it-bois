@@ -24,7 +24,12 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = AddUserEvent.class, name = "UpdateRoleEvent"),
 })
 public class Event {
-    long event_id;
-    long group_id;
+    Long event_id;
+    Long group_id;
     String user_id;
+
+    public Event(Long group_id,String user_id){
+        this.group_id = group_id;
+        this.user_id = user_id;
+    }
 }

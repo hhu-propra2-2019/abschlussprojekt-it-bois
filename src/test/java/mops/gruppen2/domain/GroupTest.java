@@ -23,25 +23,25 @@ class GroupTest {
 
     @Test
     void createSingleGroup() {
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,2, "asd", "hello", "foo");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,2L, "asd", "hello", "foo");
 
         Group group = new Group();
         group.apply(createGroupEvent);
 
         assertThat(group.getDescription()).isEqualTo("foo");
         assertThat(group.getTitle()).isEqualTo("hello");
-        assertThat(group.getId()).isEqualTo(2);
+        assertThat(group.getId()).isEqualTo(2L);
     }
 
     // Verwendet CreateGroupEvent
     @Test
     void addSingleUser() {
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
         Group group = new Group();
         group.apply(createGroupEvent);
 
         User user = new User("prof", "jens", "bendi", "hi@gmail.com");
-        AddUserEvent addUserEvent = new AddUserEvent(1,1, user);
+        AddUserEvent addUserEvent = new AddUserEvent(1L,1L, user);
         group.apply(addUserEvent);
 
         assertThat(group.getMembers().get(0)).isEqualTo(user);
