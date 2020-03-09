@@ -1,8 +1,13 @@
-= Fortschritt Tag 5
-
-== UI und Templates
-
-Wir haben die Templates für das Erstellen und die Suche nach Events erweitert.
+= Fortschritt Tag 4
 
 == Event -> Group
 Hier haben wir uns mit der übersetzung von den Events zu den Gruppen klassen beschäftigt und Exeptions entwickelt. Auch einige User-cases wie doppeltes einfügen von Gruppenmitgliedern wir jetzt abgefangen. Außerdem wurden Test dazu geschrieben.
+
+== Event
+Wir haben heute das speichern von Events gemacht. Darüber hinaus haben wir das Serializieren und Deserializeren der JSON Daten implementiert. Hierfür haben wir Jackson benutzt.
+
+== Controller
+Wir haben damit angefangen den Input über die UI zu interpretieren, dabei haben wir gemerkt dass wir viele weitere Methoden für das Java Backend schreiben müssen welche wir als nächstes erstellen.
+
+== Tests
+Wir haben mit ArchUnit-Tests die Programm-Architektur überprüft und festgelegt.
