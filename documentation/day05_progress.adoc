@@ -1,0 +1,5 @@
+= Fortschritt Tag 5
+
+== UI und Templates
+
+Wir haben die Templates für das Erstellen und die Suche nach Events erweitert.
