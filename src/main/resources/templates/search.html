@@ -13,38 +13,19 @@
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
             <li>
-                <a th:href="@{/}" href="/">Gruppen</a>
+                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
             </li>
             <li>
-                <a th:href="@{/createGroup}" href="/createGroup">Erstellen</a>
+                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
             </li>
             <li class="active">
-                <a th:href="@{/findGroup}" href="/findGroup">Suche</a>
+                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
             </li>
         </ul>
     </nav>
 </header>
 <main th:fragment="bodycontent">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-sm-8 ">
-                <h1>Gruppenerstellung</h1>
-                <form method="post" action="/">
-                    <div class="form-group">
-                        <label>Titel der Gruppe</label>
-                        <input class="form-control" type="text" th:value="${titel}" name="titel" placeholder="Titel der Gruppe">
-                    </div>
-                    <div class="form-group">
-                        <label>Beschreibung der Gruppe</label>
-                        <input class="form-control" type="text" th:value="${beschreibung}" name="beschreibung" placeholder="Beschreibung der Gruppe">
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-outline-dark">weiter</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+
 </main>
 </body>
 </html>

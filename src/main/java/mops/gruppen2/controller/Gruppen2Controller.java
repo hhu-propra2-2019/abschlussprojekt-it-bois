@@ -31,4 +31,20 @@ public class Gruppen2Controller {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         return "index";
     }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @GetMapping("/createGroup")
+    public String createGroup(KeycloakAuthenticationToken token, Model model) {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        return "create";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @GetMapping("/findGroup")
+    public String findGroup(KeycloakAuthenticationToken token, Model model) {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        return "search";
+    }
+
+
 }

@@ -13,13 +13,13 @@
         <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
             <ul>
                 <li class="active">
-                    <a th:href="@{/}" href="/">Gruppen</a>
+                    <a th:href="@{/gruppen2}" href="/">Gruppen</a>
                 </li>
                 <li>
-                    <a th:href="@{/createGroup}" href="/createGroup">Erstellen</a>
+                    <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
                 </li>
                 <li>
-                    <a th:href="@{/findGroup}" href="/findGroup">Suche</a>
+                    <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
                 </li>
             </ul>
         </nav>
@@ -28,10 +28,9 @@
     <h1>Meine Gruppen</h1>
     <div class="container-fluid">
         <form action="/" method="get">
-            <div style="border: 10px solid ghostwhite; background: ghostwhite">
-                <h4 style="color: royalblue; font-weight: bold">Titel der Gruppe</h4>
+            <div style="border: 10px solid aliceblue; background: aliceblue">
+                <h4 style="color: dodgerblue; font-weight: bold">Titel der Gruppe</h4>
                 <p>Beschreibung der Gruppe ...</p>
-
             </div>
         </form>
     </div>
