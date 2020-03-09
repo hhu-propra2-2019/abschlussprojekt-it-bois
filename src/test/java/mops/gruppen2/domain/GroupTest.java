@@ -2,6 +2,7 @@ package mops.gruppen2.domain;
 
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
+import mops.gruppen2.domain.event.DeleteUserEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -45,6 +46,38 @@ class GroupTest {
         group.applyEvent(addUserEvent);
 
         assertThat(group.getMembers().get(0)).isEqualTo(user);
+    }
+
+    @Test
+    void addExistingUser() {
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
+
+        User user1 = new User("prof", "jens", "bendi", "hi@gmail.com");
+        AddUserEvent addUserEvent1 = new AddUserEvent(2,1, user1);
+        group.applyEvent(addUserEvent1);
+
+        User user2 = new User("prof", "olga", "bendi", "hi@gmail.com");
+        AddUserEvent addUserEvent2 = new AddUserEvent(3,1, user2);
+        group.applyEvent(addUserEvent2);
+
+        assertThat(group.getMembers().size()).isEqualTo(1);
+    }
+
+    @Test
+    void deleteSingleUser() {
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1, 2, "Prof", "Tolle Gruppe", "Tolle Beshreibung");
+        User user = new User("Prof", "Pro", "fessor", "pro@fessor.de");
+        AddUserEvent addUserEvent = new AddUserEvent(2, 2, user);
+        Group group = new Group();
+        group.applyEvent(createGroupEvent);
+        group.applyEvent(addUserEvent);
+
+        DeleteUserEvent deleteUserEvent = new DeleteUserEvent(3, 2, "Prof");
+        group.applyEvent(deleteUserEvent);
+
+        assertThat(group.getMembers().size()).isEqualTo(0);
     }
 
     // Verwendet CreateGroupEvent und AddUserEvent

@@ -52,7 +52,9 @@ public class Group extends Aggregate {
     private void applyEvent(AddUserEvent event) {
         User user = new User(event.getUser_id(), event.getGivenname(), event.getFamilyname(), event.getEmail());
 
-        this.members.add(user);
+        if (!this.members.contains(user)){
+            this.members.add(user);
+        }
     }
 
     private void applyEvent(UpdateGroupTitleEvent event) {
