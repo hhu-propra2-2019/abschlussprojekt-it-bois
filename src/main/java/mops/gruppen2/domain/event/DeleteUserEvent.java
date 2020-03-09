@@ -1,13 +1,13 @@
 package mops.gruppen2.domain.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 
 /**
  * Entfernt ein einzelnes Mitglied einer Gruppe.
  */
-@EqualsAndHashCode(callSuper = true)
-@Value
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class DeleteUserEvent extends Event {
 
     public DeleteUserEvent(long event_id, long group_id, String user_id) {

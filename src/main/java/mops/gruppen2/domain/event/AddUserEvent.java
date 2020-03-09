@@ -1,14 +1,16 @@
 package mops.gruppen2.domain.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.User;
 
 /**
  * Fügt einen einzelnen Nutzer einer Gruppe hinzu.
  */
-@EqualsAndHashCode(callSuper = true)
-@Value
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AddUserEvent extends Event {
     String givenname;
     String familyname;
