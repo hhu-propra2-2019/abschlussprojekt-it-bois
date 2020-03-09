@@ -1,10 +1,12 @@
 package mops.gruppen2.domain.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
-@Value
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateGroupEvent extends Event {
     String groupTitle;
     String groupDescription;

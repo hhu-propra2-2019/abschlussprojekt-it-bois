@@ -1,13 +1,15 @@
 package mops.gruppen2.domain.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Ändert nur den Gruppentitel.
  */
-@EqualsAndHashCode(callSuper = true)
-@Value
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateGroupTitleEvent extends Event {
     String newGroupTitle;
 

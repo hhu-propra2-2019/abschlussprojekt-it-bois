@@ -1,14 +1,14 @@
 package mops.gruppen2.domain.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 import mops.gruppen2.domain.Role;
 
 /**
  * Aktualisiert die Gruppenrolle eines Teilnehmers.
  */
-@EqualsAndHashCode(callSuper = true)
-@Value
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateRoleEvent extends Event {
 
     Role newRole;
