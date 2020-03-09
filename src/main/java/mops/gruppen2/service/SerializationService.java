@@ -41,4 +41,10 @@ public class SerializationService {
         }
 
     }
+
+    public Event deserializeEvent(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Event event = mapper.readValue(json, Event.class);
+        return event;
+    }
 }
