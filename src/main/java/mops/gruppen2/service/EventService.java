@@ -6,6 +6,7 @@ import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -63,5 +64,13 @@ public class EventService {
         }
 
         return null;
+    }
+
+    public List<Event> getEvents(List<EventDTO> eventDTOs) {
+        List<Event> events = new ArrayList<>();
+
+        eventDTOs.forEach(eventdto -> events.add(getEvent(eventdto)));
+
+        return events;
     }
 }
