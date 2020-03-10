@@ -1,6 +1,9 @@
 package mops.gruppen2.controller;
 
+import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
+import mops.gruppen2.security.Account;
 import mops.gruppen2.service.EventService;
 import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.KeyCloakService;
@@ -58,10 +61,13 @@ public class Gruppen2Controller {
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung) {
 
-        //Hier muss alles in eine separate Klasse
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "faker", title, beschreibung);
+
+        //Refoctor
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), title, beschreibung);
+        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
         eventService.saveEvent(createGroupEvent);
-        groupService.buildGroupFromEvent(createGroupEvent);
+        eventService.saveEvent(addUserEvent);
 
         return "redirect:/";
     }
