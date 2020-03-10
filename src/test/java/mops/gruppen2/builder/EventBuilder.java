@@ -21,7 +21,7 @@ public class EventBuilder {
         );
     }
 
-    public static AddUserEvent randomAddUserEvent() {
+    public static AddUserEvent randomAddUserEvent(long group_id) {
         Faker faker = new Faker();
 
         String firstname = faker.name().firstName();
@@ -29,7 +29,7 @@ public class EventBuilder {
 
         return new AddUserEvent(
                 faker.random().nextLong(),
-                faker.random().nextLong(),
+                group_id,
                 faker.random().hex(),
                 firstname,
                 lastname,
@@ -37,11 +37,11 @@ public class EventBuilder {
         );
     }
 
-    public static List<Event> randomAddUserEvents(int count) {
+    public static List<Event> randomAddUserEvents(int count, long group_id) {
         List<Event> eventList = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            eventList.add(EventBuilder.randomAddUserEvent());
+            eventList.add(EventBuilder.randomAddUserEvent(group_id));
         }
 
         return eventList;
