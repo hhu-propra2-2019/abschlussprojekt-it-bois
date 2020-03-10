@@ -61,14 +61,14 @@ public class Gruppen2Controller {
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung) {
 
-        //Hier muss alles in eine separate Klasse
 
+        //Refoctor
         Account account = keyCloakService.createAccountFromPrincipal(token);
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), title, beschreibung);
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
         eventService.saveEvent(createGroupEvent);
         eventService.saveEvent(addUserEvent);
-        Group group = groupService.buildGroupFromEvent(createGroupEvent,addUserEvent);
+
         return "redirect:/";
     }
 

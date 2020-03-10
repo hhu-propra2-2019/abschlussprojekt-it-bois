@@ -31,17 +31,4 @@ public class GroupService {
 
         return newGroup;
     }
-
-    public Group buildGroupFromEvent(CreateGroupEvent createGroupEvent, AddUserEvent addUserEvent) {
-        Group newGroup = new Group();
-
-        try {
-            newGroup.applyEvent(createGroupEvent);
-            newGroup.applyEvent(addUserEvent);
-        } catch (EventException e) {
-            e.printStackTrace();
-        }
-
-        return newGroup;
-    }
 }
