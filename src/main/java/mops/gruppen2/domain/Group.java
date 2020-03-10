@@ -68,13 +68,17 @@ public class Group extends Aggregate {
         this.description = event.getNewGroupDescription();
     }
 
-    private void applyEvent(DeleteUserEvent event) throws UserNotFoundException{
-        User user = new User(event.getUser_id(), "","","");
+    private void applyEvent(DeleteUserEvent event) throws UserNotFoundException {
+        User user = new User(event.getUser_id(), "", "", "");
 
         if (this.members.contains(user)) {
             this.members.remove(user);
         } else {
             throw new UserNotFoundException("Nutzer wurde nicht gefunden!");
         }
+    }
+
+    private void applyEvent(DeleteGroupEvent event) {
+        this.id = this.id * -1;
     }
 }

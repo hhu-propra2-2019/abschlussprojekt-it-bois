@@ -29,7 +29,8 @@ public class Gruppen2Controller {
         this.groupService = groupService;
     }
 
-    /**Zeigt die index.html an.
+    /**
+     * Zeigt die index.html an.
      *
      * @param token toller token
      * @param model tolles model
