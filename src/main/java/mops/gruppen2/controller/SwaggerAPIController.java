@@ -1,12 +1,10 @@
 package mops.gruppen2.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import mops.gruppen2.domain.ProductSwaggerExample;
-import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.service.SerializationService;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +22,7 @@ public class SwaggerAPIController {
     private final List<ProductSwaggerExample> products = new ArrayList<>();
     private final SerializationService serializationService;
 
-    public SwaggerAPIControllerExample(SerializationService serializationService) {
+    public SwaggerAPIController(SerializationService serializationService) {
         this.serializationService = serializationService;
     }
 
