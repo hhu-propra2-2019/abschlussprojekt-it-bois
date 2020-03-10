@@ -5,7 +5,6 @@ import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.event.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +22,7 @@ class GroupTest {
 
     @Test
     void createSingleGroup() throws Exception{
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,2, "asd", "hello", "foo");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,2L, "asd", "hello", "foo");
 
         Group group = new Group();
 
@@ -38,12 +37,12 @@ class GroupTest {
     // Verwendet CreateGroupEvent
     @Test
     void addSingleUser() throws Exception{
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1L,"prof1", "hi", "foo");
         Group group = new Group();
         group.applyEvent(createGroupEvent);
 
         User user = new User("prof", "jens", "bendi", "hi@gmail.com");
-        AddUserEvent addUserEvent = new AddUserEvent(1,1, user);
+        AddUserEvent addUserEvent = new AddUserEvent(1L,1L, user);
         group.applyEvent(addUserEvent);
 
         assertThat(group.getMembers().get(0)).isEqualTo(user);
@@ -51,16 +50,16 @@ class GroupTest {
 
     @Test
     void addExistingUser() throws Exception{
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L,1L,"prof1", "hi", "foo");
         Group group = new Group();
         group.applyEvent(createGroupEvent);
 
         User user1 = new User("prof", "jens", "bendi", "hi@gmail.com");
-        AddUserEvent addUserEvent1 = new AddUserEvent(2,1, user1);
+        AddUserEvent addUserEvent1 = new AddUserEvent(2L,1L, user1);
         group.applyEvent(addUserEvent1);
 
         User user2 = new User("prof", "olga", "bendi", "hi@gmail.com");
-        AddUserEvent addUserEvent2 = new AddUserEvent(3,1, user2);
+        AddUserEvent addUserEvent2 = new AddUserEvent(3L,1L, user2);
         Assertions.assertThrows(UserAlreadyExistsException.class, () ->{
             group.applyEvent(addUserEvent2);
         });
@@ -71,14 +70,14 @@ class GroupTest {
 
     @Test
     void deleteSingleUser() throws Exception{
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1, 2, "Prof", "Tolle Gruppe", "Tolle Beshreibung");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1, 2L, "Prof", "Tolle Gruppe", "Tolle Beshreibung");
         User user = new User("Prof", "Pro", "fessor", "pro@fessor.de");
-        AddUserEvent addUserEvent = new AddUserEvent(2, 2, user);
+        AddUserEvent addUserEvent = new AddUserEvent(2L, 2L, user);
         Group group = new Group();
         group.applyEvent(createGroupEvent);
         group.applyEvent(addUserEvent);
 
-        DeleteUserEvent deleteUserEvent = new DeleteUserEvent(3, 2, "Prof");
+        DeleteUserEvent deleteUserEvent = new DeleteUserEvent(3L, 2L, "Prof");
         group.applyEvent(deleteUserEvent);
 
         assertThat(group.getMembers().size()).isEqualTo(0);
@@ -86,11 +85,11 @@ class GroupTest {
 
     @Test
     void deleteUserThatDoesNotExists() throws Exception{
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1, 2, "Prof", "Tolle Gruppe", "Tolle Beshreibung");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1, 2L, "Prof", "Tolle Gruppe", "Tolle Beshreibung");
         Group group = new Group();
         group.applyEvent(createGroupEvent);
 
-        DeleteUserEvent deleteUserEvent = new DeleteUserEvent(3, 2, "Prof");
+        DeleteUserEvent deleteUserEvent = new DeleteUserEvent(3L, 2L, "Prof");
 
         Assertions.assertThrows(UserNotFoundException.class, () ->{
             group.applyEvent(deleteUserEvent);
@@ -122,7 +121,7 @@ class GroupTest {
     @Test
     void updateRoleForNonExistingUser() throws Exception{
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(1L, 1L, "1L", "gruppe1", "Eine Testgruppe");
-        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(345L, 33 , "coolerUser", Role.ADMIN);
+        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(345L, 33L , "coolerUser", Role.ADMIN);
 
         Group group = new Group();
         group.applyEvent(createGroupEvent);
@@ -133,11 +132,11 @@ class GroupTest {
 
     @Test
     void updateTitle() throws Exception{
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1L,"prof1", "hi", "foo");
         Group group = new Group();
         group.applyEvent(createGroupEvent);
 
-        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(2, 1, "Klaus", "Toller Titel");
+        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(2L, 1L, "Klaus", "Toller Titel");
         group.applyEvent(updateGroupTitleEvent);
 
         assertThat(group.getTitle()).isEqualTo("Toller Titel");
@@ -145,11 +144,11 @@ class GroupTest {
 
     @Test
     void updateBeschreibung() throws Exception{
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1,"prof1", "hi", "foo");
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1,1L,"prof1", "hi", "foo");
         Group group = new Group();
         group.applyEvent(createGroupEvent);
 
-        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(2, 1, "Peter", "Tolle Beschreibung");
+        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(2L, 1L, "Peter", "Tolle Beschreibung");
         group.applyEvent(updateGroupDescriptionEvent);
 
         assertThat(group.getDescription()).isEqualTo("Tolle Beschreibung");
