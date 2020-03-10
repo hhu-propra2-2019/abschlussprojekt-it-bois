@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonTypeInfo(
         include = JsonTypeInfo.As.PROPERTY,
         use = JsonTypeInfo.Id.NAME,

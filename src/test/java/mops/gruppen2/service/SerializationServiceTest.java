@@ -1,8 +1,8 @@
 package mops.gruppen2.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import mops.gruppen2.domain.event.AddUserEvent;
-import mops.gruppen2.domain.event.Event;
+import mops.gruppen2.domain.Role;
+import mops.gruppen2.domain.event.*;
 import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,44 +12,74 @@ import static org.mockito.Mockito.mock;
 
 class SerializationServiceTest {
 
+    SerializationService serializationService;
 
-	@BeforeEach
-	public void setUp() {
-	}
+    @BeforeEach
+    public void setUp() {
+        serializationService = new SerializationService(mock(EventRepository.class));
+    }
 
 
-	@Test
-	void serializeEventTest() {
-		Event event =  new Event(1L,1L,"1");
+    @Test
+    void serializeEventTest() throws JsonProcessingException {
+        Event event =  new Event(1L,1L,"1");
 
-		SerializationService serializationService = new SerializationService(mock(EventRepository.class));
+        assertThat(serializationService.serializeEvent(event)).isEqualTo("{\"type\":\"Event\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}");
+    }
 
-		try {
-			assertThat(serializationService.serializeEvent(event)).isEqualTo("{\"type\":\"Event\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}");
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	}
+    @Test
+    void deserializeAddUserEventToRightClass() throws JsonProcessingException {
+        String json = "{\"type\":\"AddUserEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}";
 
-	@Test
-	void deserializeAddUserEvent() throws JsonProcessingException {
-		SerializationService serializationService = new SerializationService(mock(EventRepository.class));
+        Event event = serializationService.deserializeEvent(json);
 
-		String json = "{\"type\":\"Event\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}";
+        assertThat(event).isInstanceOf(AddUserEvent.class);
+    }
 
-		Event event = serializationService.deserializeEvent(json);
+    @Test
+    void deserializeDeleteUserEventToRightClass() throws JsonProcessingException {
+        String json = "{\"type\":\"DeleteUserEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}";
 
-		assertThat(event).isInstanceOf(Event.class);
-	}
+        Event event = serializationService.deserializeEvent(json);
 
-	@Test
-	void serializeEventTestAddUserEvent(){
-		AddUserEvent event = new AddUserEvent(1L,1L,"user_id","peter","mueller","a@a");
-		SerializationService serializationService = new SerializationService(mock(EventRepository.class));
-		try {
-			assertThat(serializationService.serializeEvent(event)).isEqualTo("{\"type\":\"AddUserEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":\"user_id\",\"givenname\":\"peter\",\"familyname\":\"mueller\",\"email\":\"a@a\"}");
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	}
+        assertThat(event).isInstanceOf(DeleteUserEvent.class);
+    }
+
+    @Test
+    void deserializeUpdateGroupDescriptionEventToRightClass() throws JsonProcessingException {
+        String json = "{\"type\":\"UpdateGroupDescriptionEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\",\"newGroupDescription\":\"test\"}";
+
+        Event event = serializationService.deserializeEvent(json);
+
+        assertThat(event).isInstanceOf(UpdateGroupDescriptionEvent.class);
+    }
+
+    @Test
+    void deserializeUpdateGroupTitleEventToRightClass() throws JsonProcessingException {
+        String json = "{\"type\":\"UpdateGroupTitleEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\",\"newGroupTitle\":\"test\"}";
+
+        Event event = serializationService.deserializeEvent(json);
+
+        assertThat(event).isInstanceOf(UpdateGroupTitleEvent.class);
+    }
+
+    @Test
+    void deserializeUpdateRoleEventToRightClass() throws JsonProcessingException {
+	    System.out.println(serializationService.serializeEvent(new UpdateRoleEvent(1L, 1L, "1", Role.ADMIN)));
+
+	    String json = "{\"type\":\"UpdateRoleEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":1,\"newRole\":\"ADMIN\"}";
+
+        Event event = serializationService.deserializeEvent(json);
+
+        assertThat(event).isInstanceOf(UpdateRoleEvent.class);
+    }
+
+    @Test
+    void deserializeCreateGroupEventToRightClass() throws JsonProcessingException {
+        String json = "{\"type\":\"CreateGroupEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\",\"groupTitle\":\"test\",\"groupDescription\":\"test\"}";
+
+        Event event = serializationService.deserializeEvent(json);
+
+        assertThat(event).isInstanceOf(CreateGroupEvent.class);
+    }
 }
