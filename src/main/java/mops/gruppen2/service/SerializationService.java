@@ -26,22 +26,7 @@ public class SerializationService {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(event);
     }
-
-
-    // create DTO methode schreiben also kurz auslagern
-    public void saveEvent(Event event){
-        try {
-            EventDTO eventDTO = new EventDTO();
-            eventDTO.setGroup_id(event.getGroup_id());
-            eventDTO.setUser_id(event.getUser_id());
-            eventDTO.setEvent_payload(serializeEvent(event));
-            eventStore.save(eventDTO);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-    }
-
+  
     public Event deserializeEvent(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, Event.class);

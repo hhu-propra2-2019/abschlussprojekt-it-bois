@@ -22,8 +22,10 @@ class SerializationServiceTest {
 
 	@Test
 	void serializeEventTest() {
-		Event event = new Event(1,1,"1");
-		SerializationService serializationService = new SerializationService(mock(EventRepository.class));
+		event =  new Event(1L,1L,"1");
+
+		SerializationService serializationService = new SerializationService(eventRepository);
+
 		try {
 			assertThat(serializationService.serializeEvent(event)).isEqualTo("{\"type\":\"Event\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}");
 		} catch (JsonProcessingException e) {

@@ -17,14 +17,19 @@ import lombok.NoArgsConstructor;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AddUserEvent.class, name = "AddUserEvent"),
-        @JsonSubTypes.Type(value = AddUserEvent.class, name = "CreateGroupEvent"),
-        @JsonSubTypes.Type(value = AddUserEvent.class, name = "DeleteUserEvent"),
-        @JsonSubTypes.Type(value = AddUserEvent.class, name = "UpdateGroupDescriptionEvent"),
-        @JsonSubTypes.Type(value = AddUserEvent.class, name = "UpdateGroupTitleEvent"),
-        @JsonSubTypes.Type(value = AddUserEvent.class, name = "UpdateRoleEvent"),
+        @JsonSubTypes.Type(value = CreateGroupEvent.class, name = "CreateGroupEvent"),
+        @JsonSubTypes.Type(value = DeleteUserEvent.class, name = "DeleteUserEvent"),
+        @JsonSubTypes.Type(value = UpdateGroupDescriptionEvent.class, name = "UpdateGroupDescriptionEvent"),
+        @JsonSubTypes.Type(value = UpdateGroupTitleEvent.class, name = "UpdateGroupTitleEvent"),
+        @JsonSubTypes.Type(value = UpdateRoleEvent.class, name = "UpdateRoleEvent"),
 })
 public class Event {
-    long event_id;
-    long group_id;
+    Long event_id;
+    Long group_id;
     String user_id;
+
+    public Event(Long group_id,String user_id){
+        this.group_id = group_id;
+        this.user_id = user_id;
+    }
 }

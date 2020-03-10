@@ -13,7 +13,7 @@ public class UpdateRoleEvent extends Event {
 
     Role newRole;
 
-    public UpdateRoleEvent(long event_id, long group_id, String user_id, Role newRole) {
+    public UpdateRoleEvent(Long event_id, Long group_id, String user_id, Role newRole) {
         super(event_id, group_id, user_id);
 
         this.newRole = newRole;
