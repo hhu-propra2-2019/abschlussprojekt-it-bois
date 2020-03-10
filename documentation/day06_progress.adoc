@@ -1,2 +1,4 @@
 == Tag 6
 
+= Gruppen abspeichern
+Wr haben uns heute darum gekümmert über die UI eine Gruppe zu erstellen und diese in die Datenbank zu schreiben. Der Ersteller der Gruppe wird momentan mit in die Gruppe eingefügt das kann später noch verändert werden. Alle Logik findet momentan im Controller statt was später noch verändert wird.
