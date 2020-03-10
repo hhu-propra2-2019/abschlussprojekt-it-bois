@@ -52,25 +52,17 @@ public class EventService {
         return tmpId;
     }
 
-    public List<EventDTO> findAllEvents() {
-        return null;
-    }
-
-    public Event getEvent(EventDTO eventDTO) {
-        try {
-            return serializationService.deserializeEvent(eventDTO.getEvent_payload());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public List<Event> getEvents(List<EventDTO> eventDTOs) {
+    public List<Event> findAllEvents() {
+        Iterable<EventDTO> eventDTOS =  eventStore.findAll();
         List<Event> events = new ArrayList<>();
-
-        eventDTOs.forEach(eventdto -> events.add(getEvent(eventdto)));
-
+        eventDTOS.forEach(eventDTO -> {
+            try {
+                events.add(serializationService.deserializeEvent(eventDTO.getEvent_payload()));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
         return events;
     }
+
 }
