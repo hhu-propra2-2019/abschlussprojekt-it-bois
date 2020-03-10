@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Name des Subsystems</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+            </li>
+            <li>
+                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
+            </li>
+            <li class="active">
+                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <div class="row">
+            <h1>Gruppensuche</h1>
+                <div class="container-fluid">
+                    <form action="/findGroup" method="get">
+                        <div style="border: 10px solid aliceblue; background: aliceblue">
+                            <div class="form-group">
+                                <label>Suchbegriff:</label>
+                                <input class="form-control" type="text" value="" name="suchbegriff" placeholder="z.B. Programmieren, Lerngruppe, ...">
+                            </div>
+                            <div>
+                                <input type="checkbox" style="margin-left: 10px;"> Öffentliche Gruppen
+                                <input type="checkbox" style="margin-left: 24px;"> Private Gruppen
+                                <br>
+                                <input type="checkbox" style="margin-left: 10px;"> Suchbegriff im Namen
+                                <input type="checkbox" style="margin-left: 10px;"> Suchbegriff in der Beschreibung
+                                <input type="checkbox" style="margin-left: 10px;"> Suchbegriff in der Veranstaltung
+                            </div>
+                            <br>
+                            <button type="button" class="btn btn-primary" style="background: dodgerblue">Suchen</button>
+                        </div>
+                    </form>
+                    <br>
+                    <table class="table">
+                        <!-- Erscheint dann, wenn man "Suchen" Button klickt und Ergebnisse angezeigt werden, aber so solls aussehen -->
+                        <thead>
+                        <tr>
+                            <th scope="col">Gruppenname</th>
+                            <th scope="col">Beschreibung</th>
+                            <th scope="col">Öffentlich/Privat</th>
+                            <th scope="col">Mitgliederanzahl</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">LA1 Kursgruppe</th>
+                            <td>Gruppe für den Kurs LA1</td>
+                            <td>Öffentlich</td>
+                            <td>318</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Lerngruppe LA1</th>
+                            <td>Lerngruppe zur Bearbeitung von Übungszetteln</td>
+                            <td>Privat</td>
+                            <td>6</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

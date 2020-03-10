@@ -13,7 +13,6 @@ public class GroupService {
     /**
      * Konstruiert eine vollständige Gruppe aus Events, welche dieselbe Gruppe betreffen.
      *
-     * @param event Initiales CreateGroup-Event
      * @param eventList Die restlichen Events für diese Gruppe
      * @return Gruppe auf aktuellem Stand
      */

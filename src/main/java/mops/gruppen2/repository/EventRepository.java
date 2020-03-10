@@ -1,7 +1,7 @@
 package mops.gruppen2.repository;
 
-import mops.gruppen2.domain.event.Event;
+import mops.gruppen2.domain.EventDTO;
 import org.springframework.data.repository.CrudRepository;
 
-public interface EventRepository extends CrudRepository<Event, Long> {
+public interface EventRepository extends CrudRepository<EventDTO, Long> {
 }

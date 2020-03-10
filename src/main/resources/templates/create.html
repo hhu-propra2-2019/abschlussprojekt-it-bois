@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Name des Subsystems</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+            </li>
+            <li  class="active">
+                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
+            </li>
+            <li>
+                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <h1>Gruppenerstellung</h1>
+    <div class="container-fluid">
+        <form method="post" action="/gruppen2/createGroup">
+            <div style="border: 10px solid aliceblue; background: aliceblue">
+                <div class="form-group">
+                    <label for="titel">Name der Gruppe</label>
+                    <input type="text" class="form-control" id="titel" th:name="title">
+                </div>
+                <div class="form-group">
+                    <label for="beschreibung">Beschreibung der Gruppe</label>
+                    <textarea type="text" class="form-control" id="beschreibung" th:name="beschreibung">
+
+                    </textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Erstellen</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
