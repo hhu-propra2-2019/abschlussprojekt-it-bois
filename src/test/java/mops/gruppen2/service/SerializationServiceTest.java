@@ -1,6 +1,8 @@
 package mops.gruppen2.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import mops.gruppen2.builder.EventBuilder;
+import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,26 +14,20 @@ import static org.mockito.Mockito.mock;
 
 class SerializationServiceTest {
 
-	EventRepository eventRepository;
 
 	@BeforeEach
 	public void setUp() {
 	}
 
 
-	@Disabled
-	@Test
-	void applyEvent() {
-	}
-
 	@Test
 	void serializeEventTest() {
-    
 		event =  new Event(1L,1L,"1");
 
 		SerializationService serializationService = new SerializationService(eventRepository);
+
 		try {
-			assertThat(serializationService.serializeEvent(event)).isEqualTo("{\"Event\":{\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}}");
+			assertThat(serializationService.serializeEvent(event)).isEqualTo("{\"type\":\"Event\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}");
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -48,4 +44,14 @@ class SerializationServiceTest {
 		assertThat(event).isInstanceOf(Event.class);
 	}
 
+	@Test
+	void serializeEventTestAddUserEvent(){
+		AddUserEvent event = new AddUserEvent(1,1,"user_id","peter","mueller","a@a");
+		SerializationService serializationService = new SerializationService(mock(EventRepository.class));
+		try {
+			assertThat(serializationService.serializeEvent(event)).isEqualTo("{\"type\":\"AddUserEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":\"user_id\",\"givenname\":\"peter\",\"familyname\":\"mueller\",\"email\":\"a@a\"}");
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	}
 }
