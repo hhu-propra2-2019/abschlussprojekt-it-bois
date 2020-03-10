@@ -27,6 +27,8 @@ public class SerializationService {
         return mapper.writeValueAsString(event);
     }
 
+
+    // create DTO methode schreiben also kurz auslagern
     public void saveEvent(Event event){
         try {
             EventDTO eventDTO = new EventDTO();
