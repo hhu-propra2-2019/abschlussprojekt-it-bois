@@ -23,6 +23,13 @@ public class AddUserEvent extends Event {
         this.email = email;
     }
 
+    public AddUserEvent(Long group_id, String user_id, String givenname, String familyname, String email) {
+        super(group_id, user_id);
+        this.givenname = givenname;
+        this.familyname = familyname;
+        this.email = email;
+    }
+
     public AddUserEvent(Long event_id, Long group_id, User user) {
         super(event_id, group_id, user.getUser_id());
         this.givenname = user.getGivenname();

@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Account {
-    private final String name;
+    private final String name; //user_id
     private final String email;
     private final String image;
     private final String givenname;

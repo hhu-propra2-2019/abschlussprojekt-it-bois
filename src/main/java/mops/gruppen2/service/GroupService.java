@@ -2,6 +2,7 @@ package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.domain.event.Event;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,12 @@ public class GroupService {
         return newGroup;
     }
 
-    public Group buildGroupFromEvent(CreateGroupEvent createGroupEvent) {
+    public Group buildGroupFromEvent(CreateGroupEvent createGroupEvent, AddUserEvent addUserEvent) {
         Group newGroup = new Group();
 
         try {
             newGroup.applyEvent(createGroupEvent);
+            newGroup.applyEvent(addUserEvent);
         } catch (EventException e) {
             e.printStackTrace();
         }
