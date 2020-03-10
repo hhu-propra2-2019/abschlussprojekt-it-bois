@@ -30,8 +30,7 @@ public abstract class Aggregate {
             Method method = this.getClass().getDeclaredMethod("applyEvent", event.getClass());
             method.setAccessible(true);
             method.invoke(this, event);
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

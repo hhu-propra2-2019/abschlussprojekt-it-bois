@@ -1,8 +1,8 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.Exceptions.GroupDoesNotExistException;
 import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.domain.event.Event;
 import org.springframework.stereotype.Service;
@@ -18,17 +18,32 @@ public class GroupService {
      * @param eventList Die restlichen Events für diese Gruppe
      * @return Gruppe auf aktuellem Stand
      */
-    Group buildGroupFromEvents(List<Event> eventList) {
+    Group buildGroupFromEvents(List<Event> eventList) throws EventException {
         Group newGroup = new Group();
 
         try {
+            if (!(eventList.get(0) instanceof CreateGroupEvent)) {
+                throw new GroupDoesNotExistException("Die Gruppe existiert nicht");
+            } else {
+                newGroup.applyEvent(eventList.get(0));
+                eventList.remove(0);
+            }
             for (Event event : eventList) {
+                if (!(newGroup.getId() > 0)) {
+                    throw new GroupDoesNotExistException("Die Gruppe existiert nicht");
+                }
                 newGroup.applyEvent(event);
             }
-        }catch (EventException e){
+        } catch (EventException e) {
+            if (e instanceof GroupDoesNotExistException) {
+                throw e;
+            }
             e.printStackTrace();
         }
 
+        if (newGroup.getId() < 0) {
+            return null;
+        }
         return newGroup;
     }
 }
