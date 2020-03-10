@@ -6,6 +6,8 @@ import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EventService {
     private final SerializationService serializationService;
@@ -47,5 +49,19 @@ public class EventService {
             }
         }
         return tmpId;
+    }
+
+    public List<EventDTO> findAllEvents() {
+        return null;
+    }
+
+    public Event getEvent(EventDTO eventDTO) {
+        try {
+            return serializationService.deserializeEvent(eventDTO.getEvent_payload());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
