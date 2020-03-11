@@ -77,8 +77,4 @@ public class Group extends Aggregate {
             throw new UserNotFoundException("Nutzer wurde nicht gefunden!");
         }
     }
-
-    private void applyEvent(DeleteGroupEvent event) {
-        this.id = this.id * -1;
-    }
 }

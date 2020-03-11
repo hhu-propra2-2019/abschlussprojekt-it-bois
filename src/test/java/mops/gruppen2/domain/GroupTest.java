@@ -1,6 +1,5 @@
 package mops.gruppen2.domain;
 
-import mops.gruppen2.domain.Exceptions.GroupDoesNotExistException;
 import mops.gruppen2.domain.Exceptions.UserAlreadyExistsException;
 import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.event.*;
@@ -154,17 +153,4 @@ class GroupTest {
 
         assertThat(group.getDescription()).isEqualTo("Tolle Beschreibung");
     }
-
-    @Test
-    void deleteGroup() throws Exception {
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(1, 1L, "prof1", "hi", "foo");
-        Group group = new Group();
-        group.applyEvent(createGroupEvent);
-
-        DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(44, 1, "loescher78");
-        group.applyEvent(deleteGroupEvent);
-
-        assertThat(group.id).isEqualTo(-1L);
-    }
-
 }
