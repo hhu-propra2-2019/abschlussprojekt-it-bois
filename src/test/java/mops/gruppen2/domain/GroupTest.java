@@ -27,11 +27,7 @@ class GroupTest {
         Group group = new Group();
 
         group.applyEvent(createGroupEvent);
-
-
-        assertThat(group.getDescription()).isEqualTo("foo");
-        assertThat(group.getTitle()).isEqualTo("hello");
-        assertThat(group.getId()).isEqualTo(2);
+        assertThat(group.getId()).isEqualTo(1L);
     }
 
     // Verwendet CreateGroupEvent
