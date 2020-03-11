@@ -1,6 +1,10 @@
 package mops.gruppen2.controller;
 
+import mops.gruppen2.Gruppen2Application;
+import mops.gruppen2.Gruppen2Config;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.security.Account;
@@ -8,6 +12,7 @@ import mops.gruppen2.service.EventService;
 import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.KeyCloakService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +23,9 @@ import javax.swing.*;
 @Controller
 @RequestMapping("/gruppen2")
 public class Gruppen2Controller {
+
+    @Autowired
+    Gruppen2Config gruppen2Config;
 
     private final KeyCloakService keyCloakService;
     private final EventService eventService;
@@ -65,7 +73,7 @@ public class Gruppen2Controller {
 
         //Refoctor
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), title, beschreibung);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), null ,GroupType.LECTURE, Visibility.PUBLIC);
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
         eventService.saveEvent(createGroupEvent);
         eventService.saveEvent(addUserEvent);

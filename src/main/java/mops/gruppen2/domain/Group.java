@@ -48,7 +48,7 @@ public class Group extends Aggregate {
             throw new UserNotFoundException("Nutzer wurde nicht gefunden!");
         }
 
-        if (roles.containsKey(user) && event.getNewRole() == Role.STUDENT) {
+        if (roles.containsKey(user) && event.getNewRole() == Role.MEMBER) {
             roles.remove(user);
         } else {
             roles.put(user, event.getNewRole());

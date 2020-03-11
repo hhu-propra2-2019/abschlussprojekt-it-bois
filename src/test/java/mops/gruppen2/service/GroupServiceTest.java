@@ -3,6 +3,8 @@ package mops.gruppen2.service;
 import mops.gruppen2.domain.Exceptions.GroupDoesNotExistException;
 import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.domain.event.DeleteGroupEvent;
@@ -33,7 +35,7 @@ class GroupServiceTest {
     void applyEventOnGroupThatIsDeleted() throws Exception {
         List<Event> eventList = new ArrayList<>();
 
-        eventList.add(new CreateGroupEvent(1, 10L, "prof1", "hi", "foo"));
+        eventList.add(new CreateGroupEvent(1L,"Ulli", null, GroupType.LECTURE, Visibility.PRIVATE));
 
         eventList.add(new DeleteGroupEvent(44, 10, "loescher78"));
 
@@ -49,7 +51,7 @@ class GroupServiceTest {
     void returnDeletedGroup() throws Exception {
         List<Event> eventList = new ArrayList<>();
 
-        eventList.add(new CreateGroupEvent(1, 10L, "prof1", "hi", "foo"));
+        eventList.add(new CreateGroupEvent(1L, "Prof", null, GroupType.LECTURE, Visibility.PRIVATE));
 
         eventList.add(new DeleteGroupEvent(44, 10, "loescher78"));
 
@@ -62,7 +64,7 @@ class GroupServiceTest {
     void rightClassForSucsessfulGroup() throws Exception {
         List<Event> eventList = new ArrayList<>();
 
-        eventList.add(new CreateGroupEvent(1, 10L, "prof1", "hi", "foo"));
+        eventList.add(new CreateGroupEvent(1L, "Prof", null, GroupType.LECTURE, Visibility.PRIVATE));
 
         eventList.add(new AddUserEvent(900L, 10L, "Ulli", "Ulli", "Honnis", "FC@B.de"));
 
