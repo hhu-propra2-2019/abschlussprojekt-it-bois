@@ -12,13 +12,13 @@ public class EventBuilder {
     public static CreateGroupEvent randomCreateGroupEvent() {
         Faker faker = new Faker();
 
-        return new CreateGroupEvent(
+        return null;/*new CreateGroupEvent(
                 faker.random().nextLong(),
                 faker.random().nextLong(),
                 faker.random().hex(),
                 faker.leagueOfLegends().champion(),
                 faker.leagueOfLegends().quote()
-        );
+        );*/
     }
 
     public static AddUserEvent randomAddUserEvent(long group_id) {
