@@ -1,6 +1,5 @@
 package mops.gruppen2.domain;
 
-import mops.gruppen2.domain.Exceptions.GroupDoesNotExistException;
 import mops.gruppen2.domain.Exceptions.UserAlreadyExistsException;
 import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.event.*;
