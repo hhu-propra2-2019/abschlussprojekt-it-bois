@@ -28,10 +28,11 @@
     <h1>Meine Gruppen</h1>
     <div class="container-fluid">
         <form action="/" method="get">
-            <div th:each="gruppe: ${gruppen}" style="border: 10px solid aliceblue; background: aliceblue">
-                <ul>
-                    <li th:text="${gruppe.getTitle()}"></li>
-                </ul>
+            <div th:each="gruppe: ${gruppen}">
+                <div style="border: 10px solid aliceblue; background: aliceblue">
+                    <h4 style="color: dodgerblue; font-weight: bold" th:text="${gruppe.getTitle()}"></h4>
+                    <p th:text="${gruppe.getDescription()}"></p>
+                </div>
             </div>
         </form>
     </div>
