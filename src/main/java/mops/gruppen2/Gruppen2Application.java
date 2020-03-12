@@ -23,11 +23,6 @@ import java.util.List;
 @SpringBootApplication
 @EnableSwagger2
 public class Gruppen2Application {
-    @Autowired
-    private GroupService groupService;
-
-    @Autowired
-    private EventService eventService;
 
     public static void main(String[] args) {
         SpringApplication.run(Gruppen2Application.class, args);
