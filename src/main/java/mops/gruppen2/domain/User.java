@@ -9,9 +9,7 @@ import lombok.Value;
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"givenname", "familyname", "email"})
 public class User {
-
     String user_id;
-
     String givenname;
     String familyname;
     String email;
