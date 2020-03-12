@@ -38,14 +38,6 @@ public class ControllerTest {
             .should().haveSimpleNameEndingWith("Controller");
 
     @ArchTest
-    public static final ArchRule controllerClassesShouldHaveRequestMappingAnnotation = classes()
-            .that().resideInAPackage("..controller..")
-            .and().haveSimpleNameEndingWith("Controller")
-            .and().areAnnotatedWith(Controller.class)
-            .or().areAnnotatedWith(RestController.class)
-            .should().beAnnotatedWith(RequestMapping.class);
-
-    @ArchTest
     public static final ArchRule controllerClassesShouldNotDependOnEachOther = noClasses()
             .that().haveSimpleNameEndingWith("Controller")
             .should().dependOnClassesThat().haveNameMatching("Controller");

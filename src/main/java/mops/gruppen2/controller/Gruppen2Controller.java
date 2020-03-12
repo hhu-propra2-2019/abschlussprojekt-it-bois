@@ -80,7 +80,7 @@ public class Gruppen2Controller {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         controllerService.createGroup(account, title, beschreibung);
 
-        return "redirect:/gruppen2";
+        return "redirect:/gruppen2/";
     }
 
 }

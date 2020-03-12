@@ -19,6 +19,8 @@ public class UserService {
         this.groupService = groupService;
     }
 
+    //Test nötig??
+
     public List<Group> getUserGroups(String user_id) throws EventException {
         List<Long> group_ids = eventRepository.findGroup_idsWhereUser_id(user_id);
         List<Event> events =  groupService.getGroupEvents(group_ids);
