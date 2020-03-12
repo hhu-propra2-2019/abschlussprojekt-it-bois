@@ -7,3 +7,7 @@ aktuellen Status der Gruppe und liefert als JSON Objekt den neuen Status und die
 die sich geändert haben.
 Zzusätlich gibt es eine Wrapperklasse, um die Objekte die wir herausgeben mit der anderen Gruppenbildung-Gruppe
 anzugleichen.
+
+== Testing
+
+Der Eventbuilder wurde verbessert, sodass leichter mit großen Mengen von events getestet werden kann.
