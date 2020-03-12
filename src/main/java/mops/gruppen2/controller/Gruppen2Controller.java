@@ -1,7 +1,9 @@
 package mops.gruppen2.controller;
 
 import mops.gruppen2.config.Gruppen2Config;
+import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
@@ -9,6 +11,7 @@ import mops.gruppen2.security.Account;
 import mops.gruppen2.service.EventService;
 import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.KeyCloakService;
+import mops.gruppen2.service.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,11 +30,13 @@ public class Gruppen2Controller {
     private final KeyCloakService keyCloakService;
     private final EventService eventService;
     private final GroupService groupService;
+    private final UserService userService;
 
-    public Gruppen2Controller(KeyCloakService keyCloakService, EventService eventService, GroupService groupService) {
+    public Gruppen2Controller(KeyCloakService keyCloakService, EventService eventService, GroupService groupService, UserService userService) {
         this.keyCloakService = keyCloakService;
         this.eventService = eventService;
         this.groupService = groupService;
+        this.userService = userService;
     }
 
     /**
@@ -43,8 +48,12 @@ public class Gruppen2Controller {
      */
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("")
-    public String index(KeycloakAuthenticationToken token, Model model) {
+    public String index(KeycloakAuthenticationToken token, Model model) throws EventException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        model.addAttribute("gruppen", userService.getUserGroups(user.getUser_id()));
         return "index";
     }
 

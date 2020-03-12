@@ -19,7 +19,7 @@ public class UserService {
         this.groupService = groupService;
     }
 
-    public List<Group> getUserGroups(Long user_id) throws EventException {
+    public List<Group> getUserGroups(String user_id) throws EventException {
         List<Long> group_ids = eventRepository.findGroup_idsWhereUser_id(user_id);
         List<Event> events =  groupService.getGroupEvents(group_ids);
         return groupService.projectEventList(events);
