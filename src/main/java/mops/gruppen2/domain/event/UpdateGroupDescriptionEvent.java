@@ -17,4 +17,9 @@ public class UpdateGroupDescriptionEvent extends Event {
         super(event_id, group_id, user_id);
         this.newGroupDescription = newGroupDescription;
     }
+
+    public UpdateGroupDescriptionEvent(Long group_id, String user_id, String newGroupDescription) {
+        super(group_id, user_id);
+        this.newGroupDescription = newGroupDescription;
+    }
 }
