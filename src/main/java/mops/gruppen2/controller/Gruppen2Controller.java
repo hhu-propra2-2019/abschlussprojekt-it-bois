@@ -10,10 +10,7 @@ import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
 import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.security.Account;
-import mops.gruppen2.service.EventService;
-import mops.gruppen2.service.GroupService;
-import mops.gruppen2.service.KeyCloakService;
-import mops.gruppen2.service.UserService;
+import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,12 +30,14 @@ public class Gruppen2Controller {
     private final EventService eventService;
     private final GroupService groupService;
     private final UserService userService;
+    private final ControllerService controllerService;
 
-    public Gruppen2Controller(KeyCloakService keyCloakService, EventService eventService, GroupService groupService, UserService userService) {
+    public Gruppen2Controller(KeyCloakService keyCloakService, EventService eventService, GroupService groupService, UserService userService, ControllerService controllerService) {
         this.keyCloakService = keyCloakService;
         this.eventService = eventService;
         this.groupService = groupService;
         this.userService = userService;
+        this.controllerService = controllerService;
     }
 
     /**
@@ -78,19 +77,10 @@ public class Gruppen2Controller {
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung) {
 
-
-        //Refoctor
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), null ,GroupType.LECTURE, Visibility.PUBLIC);
-        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
-        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(eventService.checkGroup(), account.getName(), title);
-        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(eventService.checkGroup(), account.getName(), beschreibung);
-        eventService.saveEvent(createGroupEvent);
-        eventService.saveEvent(addUserEvent);
-        eventService.saveEvent(updateGroupDescriptionEvent);
-        eventService.saveEvent(updateGroupTitleEvent);
+        controllerService.createGroup(account, title, beschreibung);
 
-        return "redirect:/";
+        return "redirect:/gruppen2";
     }
 
 }
