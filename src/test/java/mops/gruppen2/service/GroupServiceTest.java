@@ -1,7 +1,6 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Exceptions.GroupDoesNotExistException;
-import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Visibility;
@@ -9,26 +8,24 @@ import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.domain.event.DeleteGroupEvent;
 import mops.gruppen2.domain.event.Event;
+import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.configuration.IMockitoConfiguration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class GroupServiceTest {
     GroupService groupService;
+    EventRepository eventRepository;
 
     @BeforeEach
     public void setUp() {
-        groupService = new GroupService(mock(EventService.class));
+        groupService = new GroupService(mock(EventService.class), eventRepository);
     }
 
     @Test
