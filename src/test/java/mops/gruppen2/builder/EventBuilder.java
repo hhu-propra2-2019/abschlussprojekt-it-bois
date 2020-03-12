@@ -1,9 +1,7 @@
 package mops.gruppen2.builder;
 
 import com.github.javafaker.Faker;
-import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.Role;
-import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.*;
 import mops.gruppen2.domain.event.*;
 
 import java.util.ArrayList;
@@ -11,14 +9,33 @@ import java.util.List;
 
 public class EventBuilder {
 
-    public static List<Event> completeGroup(long group_id) {
-        Faker faker = new Faker();
+    /**
+     * Generiert ein EventLog mit mehreren Gruppen nud Usern
+     *
+     * @param count Gruppenanzahl
+     * @param membercount Gesamte Mitgliederanzahl
+     * @return
+     */
+    public static List<Event> completeGroups(int count, int membercount) {
+        List<Event> eventList = new ArrayList<>();
 
+        for (int i = 1; i <= count; i++) {
+            eventList.addAll(EventBuilder.completeGroup(i, membercount / count));
+        }
+
+        return eventList;
+    }
+
+    public static List<Event> completeGroup(long group_id, int membercount) {
         List<Event> eventList = new ArrayList<>();
 
         eventList.add(EventBuilder.createGroupEvent(group_id));
         eventList.add(EventBuilder.updateGroupTitleEvent(group_id));
-        eventList.add(EventBuilder.updateGroupDescriptionEvent());
+        eventList.add(EventBuilder.updateGroupDescriptionEvent(group_id));
+
+        eventList.addAll(EventBuilder.addUserEvents(membercount, group_id));
+
+        return eventList;
     }
 
     public static CreateGroupEvent createGroupEvent(long group_id) {
@@ -26,9 +43,10 @@ public class EventBuilder {
 
         return new CreateGroupEvent(
                 group_id,
-                faker.random().nextLong(),
                 faker.random().hex(),
-
+                null,
+                GroupType.SIMPLE,
+                Visibility.PRIVATE
         );
     }
 
