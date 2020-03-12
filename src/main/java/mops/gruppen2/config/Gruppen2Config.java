@@ -17,10 +17,4 @@ public class Gruppen2Config {
     GroupService groupService;
     @Autowired
     EventService eventService;
-
-    @Bean
-    public List<Group> groups() throws EventException {
-        return groupService.projectEventList(eventService.findAllEvents());
-    }
-
 }
