@@ -55,9 +55,11 @@ public class EventService {
 
 
     public List<Event> getNewEvents(Long status){
-        Iterable<EventDTO> eventDTOS = eventStore.findNewEventSinceStatus(status);
+        Iterable<EventDTO> newEventDTOS = eventStore.findNewEventSinceStatus(status);
+        List<Long> groupIdsThatChanged = this.getAllGroupIds(newEventDTOS);
 
-        return translateEventDTOs(eventDTOS);
+        Iterable<EventDTO> groupEventDTOS = eventStore.findAllEventsOfGroups(groupIdsThatChanged);
+        return translateEventDTOs(groupEventDTOS);
     }
 
     private List<Event> translateEventDTOs(Iterable<EventDTO> eventDTOS){
@@ -72,6 +74,17 @@ public class EventService {
             }
         }
         return events;
+    }
+
+    private List<Long> getAllGroupIds(Iterable<EventDTO> eventDTOS){
+        List<Long> idsOfChangedGroups = new ArrayList<>();
+        for (EventDTO eventDTO : eventDTOS){
+            if (!idsOfChangedGroups.contains(eventDTO.getGroup_id())) {
+                idsOfChangedGroups.add(eventDTO.getGroup_id());
+
+            }
+        }
+        return idsOfChangedGroups;
     }
 
 }
