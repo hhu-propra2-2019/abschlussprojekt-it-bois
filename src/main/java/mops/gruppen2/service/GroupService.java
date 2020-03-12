@@ -32,7 +32,7 @@ public class GroupService {
         for (Long group_id: group_ids) {
             eventDTOS.addAll(eventRepository.findEventDTOByGroup_id(group_id));
         }
-        return null;
+        return events = eventService.translateEventDTOs(eventDTOS);
     }
 
     public List<Group> projectEventList(Map<Long, Group> groupMap, List<Event> events) throws EventException {

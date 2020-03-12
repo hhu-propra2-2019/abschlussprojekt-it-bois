@@ -60,7 +60,7 @@ public class EventService {
         return translateEventDTOs(eventDTOS);
     }
 
-    private List<Event> translateEventDTOs(Iterable<EventDTO> eventDTOS){
+    public List<Event> translateEventDTOs(Iterable<EventDTO> eventDTOS){
         List<Event> events = new ArrayList<>();
 
         for (EventDTO eventDTO : eventDTOS) {

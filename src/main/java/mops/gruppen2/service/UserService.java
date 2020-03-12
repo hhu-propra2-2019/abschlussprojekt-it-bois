@@ -1,25 +1,27 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.EventDTO;
+import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
 
     final EventRepository eventRepository;
+    final GroupService groupService;
 
-    public UserService(EventRepository eventRepository) {
+    public UserService(EventRepository eventRepository, GroupService groupService) {
         this.eventRepository = eventRepository;
+        this.groupService = groupService;
     }
 
-    public List<Long> getUserGroups(Long user_id) {
+    public List<Group> getUserGroups(Long user_id) throws EventException {
         List<Long> group_ids = eventRepository.findGroup_idsWhereUser_id(user_id);
-
-        return null;
+        List<Event> events =  groupService.getGroupEvents(group_ids);
+        return groupService.projectEventList(events);
     }
 }
