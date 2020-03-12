@@ -39,11 +39,19 @@ public class APIController {
 
     @GetMapping("/updatedGroups/{status}")
     @ApiOperation(value = "Gibt alle Gruppen zurück in denen sich etwas geändert hat")
-    public UpdatedGroupRequestMapper updateGroup(@ApiParam("Status des Anfragestellers")  @PathVariable Long status) throws EventException, JsonProcessingException {
+    public UpdatedGroupRequestMapper updateGroup(@ApiParam("Status des Anfragestellers")  @PathVariable Long status) throws EventException {
         List<Event> events = eventService.getNewEvents(status);
         UpdatedGroupRequestMapper updatedGroupRequestMapper = APIFormatter.wrapp(eventService.getMaxEvent_id(), groupService.projectEventList(events));
 
         return updatedGroupRequestMapper;
+    }
+
+    @GetMapping("/getGroups/{teilnehme}")
+    @ApiOperation(value = "Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
+    public List<Long> getGroupsOfUser(@ApiParam("Der Teilnehmer")  @PathVariable String userId) throws EventException {
+        List<Long> asd = new ArrayList<>();
+
+        return asd;
     }
 
 
