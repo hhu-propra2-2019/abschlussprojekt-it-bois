@@ -1,0 +1,9 @@
+= Tag 8
+
+== APIController
+
+Wir haben einen Controller für die Anfragen der anderen Gruppen geschrieben. Die Anfrage enthält den
+aktuellen Status der Gruppe und liefert als JSON Objekt den neuen Status und die Liste mit den Gruppen
+die sich geändert haben.
+Zzusätlich gibt es eine Wrapperklasse, um die Objekte die wir herausgeben mit der anderen Gruppenbildung-Gruppe
+anzugleichen.
