@@ -7,6 +7,8 @@ import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
+import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
+import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.EventService;
 import mops.gruppen2.service.GroupService;
@@ -81,9 +83,12 @@ public class Gruppen2Controller {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), null ,GroupType.LECTURE, Visibility.PUBLIC);
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
-
+        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(eventService.checkGroup(), account.getName(), title);
+        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(eventService.checkGroup(), account.getName(), beschreibung);
         eventService.saveEvent(createGroupEvent);
         eventService.saveEvent(addUserEvent);
+        eventService.saveEvent(updateGroupDescriptionEvent);
+        eventService.saveEvent(updateGroupTitleEvent);
 
         return "redirect:/";
     }
