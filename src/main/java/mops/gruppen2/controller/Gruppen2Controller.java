@@ -81,6 +81,7 @@ public class Gruppen2Controller {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), null ,GroupType.LECTURE, Visibility.PUBLIC);
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
+
         eventService.saveEvent(createGroupEvent);
         eventService.saveEvent(addUserEvent);
 
