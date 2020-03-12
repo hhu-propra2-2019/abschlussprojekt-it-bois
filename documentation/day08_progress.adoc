@@ -16,6 +16,9 @@ Zusätlich gibt es eine Wrapperklasse, um die Objekte die wir herausgeben mit de
 
 == Dokumentation
 
-Wir haben heute fünf Punkte von Arc42 bearbeitet, da wir jetzt wissen wie unser Projekt genau aussehen soll.
-Außerdem haben wir für eine bessere Lesbarkeit angefangen Kommentare an die Funktionen zu setzen.
+Wir haben heute fünf Punkte von Arc42 bearbeitet, da wir jetzt wissen, wie unser Projekt genau aussehen soll.
+Außerdem haben wir für eine bessere Lesbarkeit angefangen, den Funktionen Kommentare hinzuzufügen.
 
+== Frontend
+Wir heute wurde die Funktionalität des Erstellens von Gruppen und der Anzeige der eigenen Gruppen hergestellt. Das Template funktioniert nun korrekt mit dem Code.
+Außerdem haben wir das Styling der 3 bestehenden HTML-Templates verbessert und mit der Anwendung abgestimmt.
