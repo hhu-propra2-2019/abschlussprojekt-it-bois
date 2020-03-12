@@ -90,7 +90,7 @@ public class Gruppen2Controller {
         eventService.saveEvent(updateGroupDescriptionEvent);
         eventService.saveEvent(updateGroupTitleEvent);
 
-        return "redirect:/";
+        return "redirect:/gruppen2";
     }
 
 }
