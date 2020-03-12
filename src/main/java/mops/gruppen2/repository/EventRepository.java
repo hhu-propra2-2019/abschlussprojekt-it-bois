@@ -1,6 +1,7 @@
 package mops.gruppen2.repository;
 
 import mops.gruppen2.domain.EventDTO;
+import mops.gruppen2.domain.event.Event;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +16,6 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
     @Query("select * where group_id =:id")
     List<EventDTO> findEventDTOByGroup_id(@Param("id") Long group_id);
+    @Query("SELECT * FROM event WHERE event_id > ?#{[0]}")
+    public Iterable<EventDTO> findNewEventSinceStatus(@Param("status") Long status);
 }

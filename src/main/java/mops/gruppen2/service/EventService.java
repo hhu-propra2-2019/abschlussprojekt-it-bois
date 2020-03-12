@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import mops.gruppen2.domain.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -52,16 +53,24 @@ public class EventService {
         return tmpId;
     }
 
-    public List<Event> findAllEvents() {
-        Iterable<EventDTO> eventDTOS =  eventStore.findAll();
+
+    public List<Event> getNewEvents(Long status){
+        Iterable<EventDTO> eventDTOS = eventStore.findNewEventSinceStatus(status);
+
+        return translateEventDTOs(eventDTOS);
+    }
+
+    private List<Event> translateEventDTOs(Iterable<EventDTO> eventDTOS){
         List<Event> events = new ArrayList<>();
-        eventDTOS.forEach(eventDTO -> {
+
+        for (EventDTO eventDTO : eventDTOS) {
             try {
                 events.add(serializationService.deserializeEvent(eventDTO.getEvent_payload()));
-            } catch (JsonProcessingException e) {
+
+            }catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-        });
+        }
         return events;
     }
 
