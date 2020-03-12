@@ -67,5 +67,4 @@ class GroupServiceTest {
 
         assertThat(groupService.projectEventList(eventList).get(0)).isInstanceOf(Group.class);
     }
-
 }
