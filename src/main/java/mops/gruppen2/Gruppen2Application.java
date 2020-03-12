@@ -1,5 +1,11 @@
 package mops.gruppen2;
 
+import lombok.Setter;
+import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.Group;
+import mops.gruppen2.service.EventService;
+import mops.gruppen2.service.GroupService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +18,12 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
+import java.util.List;
 
 @SpringBootApplication
 @EnableSwagger2
 public class Gruppen2Application {
+
     public static void main(String[] args) {
         SpringApplication.run(Gruppen2Application.class, args);
     }

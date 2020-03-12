@@ -19,15 +19,20 @@ public class Group extends Aggregate {
     private final List<User> members;
     private final Map<User, Role> roles;
 
+    private GroupType type;
+    private Visibility visibility;
+    private Long parent;
+
     public Group() {
         this.members = new ArrayList<>();
         this.roles = new HashMap<>();
     }
 
     private void applyEvent(CreateGroupEvent event) {
-        title = event.getGroupTitle();
-        description = event.getGroupDescription();
         id = event.getGroup_id();
+        visibility = event.getGroupVisibility();
+        parent = event.getGroupParent();
+        type = event.getGroupType();
     }
 
     private void applyEvent(UpdateRoleEvent event) throws UserNotFoundException {
@@ -43,7 +48,7 @@ public class Group extends Aggregate {
             throw new UserNotFoundException("Nutzer wurde nicht gefunden!");
         }
 
-        if (roles.containsKey(user) && event.getNewRole() == Role.STUDENT) {
+        if (roles.containsKey(user) && event.getNewRole() == Role.MEMBER) {
             roles.remove(user);
         } else {
             roles.put(user, event.getNewRole());

@@ -34,6 +34,6 @@ public class ServiceTest {
     @ArchTest
     public static final ArchRule serviceClassesShouldOnlyBeAccessedByControllerOrServiceClasses = classes()
             .that().resideInAPackage("..service..")
-            .should().onlyBeAccessed().byAnyPackage("..controller..", "..service..");
+            .should().onlyBeAccessed().byAnyPackage("..controller..", "..service..", "..config..");
 
 }

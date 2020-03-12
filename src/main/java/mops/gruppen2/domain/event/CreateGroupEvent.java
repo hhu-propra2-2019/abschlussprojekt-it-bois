@@ -3,22 +3,21 @@ package mops.gruppen2.domain.event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Visibility;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateGroupEvent extends Event {
-    String groupTitle;
-    String groupDescription;
+    private Visibility groupVisibility;
+    private Long groupParent;
+    private GroupType groupType;
 
-    public CreateGroupEvent(long event_id, Long group_id, String user_id, String groupTitle, String groupDescription) {
-        super(event_id, group_id, user_id);
-        this.groupTitle = groupTitle;
-        this.groupDescription = groupDescription;
-    }
-    public CreateGroupEvent(Long group_id, String user_id, String groupTitle, String groupDescription) {
+    public CreateGroupEvent(Long group_id, String user_id, Long parent, GroupType type, Visibility visibility) {
         super(group_id, user_id);
-        this.groupTitle = groupTitle;
-        this.groupDescription = groupDescription;
+        this.groupParent = parent;
+        this.groupType = type;
+        this.groupVisibility = visibility;
     }
 }
