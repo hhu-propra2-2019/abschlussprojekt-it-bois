@@ -53,7 +53,7 @@ class GroupServiceTest {
 
         eventList.add(new CreateGroupEvent(1L, "Prof", null, GroupType.LECTURE, Visibility.PRIVATE));
 
-        eventList.add(new DeleteGroupEvent(44, 10, "loescher78"));
+        eventList.add(new DeleteGroupEvent(44, 1L, "loescher78"));
 
         List<Group> list = new ArrayList<>();
 
@@ -66,7 +66,7 @@ class GroupServiceTest {
 
         eventList.add(new CreateGroupEvent(1L, "Prof", null, GroupType.LECTURE, Visibility.PRIVATE));
 
-        eventList.add(new AddUserEvent(900L, 10L, "Ulli", "Ulli", "Honnis", "FC@B.de"));
+        eventList.add(new AddUserEvent(900L, 1L, "Ulli", "Ulli", "Honnis", "FC@B.de"));
 
         assertThat(groupService.projectEventList(eventList).get(0)).isInstanceOf(Group.class);
     }
