@@ -1,8 +1,6 @@
 package mops.gruppen2.controller;
 
-import mops.gruppen2.Gruppen2Application;
-import mops.gruppen2.Gruppen2Config;
-import mops.gruppen2.domain.Group;
+import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.AddUserEvent;
@@ -18,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import javax.swing.*;
 
 @Controller
 @RequestMapping("/gruppen2")

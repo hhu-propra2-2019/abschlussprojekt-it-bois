@@ -1,4 +1,4 @@
-package mops.gruppen2;
+package mops.gruppen2.config;
 
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
