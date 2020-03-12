@@ -10,9 +10,12 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends CrudRepository<EventDTO, Long> {
-    @Query("SELECT * FROM event WHERE event_id > @status")
+    @Query("SELECT * FROM event WHERE event_id > :status")
     public Iterable<EventDTO> findNewEventSinceStatus(@Param("status") Long status);
 
-    @Query("SELECT * FROM event WHERE group_id IN @groupIds ")
+    @Query("SELECT * FROM event WHERE group_id IN (:groupIds) ")
     public Iterable<EventDTO> findAllEventsOfGroups(@Param("groupIds") List<Long> groupIds);
+
+    @Query("SELECT MAX(event_id) FROM event")
+    public Long getHighesEvent_ID();
 }

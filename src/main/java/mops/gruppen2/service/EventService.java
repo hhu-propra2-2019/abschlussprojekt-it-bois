@@ -87,4 +87,8 @@ public class EventService {
         return idsOfChangedGroups;
     }
 
+    public Long getMaxEvent_id(){
+        return eventStore.getHighesEvent_ID();
+    }
+
 }
