@@ -1,0 +1,12 @@
+= Tag 9
+
+== API Controller
+
+Den API Controller haben wir voerst fertiggestellt. Alle Anfragen die wir bisher bearbeiten wollen,
+werden nun auch bearbeitet.
+
+== EventService Tests
+
+In Zusammenhang mit dem API Controller haben wir ein paar Tests für den Eventservice erstellt, da
+auch hier  einige neue Methoden hinzugefügt wurden und sich der Controller selbst nur schwer testen
+lässt.
