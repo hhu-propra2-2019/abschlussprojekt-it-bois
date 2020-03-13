@@ -83,4 +83,11 @@ public class Gruppen2Controller {
         return "redirect:/gruppen2/";
     }
 
+    @GetMapping("/details")
+    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @RequestParam (value="group_id") Long group_id) throws EventException {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        model.addAttribute("group", userService.getGroupById(group_id));
+        return "details";
+    }
+
 }
