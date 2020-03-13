@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Getter
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = UpdateGroupTitleEvent.class, name = "UpdateGroupTitleEvent"),
         @JsonSubTypes.Type(value = UpdateRoleEvent.class, name = "UpdateRoleEvent"),
 })
+@Setter
 public class Event {
     Long event_id;
     Long group_id;
