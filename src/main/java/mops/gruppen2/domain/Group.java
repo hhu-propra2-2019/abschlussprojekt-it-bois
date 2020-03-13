@@ -17,7 +17,7 @@ public class Group extends Aggregate {
     private String title;
     private String description;
     private final List<User> members;
-    private final Map<User, Role> roles;
+    private final Map<String, Role> roles;
 
     private GroupType type;
     private Visibility visibility;
@@ -51,7 +51,7 @@ public class Group extends Aggregate {
         if (roles.containsKey(user) && event.getNewRole() == Role.MEMBER) {
             roles.remove(user);
         } else {
-            roles.put(user, event.getNewRole());
+            roles.put(user.getUser_id(), event.getNewRole());
         }
     }
 
