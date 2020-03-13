@@ -3,13 +3,8 @@ package mops.gruppen2.controller;
 import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
-import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.event.AddUserEvent;
-import mops.gruppen2.domain.event.CreateGroupEvent;
-import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
-import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -21,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/gruppen2")
@@ -91,9 +87,13 @@ public class Gruppen2Controller {
     public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @RequestParam (value="id") Long id) throws EventException, ResponseStatusException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(id);
+        Account account = keyCloakService.createAccountFromPrincipal (token);
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        Role role = group.getRoles().get(user);
         if(group!= null) {
             model.addAttribute("group", group);
-            return "details";
+            model.addAttribute("role",role);
+            return "detailsMember";
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
     }

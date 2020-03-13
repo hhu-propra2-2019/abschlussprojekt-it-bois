@@ -29,22 +29,24 @@
         <form action="/" method="get">
         <div style="border: 10px solid aliceblue; background: aliceblue">
             <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
-            <p style="font-weight: bold">
-                <a href="url" th:text></a>,
-                <a></a>
+            <!--
+            <p style="font-weight: bold" th:switch="${group.getVisibility()}">
+                <a th:case="${group.getVisibility().PRIVATE}">Private Gruppe</a>
+                <a th:case="${group.getVisibility().PUBLIC}">Öffentliche Gruppe</a>
             </p>
             <p th:text="${group.getDescription()}"></p>
             <div class="form-group">
-                <div>
-                <button class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Beitreten</button>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-warning">Mitglieder bearbeiten</button>
-                </div>
-                <div>
-                <button type="button" class="btn btn-danger">Gruppe verlassen</button>
+                <div th:switch="${role.name()}">
+                    <div th:case="'ADMIN'">
+                        <button class="btn btn-primary" type="warning">Gruppenmitglieder bearbeiten</button>
+                        <button class="btn btn-primary" type="danger" style="background: #52a1eb; border-style: none">Gruppe verlassen</button>
+                    </div>
+                    <div th:case="'MEMBER'">
+                        <button class="btn btn-primary" type="danger" style="background: #52a1eb; border-style: none">Gruppe verlassen</button>
+                    </div>
                 </div>
             </div>
+            <-->
         </div>
         </form>
     </div>
