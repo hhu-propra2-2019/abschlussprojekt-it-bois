@@ -31,28 +31,28 @@
         <form method="post" action="/gruppen2/createGroup">
             <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
                 <div class="form-group">
-                    <label for="titel">Name der Gruppe</label>
+                    <label for="titel">Titel</label>
                     <input type="text" class="form-control" id="titel" th:name="title" required>
                 </div>
                 <div class="form-group">
-                    <label for="beschreibung">Beschreibung der Gruppe</label>
+                    <label for="beschreibung">Beschreibung</label>
                     <textarea th:name="beschreibung" class="form-control" id="beschreibung" rows="3" required></textarea>
                 </div>
-                <div class="checkbox p-2 mb-2">
+                <div class="checkbox p-2">
                     <label for="visibility"></label>
                     <input type="checkbox" id="visibility" > Privat
                     <label for="groupType" class="pr-5"></label>
                     <input type="checkbox" id="groupType"> Veranstaltung
                 </div>
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                        Zugehörige Veranstaltung wählen
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Link 1</a>
-                        <a class="dropdown-item" href="#">Link 2</a>
-                        <a class="dropdown-item" href="#">Link 3</a>
-                    </div>
+                <div class="form-group">
+                    <label for="sel1"></label>
+                    <select class="form-control" id="sel1">
+                        <option selected="true" disabled>--Bitte Veranstaltung auswählen--</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
                 </div>
                 <div class="form-group pt-4">
                     <button class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Erstellen</button>
