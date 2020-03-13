@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <title>Name des Subsystems</title>
@@ -37,15 +38,23 @@
                     <label for="beschreibung">Beschreibung der Gruppe</label>
                     <textarea th:name="beschreibung" class="form-control" id="beschreibung" rows="3" required></textarea>
                 </div>
-                <div class="btn-group btn-group-toggle pb-2" data-toggle="buttons">
-                    <label class="btn btn-primary">
-                        <input type="radio" name="options" id="option1" autocomplete="off"> Öffentlich
-                    </label>
-                    <label class="btn btn-primary">
-                        <input type="radio" name="options" id="option2" autocomplete="off"> Privat
-                    </label>
+                <div class="checkbox p-2 mb-2">
+                    <label for="visibility"></label>
+                    <input type="checkbox" id="visibility" > Privat
+                    <label for="groupType" class="pr-5"></label>
+                    <input type="checkbox" id="groupType"> Veranstaltung
                 </div>
-                <div class="form-group">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        Zugehörige Veranstaltung wählen
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Link 1</a>
+                        <a class="dropdown-item" href="#">Link 2</a>
+                        <a class="dropdown-item" href="#">Link 3</a>
+                    </div>
+                </div>
+                <div class="form-group pt-4">
                     <button class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Erstellen</button>
                 </div>
             </div>
