@@ -115,7 +115,7 @@ class GroupTest {
 
         // Assert
         assertThat(group.getRoles())
-                .containsOnlyKeys(group.getMembers().get(0))
+                .containsOnlyKeys(group.getMembers().get(0).getUser_id())
                 .containsValue(Role.ADMIN);
     }
 
