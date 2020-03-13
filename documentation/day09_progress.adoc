@@ -14,3 +14,7 @@ werden nun auch bearbeitet.
 In Zusammenhang mit dem API Controller haben wir ein paar Tests für den Eventservice erstellt, da
 auch hier  einige neue Methoden hinzugefügt wurden und sich der Controller selbst nur schwer testen
 lässt.
+
+== DB und Backend
+
+Heute haben wir uns darum gekümmert der Datenbank die Spalte visibility hinzuzufügen, damit wir schneller nach öffenlichen und privaten Gruppen suchen können. Ebenfalls haben wir die Suche nach öffentlichen Gruppen implementiert.
