@@ -32,7 +32,7 @@ public class Gruppen2Application {
     public Docket productAPI() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .paths(PathSelectors.ant("/gruppen2/**"))
+                .paths(PathSelectors.ant("/gruppen2/api/**"))
                 .apis(RequestHandlerSelectors.basePackage("mops.gruppen2"))
                 .build()
                 .apiInfo(apiMetadata());

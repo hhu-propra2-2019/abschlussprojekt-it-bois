@@ -19,7 +19,7 @@ import java.util.List;
  * Ein Beispiel für eine API mit Swagger.
  */
 @RestController
-@RequestMapping("/gruppen2")
+@RequestMapping("/gruppen2/api")
 public class APIController {
 
     private final SerializationService serializationService;
@@ -34,7 +34,7 @@ public class APIController {
 
     @GetMapping("/updateGroups/{status}")
     @ApiOperation(value = "Gibt alle Gruppen zurück in denen sich etwas geändert hat")
-    public UpdatedGroupRequestMapper updateGroup(@ApiParam("Status des Anfragestellers")  @PathVariable Long status) throws EventException {
+    public UpdatedGroupRequestMapper updateGroup(@ApiParam("Letzter Status des Anfragestellers")  @PathVariable Long status) throws EventException {
         List<Event> events = eventService.getNewEvents(status);
         UpdatedGroupRequestMapper updatedGroupRequestMapper = APIFormatterService.wrapp(eventService.getMaxEvent_id(), groupService.projectEventList(events));
 
@@ -43,13 +43,13 @@ public class APIController {
 
     @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
     @ApiOperation(value = "Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
-    public List<Long> getGroupsOfUser(@ApiParam("Der Teilnehmer")  @PathVariable String teilnehmer) throws EventException {
+    public List<Long> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen")  @PathVariable String teilnehmer) throws EventException {
         return eventService.getGroupsOfUser(teilnehmer);
     }
 
     @GetMapping("/getGroup/{groupId}")
-    @ApiOperation(value = "Gibt alle die Gruppe mit der als Parameter mitgegebenden groupId zurück")
-    public Group getGroupFromId(@ApiParam("Die GruppenId der gefordeten Gruppe") @PathVariable Long groupId) throws EventException{
+    @ApiOperation(value = "Gibt die Gruppe mit der als Parameter mitgegebenden groupId zurück")
+    public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable Long groupId) throws EventException{
         List<Event> eventList = eventService.getEventsOfGroup(groupId);
 
         List<Group> groups = groupService.projectEventList(eventList);
