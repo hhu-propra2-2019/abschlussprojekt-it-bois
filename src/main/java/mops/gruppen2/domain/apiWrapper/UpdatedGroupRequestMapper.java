@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class  UpdatedGroupRequestMapper {
+public class UpdatedGroupRequestMapper {
     private Long status;
     private List<Group> groupList;
 }
