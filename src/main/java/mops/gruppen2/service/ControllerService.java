@@ -33,7 +33,8 @@ public class ControllerService {
                 new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()),
                 new UpdateRoleEvent(eventService.checkGroup(), account.getName(), Role.ADMIN),
                 new UpdateGroupTitleEvent(eventService.checkGroup(), account.getName(), title),
-                new UpdateGroupDescriptionEvent(eventService.checkGroup(), account.getName(), description));
+                new UpdateGroupDescriptionEvent(eventService.checkGroup(), account.getName(), description),
+                new UpdateRoleEvent(eventService.checkGroup(),account.getName(), Role.ADMIN));
 
         eventService.saveEventList(eventList);
     }
