@@ -1,0 +1,5 @@
+= Tag 9
+
+== Frontend
+Wir haben das Styling des Formulars zur Gruppenerstellung verbessert und die fehlenden Optionen zum Teil hinzugefügt.
+Außerdem haben wir eine Anzeige für die Details einer Gruppe erschaffen, die auch mit dem Programm funktioniert, und das Styling der Seite angepasst. Wir haben uns entschieden, getrennte HTML-Files zu erstellen: Eins für den Link von der Liste der eigenen Gruppen aus und eins für den Link über die Suche, in der der User kein Mitglied ist, damit ihm im letzteren Fall die Optionen, die ein Mitglied hätte, unzugänglich sind.
