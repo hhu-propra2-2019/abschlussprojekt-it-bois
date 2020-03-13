@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Name des Subsystems</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+            </li>
+            <li  class="active">
+                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
+            </li>
+            <li>
+                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <form action="/" method="get">
+        <div style="border: 10px solid aliceblue; background: aliceblue">
+            <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
+            <p style="font-weight: bold">
+                <a href="url" th:text></a>,
+                <a></a>
+            </p>
+            <p th:text="${group.getDescription()}"></p>
+            <div class="form-group">
+                <div>
+                <button class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Beitreten</button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-warning">Mitglieder bearbeiten</button>
+                </div>
+                <div>
+                <button type="button" class="btn btn-danger">Gruppe verlassen</button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
