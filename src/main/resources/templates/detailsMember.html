@@ -12,10 +12,10 @@
 <header>
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
-            <li>
+            <li class="active">
                 <a th:href="@{/gruppen2}" href="/">Gruppen</a>
             </li>
-            <li  class="active">
+            <li>
                 <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
             </li>
             <li>
@@ -29,24 +29,22 @@
         <form action="/" method="get">
         <div style="border: 10px solid aliceblue; background: aliceblue">
             <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
-            <!--
-            <p style="font-weight: bold" th:switch="${group.getVisibility()}">
-                <a th:case="${group.getVisibility().PRIVATE}">Private Gruppe</a>
-                <a th:case="${group.getVisibility().PUBLIC}">Öffentliche Gruppe</a>
+            <p style="font-weight: bold">
+                <a th:if="${group.getVisibility() == group.getVisibility().PUBLIC }">Private Gruppe</a>
+                <a th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">Öffentliche Gruppe</a>
             </p>
             <p th:text="${group.getDescription()}"></p>
             <div class="form-group">
-                <div th:switch="${role.name()}">
-                    <div th:case="'ADMIN'">
+                <div >
+                    <div th:if="${role == role.ADMIN}">
                         <button class="btn btn-primary" type="warning">Gruppenmitglieder bearbeiten</button>
                         <button class="btn btn-primary" type="danger" style="background: #52a1eb; border-style: none">Gruppe verlassen</button>
                     </div>
-                    <div th:case="'MEMBER'">
+                    <div th:if="${role == role.MEMBER}">
                         <button class="btn btn-primary" type="danger" style="background: #52a1eb; border-style: none">Gruppe verlassen</button>
                     </div>
                 </div>
             </div>
-            <-->
         </div>
         </form>
     </div>

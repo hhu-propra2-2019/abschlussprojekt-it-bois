@@ -1,6 +1,7 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.*;
 import mops.gruppen2.security.Account;
@@ -20,10 +21,12 @@ public class ControllerService {
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
         UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(eventService.checkGroup(), account.getName(), title);
         UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(eventService.checkGroup(), account.getName(), beschreibung);
+        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(eventService.checkGroup(),account.getName(), Role.ADMIN);
 
         eventService.saveEvent(createGroupEvent);
         eventService.saveEvent(addUserEvent);
         eventService.saveEvent(updateGroupTitleEvent);
         eventService.saveEvent(updateGroupDescriptionEvent);
+        eventService.saveEvent(updateRoleEvent);
     }
 }
