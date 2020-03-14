@@ -26,27 +26,39 @@
 </header>
 <main th:fragment="bodycontent">
     <div class="container-fluid">
-        <form action="/" method="get">
-        <div style="border: 10px solid aliceblue; background: aliceblue">
-            <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
-            <p style="font-weight: bold">
-                <a th:if="${group.getVisibility() == group.getVisibility().PUBLIC }">Private Gruppe</a>
-                <a th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">Öffentliche Gruppe</a>
-            </p>
-            <p th:text="${group.getDescription()}"></p>
-            <div class="form-group">
-                <div >
-                    <div th:if="${role == role.ADMIN}">
-                        <button class="btn btn-primary" type="warning">Gruppenmitglieder bearbeiten</button>
-                        <button class="btn btn-primary" type="danger" style="background: #52a1eb; border-style: none">Gruppe verlassen</button>
+        <div class="row">
+            <div class="col-9" style="border: 10px solid aliceblue; background: aliceblue">
+                <form action="/" method="get">
+                    <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
+                    <p style="font-weight: bold">
+                        <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if="${group.getVisibility() == group.getVisibility().PUBLIC }">Private Gruppe</span>
+                        <span class="badge badge-pill badge-primary" th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">Öffentliche Gruppe</span>
+                        <span class="badge badge-pill badge-success" style="background: lightseagreen" th:if="${group.getType() == group.getType().LECTURE}"> Veranstaltung</span>
+                    </p>
+                    <p th:text="${group.getDescription()}"></p>
+                    <div class="form-group">
+                        <div class="text-right">
+                            <button class="btn btn-danger" type="danger" style="border-style: none;">Gruppe verlassen</button>
+                        </div>
                     </div>
-                    <div th:if="${role == role.MEMBER}">
-                        <button class="btn btn-primary" type="danger" style="background: #52a1eb; border-style: none">Gruppe verlassen</button>
-                    </div>
+                </form>
+            </div>
+            <div class="col-3" style="white-space: nowrap">
+                <div>
+                    <h2 style="display: inline-block; margin: 0">Mitglieder</h2>
+                    <button class="btn btn-secondary" type="warning" style="background: slategrey; float: right" >Mitglieder bearbeiten</button>
+                    <p></p>
+                </div>
+                <div>
+                    <ul th:each="member : ${group.getMembers()}" class="list-group-flush" style="background: slategrey">
+                        <li  class="list-group-item" style="background: aliceblue">
+                                <span th:text="${member.getUser_id()}"></span>
+                                <span th:if="${role == role.ADMIN}" class="badge badge-success">admin</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-        </form>
     </div>
 </main>
 </body>
