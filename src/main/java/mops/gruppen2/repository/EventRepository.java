@@ -29,5 +29,5 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
     public List<EventDTO> findAllEventsOfGroups(@Param("groupIds") List<Long> groupIds);
 
     @Query("SELECT MAX(event_id) FROM event")
-     public Long getHighesEvent_ID();
+    public Long getHighesEvent_ID();
 }
