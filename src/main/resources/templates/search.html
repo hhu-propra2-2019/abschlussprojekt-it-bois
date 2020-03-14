@@ -29,11 +29,11 @@
         <div class="row">
             <h1>Gruppensuche</h1>
                 <div class="container-fluid">
-                    <form action="/gruppen2/findGroup" method="post">
+                    <form action="/gruppen2/findGroup" method="get">
                         <div style="border: 10px solid aliceblue; background: aliceblue">
                             <div class="form-group">
-                                <label>Suchbegriff:</label>
-                                <input class="form-control" placeholder="z.B. Programmieren, Lerngruppe, ..." th:name="suchbegriff" type="text">
+                                <label for="suchleiste">Suchbegriff:</label>
+                                <input id="suchleiste" class="form-control" placeholder="z.B. Programmieren, Lerngruppe, ..." th:name="suchbegriff" type="text">
                             </div>
                             <button type="submit" class="btn btn-primary" style="background: #52a1eb; border-style: none">Suchen</button>
                         </div>
@@ -41,7 +41,7 @@
                     <br>
                     <table class="table">
                         <!-- Erscheint dann, wenn man "Suchen" Button klickt und Ergebnisse angezeigt werden, aber so solls aussehen -->
-                        <thead>
+                        <thead th:if="${!gruppen.isEmpty()}">
                         <tr>
                             <th scope="col">Gruppenname</th>
                             <th scope="col">Beschreibung</th>
