@@ -54,6 +54,7 @@ public class Gruppen2Controller {
 
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", userService.getUserGroups(user.getUser_id()));
+        model.addAttribute("user",user);
         return "index";
     }
 

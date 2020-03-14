@@ -43,15 +43,18 @@
                 </form>
             </div>
             <div class="col-3">
+                <h2 style="display: inline-block">Mitglieder</h2>
+                <a style="float: right" th:if="${role == role.ADMIN}">
+                    <button class="btn btn-secondary" type="warning" style="background: slategrey; align-self: end" >Mitglieder bearbeiten</button>
+                </a>
+                <p></p>
                 <ul th:each="member : ${group.getMembers()}" class="list-group-flush" style="background: slategrey">
                     <li  class="list-group-item" style="background: aliceblue">
                             <span th:text="${member.getUser_id()}"></span>
                             <span th:if="${role == role.ADMIN}" class="badge badge-success">admin</span>
                     </li>
                 </ul>
-                <div class="text-right" th:if="${role == role.ADMIN}">
-                    <button class="btn btn-secondary" type="warning" style="background: slategrey" >Gruppenmitglieder bearbeiten</button>
-                </div>
+
             </div>
         </div>
     </div>
