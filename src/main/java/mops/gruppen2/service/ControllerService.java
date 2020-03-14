@@ -27,10 +27,15 @@ public class ControllerService {
      * @param title Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description) {
-
+    public void createGroup(Account account, String title, String description, Boolean visibility) {
+        Visibility visibility1;
+        if (visibility){
+            visibility1 = Visibility.PUBLIC;
+        }else{
+            visibility1 = Visibility.PRIVATE;
+        }
         List<Event> eventList = new ArrayList<>();
-        Collections.addAll(eventList, new CreateGroupEvent(eventService.checkGroup(), account.getName(), null , GroupType.LECTURE, Visibility.PUBLIC),
+        Collections.addAll(eventList, new CreateGroupEvent(eventService.checkGroup(), account.getName(), null , GroupType.LECTURE, visibility1),
                 new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()),
                 new UpdateRoleEvent(eventService.checkGroup(), account.getName(), Role.ADMIN),
                 new UpdateGroupTitleEvent(eventService.checkGroup(), account.getName(), title),

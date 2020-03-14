@@ -25,19 +25,35 @@
         </nav>
 </header>
 <main th:fragment="bodycontent">
-    <h1>Meine Gruppen</h1>
     <div class="container-fluid">
-        <form action="/" method="get">
-            <div th:each="gruppe: ${gruppen}">
-                <div style="border: 10px solid aliceblue; background: aliceblue">
-                    <h3>
-                        <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" style="color: dodgerblue; font-weight: bold" th:text="${gruppe.getTitle()}"></a>
-                    </h3>
-                    <p th:text="${gruppe.getDescription()}"></p>
-                </div>
-                <br>
+        <div class="row" >
+            <div class="col-9">
+                <h1>Meine Gruppen</h1>
+                <form action="/" method="get">
+                    <div th:each="gruppe: ${gruppen}">
+                        <div style="border: 10px solid aliceblue; background: aliceblue">
+                            <h3>
+                                <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" style="color: dodgerblue; font-weight: bold" th:text="${gruppe.getTitle()}"></a>
+                            </h3>
+                            <p th:text="${gruppe.getDescription()}"></p>
+                        </div>
+                        <br>
+                    </div>
+                </form>
             </div>
-        </form>
+            <div class="col-3" >
+                <div class="container-fluid" style="background: aliceblue">
+                    <div>
+                        <h2 th:text="${user.getUser_id()}" style="text-align: center">user_id</h2>
+                        <h3>
+                            <span th:text="${user.getGivenname()}">username</span>
+                            <span th:text="${user.getFamilyname()}">usersurname</span>
+                        </h3>
+                        <small th:text="${user.getEmail()}">usermail</small>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 </body>
