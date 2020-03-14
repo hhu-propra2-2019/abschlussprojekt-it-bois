@@ -2,6 +2,7 @@ package mops.gruppen2.controller;
 
 import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
@@ -18,6 +19,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/gruppen2")
@@ -31,6 +34,7 @@ public class Gruppen2Controller {
     private final GroupService groupService;
     private final UserService userService;
     private final ControllerService controllerService;
+    private List<Group> groups = new ArrayList<>();
 
     public Gruppen2Controller(KeyCloakService keyCloakService, EventService eventService, GroupService groupService, UserService userService, ControllerService controllerService) {
         this.keyCloakService = keyCloakService;
@@ -69,7 +73,16 @@ public class Gruppen2Controller {
     @GetMapping("/findGroup")
     public String findGroup(KeycloakAuthenticationToken token, Model model) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        model.addAttribute("gruppen",groups);
         return "search";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @PostMapping("/findGroup")
+    public String searchGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "suchbegriff") String suchbegriff) throws EventException {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        groups = groupService.findGroupWith(suchbegriff);
+        return "redirect:/gruppen2/findGroup";
     }
 
     @PostMapping("/createGroup")
