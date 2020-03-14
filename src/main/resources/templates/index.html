@@ -27,7 +27,7 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div class="row" >
-            <div class="col-9">
+            <div class="col-10">
                 <h1>Meine Gruppen</h1>
                 <form action="/" method="get">
                     <div th:each="gruppe: ${gruppen}">
@@ -41,15 +41,19 @@
                     </div>
                 </form>
             </div>
-            <div class="col-3" >
-                <div class="container-fluid" style="background: aliceblue">
-                    <div>
-                        <h2 th:text="${user.getUser_id()}" style="text-align: center">user_id</h2>
-                        <h3>
+            <div class="col-2" >
+                <div class="card" style="background: lightgrey">
+                    <div class="card-body">
+                        <h2 class="card-title" th:text="${user.getUser_id()}" style="text-align: center">user_id</h2>
+                        <h3 class="card-text">
                             <span th:text="${user.getGivenname()}">username</span>
                             <span th:text="${user.getFamilyname()}">usersurname</span>
                         </h3>
-                        <small th:text="${user.getEmail()}">usermail</small>
+                        <p class="card-text" th:text="${user.getEmail()}">usermail</p>
+                        <p>
+                            <small class="card-text">In Gruppen:</small>
+                            <small   class="card-text" th:text="${gruppen.size()}"></small>
+                        </p>
                     </div>
                 </div>
             </div>
