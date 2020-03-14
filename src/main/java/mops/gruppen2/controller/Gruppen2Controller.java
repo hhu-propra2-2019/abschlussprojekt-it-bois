@@ -74,7 +74,8 @@ public class Gruppen2Controller {
     @PostMapping("/createGroup")
     public String pCreateGroup(KeycloakAuthenticationToken token,
                                @RequestParam(value = "title") String title,
-                               @RequestParam(value = "beschreibung") String beschreibung) {
+                               @RequestParam(value = "beschreibung") String beschreibung,
+                               @RequestParam(value = "visibility", required = false) Boolean visibility) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         controllerService.createGroup(account, title, beschreibung);
@@ -89,10 +90,9 @@ public class Gruppen2Controller {
         Group group = userService.getGroupById(id);
         Account account = keyCloakService.createAccountFromPrincipal (token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        Role role = group.getRoles().get(user);
         if(group!= null) {
             model.addAttribute("group", group);
-            model.addAttribute("role",role);
+            model.addAttribute("role", group.getRoles().get(user.getUser_id()));
             return "detailsMember";
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");

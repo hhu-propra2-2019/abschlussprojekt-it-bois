@@ -38,11 +38,9 @@
                     <label for="beschreibung">Beschreibung</label>
                     <textarea th:name="beschreibung" class="form-control" id="beschreibung" rows="3" required></textarea>
                 </div>
-                <div class="checkbox p-2">
-                    <label for="visibility"></label>
-                    <input type="checkbox" id="visibility" > Privat
-                    <label for="groupType" class="pr-5"></label>
-                    <input type="checkbox" id="groupType"> Veranstaltung
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="visibility" class="custom-control-input" th:name="visibility">
+                    <label class="custom-control-label" for="visibility">Private Gruppe</label>
                 </div>
                 <div class="form-group">
                     <label for="sel1"></label>
