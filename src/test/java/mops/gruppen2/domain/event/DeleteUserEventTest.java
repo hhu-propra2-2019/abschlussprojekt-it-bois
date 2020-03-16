@@ -28,6 +28,8 @@ class DeleteUserEventTest {
 
         event.apply(group);
 
+        assertThat(group.getMembers().size()).isEqualTo(1);
         assertThat(group.getRoles().size()).isEqualTo(1);
+
     }
 }

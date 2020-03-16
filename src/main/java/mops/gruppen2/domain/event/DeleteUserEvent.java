@@ -14,14 +14,11 @@ public class DeleteUserEvent extends Event {
         super(group_id, user_id);
     }
 
-    public DeleteUserEvent() {
-    }
-
     public void apply(Group group) {
         for (User user : group.getMembers()) {
             if (user.getUser_id().equals(this.user_id)) {
-                group.members.remove(user);
-                group.getRoles().remove(user_id);
+                group.getMembers().remove(user);
+                group.getRoles().remove(user.getUser_id());
                 return;
             }
         }
