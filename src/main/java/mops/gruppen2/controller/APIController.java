@@ -11,6 +11,7 @@ import mops.gruppen2.service.APIFormatterService;
 import mops.gruppen2.service.EventService;
 import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.SerializationService;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class APIController {
     }
 
     @GetMapping("/updateGroups/{status}")
+    @Secured("ROLE_api_user")
     @ApiOperation(value = "Gibt alle Gruppen zurück in denen sich etwas geändert hat")
     public UpdatedGroupRequestMapper updateGroup(@ApiParam("Letzter Status des Anfragestellers")  @PathVariable Long status) throws EventException {
         List<Event> events = eventService.getNewEvents(status);
@@ -42,12 +44,14 @@ public class APIController {
     }
 
     @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
+    @Secured("ROLE_api_user")
     @ApiOperation(value = "Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
     public List<Long> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen")  @PathVariable String teilnehmer) throws EventException {
         return eventService.getGroupsOfUser(teilnehmer);
     }
 
     @GetMapping("/getGroup/{groupId}")
+    @Secured("ROLE_api_user")
     @ApiOperation(value = "Gibt die Gruppe mit der als Parameter mitgegebenden groupId zurück")
     public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable Long groupId) throws EventException{
         List<Event> eventList = eventService.getEventsOfGroup(groupId);
