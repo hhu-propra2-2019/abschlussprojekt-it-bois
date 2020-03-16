@@ -9,6 +9,7 @@ import mops.gruppen2.domain.apiWrapper.UpdatedGroupRequestMapper;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.service.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,5 +59,10 @@ public class APIController {
     @PostMapping(value = "/uploadcsv", consumes = "text/csv")
     public void uploadCsv(@RequestBody InputStream body) throws IOException {
         System.out.println(CsvService.read(body));
+    }
+
+    @PostMapping(value = "/uploadcsv", consumes = "multipart/form-data")
+    public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
+        System.out.println(CsvService.read(file.getInputStream()));
     }
 }
