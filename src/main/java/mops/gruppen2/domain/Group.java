@@ -1,7 +1,9 @@
 package mops.gruppen2.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import mops.gruppen2.domain.Exceptions.UserAlreadyExistsException;
 import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.event.*;
@@ -13,7 +15,10 @@ import java.util.*;
  */
 @EqualsAndHashCode(callSuper = false)
 @Getter
-public class Group extends Aggregate {
+@Setter
+@AllArgsConstructor
+public class Group {
+    private long id;
     private String title;
     private String description;
     private final List<User> members;
@@ -26,13 +31,6 @@ public class Group extends Aggregate {
     public Group() {
         this.members = new ArrayList<>();
         this.roles = new HashMap<>();
-    }
-
-    private void applyEvent(CreateGroupEvent event) {
-        id = event.getGroup_id();
-        visibility = event.getGroupVisibility();
-        parent = event.getGroupParent();
-        type = event.getGroupType();
     }
 
     private void applyEvent(UpdateRoleEvent event) throws UserNotFoundException {

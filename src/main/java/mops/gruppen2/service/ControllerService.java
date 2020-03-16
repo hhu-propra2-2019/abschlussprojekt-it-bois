@@ -35,13 +35,11 @@ public class ControllerService {
             visibility1 = Visibility.PRIVATE;
         }
         List<Event> eventList = new ArrayList<>();
-        Collections.addAll(eventList, new CreateGroupEvent(eventService.checkGroup(), account.getName(), null , GroupType.LECTURE, visibility1),
-                new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()),
-                new UpdateRoleEvent(eventService.checkGroup(), account.getName(), Role.ADMIN),
-                new UpdateGroupTitleEvent(eventService.checkGroup(), account.getName(), title),
-                new UpdateGroupDescriptionEvent(eventService.checkGroup(), account.getName(), description),
-                new UpdateRoleEvent(eventService.checkGroup(),account.getName(), Role.ADMIN));
-
+        Group group = new Group();
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), null , GroupType.LECTURE, visibility1);
+        createGroupEvent.apply(group);
+        eventList.add(createGroupEvent);
+        System.out.println(group.getId() + "" + group.getVisibility().toString());;
         eventService.saveEventList(eventList);
     }
 

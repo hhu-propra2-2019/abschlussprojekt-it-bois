@@ -49,7 +49,7 @@ public class GroupService {
         Map<Long, Group> groupMap = new HashMap<>();
 
         for (Event event : events) {
-            getOrCreateGroup(groupMap, event.getGroup_id()).applyEvent(event);
+            //getOrCreateGroup(groupMap, event.getGroup_id()).applyEvent(event);
         }
 
         return new ArrayList<>(groupMap.values());
