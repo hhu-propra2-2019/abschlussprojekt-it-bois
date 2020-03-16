@@ -81,6 +81,7 @@ public class Gruppen2Controller {
         return "search";
     }
 
+
     @PostMapping("/createGroup")
     public String pCreateGroup(KeycloakAuthenticationToken token,
                                @RequestParam(value = "title") String title,
