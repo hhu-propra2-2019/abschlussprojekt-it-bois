@@ -43,14 +43,6 @@ public class Group {
         }
     }
 
-    private void applyEvent(UpdateGroupTitleEvent event) {
-        this.title = event.getNewGroupTitle();
-    }
-
-    private void applyEvent(UpdateGroupDescriptionEvent event) {
-        this.description = event.getNewGroupDescription();
-    }
-
     private void applyEvent(DeleteUserEvent event) throws UserNotFoundException {
         User user = new User(event.getUser_id(), "", "", "");
 
