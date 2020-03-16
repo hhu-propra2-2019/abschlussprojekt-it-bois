@@ -33,26 +33,6 @@ public class Group {
         this.roles = new HashMap<>();
     }
 
-    private void applyEvent(UpdateRoleEvent event) throws UserNotFoundException {
-        User user;
-
-        Optional<User> userOptional = members.stream()
-                .filter(u -> u.getUser_id().equals(event.getUser_id()))
-                .findFirst();
-
-        if (userOptional.isPresent()) {
-            user = userOptional.get();
-        } else {
-            throw new UserNotFoundException("Nutzer wurde nicht gefunden!");
-        }
-
-        if (roles.containsKey(user) && event.getNewRole() == Role.MEMBER) {
-            roles.remove(user);
-        } else {
-            roles.put(user.getUser_id(), event.getNewRole());
-        }
-    }
-
     private void applyEvent(AddUserEvent event) throws UserAlreadyExistsException {
         User user = new User(event.getUser_id(), event.getGivenname(), event.getFamilyname(), event.getEmail());
 
