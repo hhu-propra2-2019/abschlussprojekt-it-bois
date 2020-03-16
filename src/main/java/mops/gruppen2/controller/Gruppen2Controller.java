@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
@@ -27,6 +28,8 @@ public class Gruppen2Controller {
 
     @Autowired
     Gruppen2Config gruppen2Config;
+    @Autowired
+    RestTemplate serviceAccountRestTemplate;
 
     private final KeyCloakService keyCloakService;
     private final EventService eventService;
