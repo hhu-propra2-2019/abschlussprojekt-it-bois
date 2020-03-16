@@ -71,6 +71,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'mysql:mysql-connector-java'
 
 	testImplementation 'org.assertj:assertj-core:3.15.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

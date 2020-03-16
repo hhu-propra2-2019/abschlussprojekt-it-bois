@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Eigene Gruppen</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
     </th:block>
@@ -25,19 +25,39 @@
         </nav>
 </header>
 <main th:fragment="bodycontent">
-    <h1>Meine Gruppen</h1>
     <div class="container-fluid">
-        <form action="/" method="get">
-            <div th:each="gruppe: ${gruppen}">
-                <div style="border: 10px solid aliceblue; background: aliceblue">
-                    <h3>
-                        <a href="url" style="color: dodgerblue; font-weight: bold" th:text="${gruppe.getTitle()}"></a>
-                    </h3>
-                    <p th:text="${gruppe.getDescription()}"></p>
-                </div>
-                <br>
+        <div class="row" >
+            <div class="col-10">
+                <h1>Meine Gruppen</h1>
+                <form action="/" method="get">
+                    <div th:each="gruppe: ${gruppen}">
+                        <div style="border: 10px solid aliceblue; background: aliceblue">
+                            <h3>
+                                <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" style="color: dodgerblue; font-weight: bold" th:text="${gruppe.getTitle()}"></a>
+                            </h3>
+                            <p th:text="${gruppe.getDescription()}"></p>
+                        </div>
+                        <br>
+                    </div>
+                </form>
             </div>
-        </form>
+            <div class="col-2" >
+                <div class="card" style="background: lightgrey">
+                    <div class="card-body">
+                        <h2 class="card-title" th:text="${user.getUser_id()}" style="text-align: center">user_id</h2>
+                        <h3 class="card-text">
+                            <span th:text="${user.getGivenname()}">username</span>
+                            <span th:text="${user.getFamilyname()}">usersurname</span>
+                        </h3>
+                        <p class="card-text" th:text="${user.getEmail()}">usermail</p>
+                        <p>
+                            <small class="card-text">In Gruppen:</small>
+                            <small   class="card-text" th:text="${gruppen.size()}"></small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 </body>

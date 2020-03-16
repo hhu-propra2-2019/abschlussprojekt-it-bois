@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Gruppenerstellung</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
     </th:block>
@@ -28,16 +29,30 @@
     <h1>Gruppenerstellung</h1>
     <div class="container-fluid">
         <form method="post" action="/gruppen2/createGroup">
-            <div style="border: 10px solid aliceblue; background: aliceblue">
+            <div class="shadow p-2" style=" border: 10px solid aliceblue; background: aliceblue">
                 <div class="form-group">
-                    <label for="titel">Name der Gruppe</label>
-                    <input type="text" class="form-control" id="titel" th:name="title">
+                    <label for="titel">Titel</label>
+                    <input type="text" class="form-control" id="titel" th:name="title" required>
                 </div>
                 <div class="form-group">
-                    <label for="beschreibung">Beschreibung der Gruppe</label>
-                    <textarea th:name="beschreibung" class="form-control" id="beschreibung" rows="3"></textarea>
+                    <label for="beschreibung">Beschreibung</label>
+                    <textarea th:name="beschreibung" class="form-control" id="beschreibung" rows="3" required></textarea>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="visibility" class="custom-control-input" th:name="visibility">
+                    <label class="custom-control-label" for="visibility">Private Gruppe</label>
                 </div>
                 <div class="form-group">
+                    <label for="sel1"></label>
+                    <select class="form-control" id="sel1">
+                        <option selected="true" disabled>--Bitte Veranstaltung auswählen--</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </div>
+                <div class="form-group pt-4">
                     <button class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Erstellen</button>
                 </div>
             </div>

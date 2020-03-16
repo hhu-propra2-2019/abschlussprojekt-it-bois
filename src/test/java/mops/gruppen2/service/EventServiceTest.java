@@ -6,6 +6,10 @@ import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.domain.event.Event;
+import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.event.AddUserEvent;
+import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -105,4 +109,19 @@ class EventServiceTest {
 
         assertEquals(eventService.checkGroup(), 1);
     }
+
+    @Test
+    void getDTOOffentlichTest(){
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "test", null , GroupType.LECTURE, Visibility.PUBLIC);
+        EventDTO eventDTO = eventService.getDTO(createGroupEvent);
+        assertEquals(eventDTO.isVisibility(), true);
+    }
+
+    @Test
+    void getDTOPrivatTest(){
+        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), "test","franz","mueller","a@a");
+        EventDTO eventDTO = eventService.getDTO(addUserEvent);
+        assertEquals(eventDTO.isVisibility(), false);
+    }
+
 }

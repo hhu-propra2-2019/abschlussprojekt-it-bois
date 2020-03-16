@@ -30,6 +30,7 @@ public class Event {
     Long group_id;
     String user_id;
 
+
     public Event(Long group_id,String user_id){
         this.group_id = group_id;
         this.user_id = user_id;

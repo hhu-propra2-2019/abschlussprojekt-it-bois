@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Suche</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
     </th:block>
@@ -29,19 +29,19 @@
         <div class="row">
             <h1>Gruppensuche</h1>
                 <div class="container-fluid">
-                    <form action="/findGroup" method="get">
+                    <form action="/gruppen2/findGroup" method="get">
                         <div style="border: 10px solid aliceblue; background: aliceblue">
                             <div class="form-group">
-                                <label>Suchbegriff:</label>
-                                <input class="form-control" type="text" value="" name="suchbegriff" placeholder="z.B. Programmieren, Lerngruppe, ...">
+                                <label for="suchleiste">Suchbegriff:</label>
+                                <input id="suchleiste" class="form-control" placeholder="z.B. Programmieren, Lerngruppe, ..." th:name="suchbegriff" type="text">
                             </div>
-                            <button type="button" class="btn btn-primary" style="background: #52a1eb; border-style: none">Suchen</button>
+                            <button type="submit" class="btn btn-primary" style="background: #52a1eb; border-style: none">Suchen</button>
                         </div>
                     </form>
                     <br>
                     <table class="table">
                         <!-- Erscheint dann, wenn man "Suchen" Button klickt und Ergebnisse angezeigt werden, aber so solls aussehen -->
-                        <thead>
+                        <thead th:if="${!gruppen.isEmpty()}">
                         <tr>
                             <th scope="col">Gruppenname</th>
                             <th scope="col">Beschreibung</th>
@@ -49,18 +49,12 @@
                             <th scope="col">Mitgliederanzahl</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody th:each="gruppe : ${gruppen}">
                         <tr>
-                            <th scope="row">LA1 Kursgruppe</th>
-                            <td>Gruppe für den Kurs LA1</td>
-                            <td>Öffentlich</td>
-                            <td>318</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Lerngruppe LA1</th>
-                            <td>Lerngruppe zur Bearbeitung von Übungszetteln</td>
-                            <td>Privat</td>
-                            <td>6</td>
+                            <th scope="row" th:text="${gruppe.title}">Gruppenname</th>
+                            <td th:text="${gruppe.getDescription()}">Beschreibung</td>
+                            <td th:text="${gruppe.getVisibility()}">Öffentlich</td>
+                            <td th:text="${gruppe.getMembers().size()}">Mitgliederanzahl</td>
                         </tr>
                         </tbody>
                     </table>

@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  dbmysql:
+    image: mysql:5.7
+    container_name: 'dbmysql'
+    environment:
+      MYSQL_DATABASE: 'gruppen2'
+      MYSQL_USER: 'root'
+      MYSQL_ROOT_PASSWORD: 'geheim'
+    restart: always
+    volumes:
+      - './mysql/db/storage:/var/lib/mysql'
+    ports:
+      - '3306:3306'
+  gruppen2app:
+    build: .
+    container_name: 'gruppen2app'
+    depends_on:
+      - dbmysql
+    ports:
+      - '8081:8080'
