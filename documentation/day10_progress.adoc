@@ -1,4 +1,8 @@
 = Tag 10
 
+== Frontend
+Heute haben wir eine Error-Seite erstellt, die aber noch nicht error.html heißt, damit noch die normale Error-Seite mit dem Log angezeigt wird. Die Seite wird umbenannt, sobald das Frontend in Kombination mit dem Backend funktioniert.
+Außerdem haben wir die Detailseite überarbeitet, auf die man weitergeleitet wird, wenn man von der Suche aus kommt. Die Seite zeigt nun die richtigen Informationen an. Die benötigten Methoden haben wir in den Controller geschrieben.
+
 == Keycloak
 Änderungen an Keycloakanbindung -> APIController abgesichert
