@@ -26,7 +26,6 @@ import lombok.Setter;
 })
 @Setter
 public class Event {
-    Long event_id;
     Long group_id;
     String user_id;
 

@@ -7,8 +7,8 @@ import lombok.Value;
 @Value
 public class DeleteGroupEvent extends Event {
 
-    public DeleteGroupEvent(long event_id, long group_id, String user_id) {
-        super(event_id, group_id, user_id);
+    public DeleteGroupEvent(long group_id, String user_id) {
+        super(group_id, user_id);
     }
 
 }
