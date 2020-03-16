@@ -42,20 +42,22 @@
                     <table class="table">
                         <!-- Erscheint dann, wenn man "Suchen" Button klickt und Ergebnisse angezeigt werden, aber so solls aussehen -->
                         <thead th:if="${!gruppen.isEmpty()}">
-                        <tr>
-                            <th scope="col">Gruppenname</th>
-                            <th scope="col">Beschreibung</th>
-                            <th scope="col">Öffentlich/Privat</th>
-                            <th scope="col">Mitgliederanzahl</th>
-                        </tr>
+                            <tr>
+                                <th scope="col">Gruppenname</th>
+                                <th scope="col">Beschreibung</th>
+                                <th scope="col">Öffentlich/Privat</th>
+                                <th scope="col">Mitgliederanzahl</th>
+                            </tr>
                         </thead>
                         <tbody th:each="gruppe : ${gruppen}">
-                        <tr>
-                            <th scope="row" th:text="${gruppe.title}">Gruppenname</th>
-                            <td th:text="${gruppe.getDescription()}">Beschreibung</td>
-                            <td th:text="${gruppe.getVisibility()}">Öffentlich</td>
-                            <td th:text="${gruppe.getMembers().size()}">Mitgliederanzahl</td>
-                        </tr>
+                            <tr>
+                                <th scope="row">
+                                    <a th:href="@{/gruppen2/detailsSearch(id=${gruppe.getId()})}"  th:text="${gruppe.title}">Gruppenname</a>
+                                </th>
+                                <td th:text="${gruppe.getDescription()}">Beschreibung</td>
+                                <td th:text="${gruppe.getVisibility()}">Öffentlich</td>
+                                <td th:text="${gruppe.getMembers().size()}">Mitgliederanzahl</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
