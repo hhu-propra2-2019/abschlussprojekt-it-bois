@@ -87,7 +87,11 @@ public class Gruppen2Controller {
                                @RequestParam(value = "visibility", required = false) Boolean visibility) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        if (visibility == null) visibility=false;
+        if (visibility == null) {
+            visibility = true;
+        }else{
+            visibility = false;
+        }
         controllerService.createGroup(account, title, beschreibung, visibility);
 
         return "redirect:/gruppen2/";

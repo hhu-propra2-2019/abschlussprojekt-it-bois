@@ -77,7 +77,7 @@ public class GroupService {
      * @throws EventException
      */
     public List<Group> getAllGroupWithVisibilityPublic() throws EventException {
-        return projectEventList(eventService.translateEventDTOs(eventRepository.findEventDTOByVisibility(Boolean.FALSE)));
+        return projectEventList(eventService.translateEventDTOs(eventRepository.findEventDTOByVisibility(Boolean.TRUE)));
     }
 
 
