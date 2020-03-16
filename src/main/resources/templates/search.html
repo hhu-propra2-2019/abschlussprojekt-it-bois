@@ -27,38 +27,38 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div class="row">
-            <h1>Gruppensuche</h1>
-                <div class="container-fluid">
-                    <form action="/gruppen2/findGroup" method="get">
-                        <div style="border: 10px solid aliceblue; background: aliceblue">
-                            <div class="form-group">
-                                <label for="suchleiste">Suchbegriff:</label>
-                                <input id="suchleiste" class="form-control" placeholder="z.B. Programmieren, Lerngruppe, ..." th:name="suchbegriff" type="text">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="background: #52a1eb; border-style: none">Suchen</button>
+            <div class="col-10">
+                <h1>Gruppensuche</h1>
+                <form action="/gruppen2/findGroup" method="get">
+                    <div class="shadow" style="border: 10px solid aliceblue; background: aliceblue">
+                        <div class="form-group">
+                            <label for="suchleiste">Suchbegriff:</label>
+                            <input id="suchleiste" class="form-control" placeholder="z.B. Programmieren, Lerngruppe, ..." th:name="suchbegriff" type="text">
                         </div>
-                    </form>
-                    <br>
-                    <table class="table">
-                        <!-- Erscheint dann, wenn man "Suchen" Button klickt und Ergebnisse angezeigt werden, aber so solls aussehen -->
-                        <thead th:if="${!gruppen.isEmpty()}">
-                        <tr>
-                            <th scope="col">Gruppenname</th>
-                            <th scope="col">Beschreibung</th>
-                            <th scope="col">Öffentlich/Privat</th>
-                            <th scope="col">Mitgliederanzahl</th>
-                        </tr>
-                        </thead>
-                        <tbody th:each="gruppe : ${gruppen}">
-                        <tr>
-                            <th scope="row" th:text="${gruppe.title}">Gruppenname</th>
-                            <td th:text="${gruppe.getDescription()}">Beschreibung</td>
-                            <td th:text="${gruppe.getVisibility()}">Öffentlich</td>
-                            <td th:text="${gruppe.getMembers().size()}">Mitgliederanzahl</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        <button type="submit" class="btn btn-primary" style="background: #52a1eb; border-style: none">Suchen</button>
+                    </div>
+                </form>
+                <br>
+                <table class="table">
+                    <!-- Erscheint dann, wenn man "Suchen" Button klickt und Ergebnisse angezeigt werden, aber so solls aussehen -->
+                    <thead th:if="${!gruppen.isEmpty()}">
+                    <tr>
+                        <th scope="col">Gruppenname</th>
+                        <th scope="col">Beschreibung</th>
+                        <th scope="col">Öffentlich/Privat</th>
+                        <th scope="col">Mitgliederanzahl</th>
+                    </tr>
+                    </thead>
+                    <tbody th:each="gruppe : ${gruppen}">
+                    <tr>
+                        <th scope="row" th:text="${gruppe.title}">Gruppenname</th>
+                        <td th:text="${gruppe.getDescription()}">Beschreibung</td>
+                        <td th:text="${gruppe.getVisibility()}">Öffentlich</td>
+                        <td th:text="${gruppe.getMembers().size()}">Mitgliederanzahl</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </main>
