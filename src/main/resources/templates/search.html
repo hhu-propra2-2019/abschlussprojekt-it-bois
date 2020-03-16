@@ -27,15 +27,13 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div class="row">
-            <h1>Gruppensuche</h1>
-                <div class="container-fluid">
-                    <form action="/gruppen2/findGroup" method="get">
-                        <div style="border: 10px solid aliceblue; background: aliceblue">
-                            <div class="form-group">
-                                <label for="suchleiste">Suchbegriff:</label>
-                                <input id="suchleiste" class="form-control" placeholder="z.B. Programmieren, Lerngruppe, ..." th:name="suchbegriff" type="text">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="background: #52a1eb; border-style: none">Suchen</button>
+            <div class="col-10">
+                <h1>Gruppensuche</h1>
+                <form action="/gruppen2/findGroup" method="get">
+                    <div class="shadow" style="border: 10px solid aliceblue; background: aliceblue">
+                        <div class="form-group">
+                            <label for="suchleiste">Suchbegriff:</label>
+                            <input id="suchleiste" class="form-control" placeholder="z.B. Programmieren, Lerngruppe, ..." th:name="suchbegriff" type="text">
                         </div>
                     </form>
                     <br>
@@ -61,6 +59,7 @@
                         </tbody>
                     </table>
                 </div>
+
         </div>
     </div>
 </main>

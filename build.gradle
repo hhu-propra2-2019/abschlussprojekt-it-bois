@@ -79,6 +79,7 @@ dependencies {
 	}
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.1'
+    implementation 'junit:junit:4.12'
 }
 
 test {
