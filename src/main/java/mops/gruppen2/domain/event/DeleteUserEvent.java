@@ -21,7 +21,7 @@ public class DeleteUserEvent extends Event {
         for (User user : group.getMembers()) {
             if (user.getUser_id().equals(this.user_id)) {
                 group.members.remove(user);
-                group.getRoles().remove(user);
+                group.getRoles().remove(user_id);
                 return;
             }
         }

@@ -25,22 +25,7 @@ public class UpdateRoleEvent extends Event {
     }
 
     public void apply(Group group) {
-        User user = new User(user_id, null, null, null);
-
-        Optional<User> userOptional = group.getMembers().stream()
-                .filter(u -> u.getUser_id().equals(user_id))
-                .findFirst();
-
-        if (userOptional.isPresent()) {
-            user = userOptional.get();
-        } else {
-        }
-
-        if (group.getRoles().containsKey(user) && newRole == Role.MEMBER) {
-            group.getRoles().remove(user);
-        } else {
-            group.getRoles().put(user.getUser_id(), newRole);
-        }
+        group.getRoles().put(this.user_id, this.newRole);
     }
 
 }
