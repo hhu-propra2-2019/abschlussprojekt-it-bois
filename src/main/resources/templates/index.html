@@ -26,12 +26,12 @@
 </header>
 <main th:fragment="bodycontent">
     <div class="container-fluid">
-        <div class="row" >
+        <div class="row">
             <div class="col-10">
                 <h1>Meine Gruppen</h1>
                 <form action="/" method="get">
                     <div th:each="gruppe: ${gruppen}">
-                        <div style="border: 10px solid aliceblue; background: aliceblue">
+                        <div class="shadow" style="border: 10px solid aliceblue; background: aliceblue">
                             <h3>
                                 <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" style="color: dodgerblue; font-weight: bold" th:text="${gruppe.getTitle()}"></a>
                             </h3>
@@ -41,7 +41,7 @@
                     </div>
                 </form>
             </div>
-            <div class="col-2" >
+            <div class="col-2">
                 <div class="card" style="background: lightgrey">
                     <div class="card-body">
                         <h2 class="card-title" th:text="${user.getUser_id()}" style="text-align: center">user_id</h2>
