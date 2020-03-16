@@ -33,7 +33,6 @@ public class Gruppen2Controller {
     private final GroupService groupService;
     private final UserService userService;
     private final ControllerService controllerService;
-    private List<Group> groups = new ArrayList<>();
 
     public Gruppen2Controller(KeyCloakService keyCloakService, EventService eventService, GroupService groupService, UserService userService, ControllerService controllerService) {
         this.keyCloakService = keyCloakService;
@@ -58,6 +57,7 @@ public class Gruppen2Controller {
 
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", userService.getUserGroups(user.getUser_id()));
+        model.addAttribute("user",user);
         return "index";
     }
 
@@ -83,10 +83,16 @@ public class Gruppen2Controller {
     @PostMapping("/createGroup")
     public String pCreateGroup(KeycloakAuthenticationToken token,
                                @RequestParam(value = "title") String title,
-                               @RequestParam(value = "beschreibung") String beschreibung) {
+                               @RequestParam(value = "beschreibung") String beschreibung,
+                               @RequestParam(value = "visibility", required = false) Boolean visibility) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        controllerService.createGroup(account, title, beschreibung);
+        if (visibility == null) {
+            visibility = true;
+        }else{
+            visibility = false;
+        }
+        controllerService.createGroup(account, title, beschreibung, visibility);
 
         return "redirect:/gruppen2/";
     }
@@ -100,7 +106,7 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         if(group!= null) {
             model.addAttribute("group", group);
-            model.addAttribute("role",group.getRoles().get(user.getUser_id()));
+            model.addAttribute("role", group.getRoles().get(user.getUser_id()));
             return "detailsMember";
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
