@@ -111,4 +111,16 @@ public class Gruppen2Controller {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
     }
 
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @GetMapping("/detailsSearch")
+    public String showGroupDetailsNoMember (KeycloakAuthenticationToken token, Model model, @RequestParam (value="id") Long id) throws EventException {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        Group group = userService.getGroupById(id);
+        if (group!=null) {
+            model.addAttribute("group", group);
+            return "detailsNoMember";
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
+    }
+
 }
