@@ -24,7 +24,8 @@ public class AddUserEvent extends Event {
         this.email = email;
     }
 
-    public void apply(Group group, User user) {
+    public void apply(Group group) {
+        User user = new User(this.user_id, this.givenname, this.familyname, this.email);
         group.getMembers().add(user);
     }
 }

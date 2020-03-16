@@ -23,7 +23,7 @@ class SerializationServiceTest {
 
     @Test
     void serializeEventTest() throws JsonProcessingException {
-        Event event =  new Event(1L,1L,"1");
+        Event event =  new Event(1L,"1");
 
         assertThat(serializationService.serializeEvent(event)).isEqualTo("{\"type\":\"Event\",\"event_id\":1,\"group_id\":1,\"user_id\":\"1\"}");
     }
@@ -66,7 +66,7 @@ class SerializationServiceTest {
 
     @Test
     void deserializeUpdateRoleEventToRightClass() throws JsonProcessingException {
-	    System.out.println(serializationService.serializeEvent(new UpdateRoleEvent(1L, 1L, "1", Role.ADMIN)));
+	    System.out.println(serializationService.serializeEvent(new UpdateRoleEvent(1L, "1", Role.ADMIN)));
 
 	    String json = "{\"type\":\"UpdateRoleEvent\",\"event_id\":1,\"group_id\":1,\"user_id\":1,\"newRole\":\"ADMIN\"}";
 

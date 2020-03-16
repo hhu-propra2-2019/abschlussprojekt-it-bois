@@ -43,8 +43,8 @@ public class ControllerService {
         eventService.saveEventList(eventList);
     }
 
-    public void addUser(Account account, Group group){
+    /*public void addUser(Account account, Group group){
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(),group.getId(),account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
         eventService.saveEvent(addUserEvent);
-    }
+    }*/
 }

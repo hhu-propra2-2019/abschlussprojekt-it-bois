@@ -21,7 +21,7 @@ public class Group {
     private long id;
     private String title;
     private String description;
-    private final List<User> members;
+    public List<User> members;
     private final Map<String, Role> roles;
 
     private GroupType type;
