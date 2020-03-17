@@ -29,36 +29,40 @@ public class ControllerService {
      */
     public void createGroup(Account account, String title, String description, Boolean visibility) {
         Visibility visibility1;
+        Long group_id = eventService.checkGroup();
+
         if (visibility){
             visibility1 = Visibility.PUBLIC;
         }else{
             visibility1 = Visibility.PRIVATE;
         }
-        List<Event> eventList = new ArrayList<>();
-        Group group = new Group();
-        //Erstellen der Events
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), null , GroupType.LECTURE, visibility1);
-        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(),account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
-        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(eventService.checkGroup(),account.getName(),title);
-        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(eventService.checkGroup(),account.getName(),description);
-        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(eventService.checkGroup(),account.getName(),Role.ADMIN);
-        //Gruppe erzeugen aber eigentlich unnötig?
-        createGroupEvent.apply(group);
-        addUserEvent.apply(group);
-        updateGroupTitleEvent.apply(group);
-        updateGroupDescriptionEvent.apply(group);
-        updateRoleEvent.apply(group);
-        //Speichern in DB
-        eventList.add(createGroupEvent);
-        eventList.add(addUserEvent);
-        eventList.add(updateGroupTitleEvent);
-        eventList.add(updateGroupDescriptionEvent);
-        eventList.add(updateRoleEvent);
-        eventService.saveEventList(eventList);
+
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.LECTURE, visibility1);
+        eventService.saveEvent(createGroupEvent);
+
+        addUser(account, group_id);
+        updateTitle(account, group_id, title);
+        updateDescription(account, group_id, description);
+        updateRole(account, group_id);
     }
 
-    /*public void addUser(Account account, Group group){
-        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(),group.getId(),account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
+    public void addUser(Account account, Long group_id){
+        AddUserEvent addUserEvent = new AddUserEvent(group_id,account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
         eventService.saveEvent(addUserEvent);
-    }*/
+    }
+
+    public void updateTitle(Account account, Long group_id, String title){
+        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(group_id,account.getName(),title);
+        eventService.saveEvent(updateGroupTitleEvent);
+    }
+
+    public void updateDescription(Account account, Long group_id, String description){
+        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(group_id,account.getName(),description);
+        eventService.saveEvent(updateGroupDescriptionEvent);
+    }
+
+    public void updateRole(Account account,Long group_id){
+        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(group_id,account.getName(),Role.ADMIN);
+        eventService.saveEvent(updateRoleEvent);
+    }
 }
