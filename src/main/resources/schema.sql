@@ -10,3 +10,11 @@ CREATE TABLE event
     event_payload VARCHAR(255),
     visibility BOOLEAN
 );
+
+DROP TABLE IF EXISTS invite;
+
+CREATE TABLE invite
+(
+    group_id INT FOREIGN KEY REFERENCES event(group_id),
+    invite_link varchar(255)
+)
