@@ -1,1 +1,4 @@
 = Tag 11
+
+== Frontend
+Heute haben wir eine Seite zum Bearbeiten der Mitglieder eine Gruppe mit den entsprechenden Controllern geschrieben. Außerdem haben wir das Styling aller Seiten vereinheitlicht.
