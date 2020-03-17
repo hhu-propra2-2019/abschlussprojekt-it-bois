@@ -7,6 +7,7 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.event.CreateGroupEvent;
+import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -88,12 +89,12 @@ public class Gruppen2Controller {
     public String pCreateGroup(KeycloakAuthenticationToken token,
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung,
-                               @RequestParam(value = "visibility", required = false) Boolean visibility) {
+                               @RequestParam(value = "visibility", required = false) Boolean visibility) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         if (visibility == null) {
             visibility = true;
-        }else{
+        } else {
             visibility = false;
         }
         controllerService.createGroup(account, title, beschreibung, visibility);
@@ -132,7 +133,8 @@ public class Gruppen2Controller {
     @PostMapping("/leaveGroup")
     public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        controllerService.deleteUser(account, id);
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        controllerService.deleteUser(user, id);
         return "redirect:/gruppen2/";
     }
 
@@ -148,6 +150,14 @@ public class Gruppen2Controller {
         } else {
             return "redirect:/details/";
         }
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @PostMapping("/changeRole")
+    public String changeRole(KeycloakAuthenticationToken token, @RequestParam (value = "group_id") Long id, 
+                             @RequestParam (value = "user") User user) throws EventException {
+        controllerService.updateRole(user, id);
+        return "redirect:/details/members/";
     }
 
 }
