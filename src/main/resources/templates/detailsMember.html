@@ -50,7 +50,7 @@
                 <div>
                     <h2 style="display: inline-block; margin: 0">Mitglieder</h2>
                         <form method="get" action="/gruppen2/details/members">
-                            <button th:name="group_id" th:value="${group.getId()}" th:if="${roles.get(user.getUser_id() == admin)}" class="btn btn-secondary" type="submit" style="background: slategrey; float: right" >Mitglieder bearbeiten</button>
+                            <button th:name="group_id"  th:if="${userrole == admin}" class="btn btn-secondary" type="submit" style="background: slategrey; float: right" >Mitglieder bearbeiten</button>
                         </form>
                     <p></p>
                 </div>
@@ -58,7 +58,7 @@
                     <ul th:each="member : ${group.getMembers()}" class="list-group-flush" style="background: slategrey">
                         <li  class="list-group-item" style="background: aliceblue">
                             <span th:text="${member.getUser_id()}"></span>
-                            <span th:if="${roles.get(member.getUser_id()) == admin}" class="badge badge-success">admin</span>
+                            <span th:if="${group.getRoles().get(member.getUser_id()) == admin}" class="badge badge-success">admin</span>
                         </li>
                     </ul>
                 </div>

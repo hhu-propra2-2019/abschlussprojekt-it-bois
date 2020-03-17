@@ -113,6 +113,7 @@ public class Gruppen2Controller {
             model.addAttribute("group", group);
             model.addAttribute("roles", group.getRoles());
             model.addAttribute("user", user);
+            model.addAttribute("userrole", group.getRoles().get(user.getUser_id()));
             model.addAttribute("admin", Role.ADMIN);
             return "detailsMember";
         }
