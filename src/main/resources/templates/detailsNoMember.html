@@ -29,7 +29,6 @@
         <div class="row">
             <div class="col-9">
                 <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
-                    <form action="/" method="get">
                         <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
                         <p style="font-weight: bold">
                             <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if="${group.getVisibility() == group.getVisibility().PRIVATE }">Private Gruppe</span>
@@ -39,10 +38,11 @@
                         <p th:text="${group.getDescription()}"></p>
                         <div class="form-group">
                             <div class="text-right">
-                                <button class="btn btn-primary" style="border-style: none;">Gruppe beitreten</button>
+                                <form method="post" action="/gruppen2/detailsBeitreten">
+                                    <button type="submit" th:href="@{/gruppen2/detailsBeitreten(id=${group.getId()})}" th:name="id" th:value="${group.id}" class="btn btn-primary" style="border-style: none;">Gruppe beitreten</button>
+                                </form>
                             </div>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>

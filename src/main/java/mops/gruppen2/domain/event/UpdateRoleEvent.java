@@ -24,7 +24,10 @@ public class UpdateRoleEvent extends Event {
         this.newRole = newRole;
     }
 
-    public void apply(Group group) {
+    public void apply(Group group) throws UserNotFoundException{
+        if (!group.getRoles().containsKey(user_id)){
+            throw new UserNotFoundException("Der User wurde nicht gefunden");
+        }
         group.getRoles().put(this.user_id, this.newRole);
     }
 
