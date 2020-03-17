@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
@@ -33,13 +30,15 @@ public class Gruppen2Controller {
     private final GroupService groupService;
     private final UserService userService;
     private final ControllerService controllerService;
+    private final InviteLinkRepositoryService inviteLinkRepositoryService;
 
-    public Gruppen2Controller(KeyCloakService keyCloakService, EventService eventService, GroupService groupService, UserService userService, ControllerService controllerService) {
+    public Gruppen2Controller(KeyCloakService keyCloakService, EventService eventService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService) {
         this.keyCloakService = keyCloakService;
         this.eventService = eventService;
         this.groupService = groupService;
         this.userService = userService;
         this.controllerService = controllerService;
+        this.inviteLinkRepositoryService = inviteLinkRepositoryService;
     }
 
     /**
@@ -57,7 +56,7 @@ public class Gruppen2Controller {
 
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", userService.getUserGroups(user.getUser_id()));
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         return "index";
     }
 
@@ -72,11 +71,11 @@ public class Gruppen2Controller {
     @GetMapping("/findGroup")
     public String findGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "suchbegriff", required = false) String suchbegriff) throws EventException {
         List<Group> groupse = new ArrayList<>();
-        if(suchbegriff!=null) {
+        if (suchbegriff != null) {
             groupse = groupService.findGroupWith(suchbegriff);
         }
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        model.addAttribute("gruppen",groupse);
+        model.addAttribute("gruppen", groupse);
         return "search";
     }
 
@@ -95,12 +94,12 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/details")
-    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @RequestParam (value="id") Long id) throws EventException, ResponseStatusException {
+    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws EventException, ResponseStatusException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(id);
-        Account account = keyCloakService.createAccountFromPrincipal (token);
+        Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        if(group!= null) {
+        if (group != null) {
             model.addAttribute("group", group);
             model.addAttribute("role", group.getRoles().get(user.getUser_id()));
             return "detailsMember";
@@ -110,14 +109,25 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/detailsSearch")
-    public String showGroupDetailsNoMember (KeycloakAuthenticationToken token, Model model, @RequestParam (value="id") Long id) throws EventException {
+    public String showGroupDetailsNoMember(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(id);
-        if (group!=null) {
+        if (group != null) {
             model.addAttribute("group", group);
             return "detailsNoMember";
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
     }
 
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @GetMapping("/acceptinvite/{link}")
+    public String acceptInvite(KeycloakAuthenticationToken token, Model model, @PathVariable String link) throws EventException {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        Group group = userService.getGroupById(inviteLinkRepositoryService.findGroupIdByInvite(link));
+        if (group != null) {
+            model.addAttribute("group", group);
+            return "redirect:/gruppen2/detailsSearch?id=" + group.getId();
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
+    }
 }

@@ -7,7 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InviteLinkRepository extends CrudRepository<InviteLinkDTO, String> {
-    @Query("select invite_link from inviteLink where group_id =:id")
-    String findLinkByGroupID(@Param("id") Long GroupID);
+public interface InviteLinkRepository extends CrudRepository<InviteLinkDTO, Long> {
+
+    //@Query("SELECT invite_link FROM invite WHERE group_id = :id")
+    //String findLinkByGroupID(@Param("id") Long GroupID);
+
+    @Query("SELECT group_id FROM invite WHERE invite_link = :link")
+    Long findGroupIdByLink(@Param("link") String link);
 }

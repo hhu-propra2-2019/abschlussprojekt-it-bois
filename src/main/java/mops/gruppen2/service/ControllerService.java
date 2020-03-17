@@ -11,14 +11,17 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ControllerService {
 
     private final EventService eventService;
+    private final InviteLinkRepositoryService inviteLinkRepositoryService;
 
-    public ControllerService(EventService eventService) {
+    public ControllerService(EventService eventService, InviteLinkRepositoryService inviteLinkRepositoryService) {
         this.eventService = eventService;
+        this.inviteLinkRepositoryService = inviteLinkRepositoryService;
     }
 
     /**
@@ -31,25 +34,31 @@ public class ControllerService {
      * @param description Gruppenbeschreibung
      */
     public void createGroup(Account account, String title, String description, Boolean visibility) {
+        Long groupID = eventService.checkGroup();
         Visibility visibility1;
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
+            createInviteLink(groupID);
         }
         List<Event> eventList = new ArrayList<>();
-        Collections.addAll(eventList, new CreateGroupEvent(eventService.checkGroup(), account.getName(), null , GroupType.LECTURE, visibility1),
-                new AddUserEvent(eventService.checkGroup(), account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()),
-                new UpdateRoleEvent(eventService.checkGroup(), account.getName(), Role.ADMIN),
-                new UpdateGroupTitleEvent(eventService.checkGroup(), account.getName(), title),
-                new UpdateGroupDescriptionEvent(eventService.checkGroup(), account.getName(), description),
-                new UpdateRoleEvent(eventService.checkGroup(),account.getName(), Role.ADMIN));
+        Collections.addAll(eventList, new CreateGroupEvent(groupID, account.getName(), null, GroupType.LECTURE, visibility1),
+                new AddUserEvent(groupID, account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()),
+                new UpdateRoleEvent(groupID, account.getName(), Role.ADMIN),
+                new UpdateGroupTitleEvent(groupID, account.getName(), title),
+                new UpdateGroupDescriptionEvent(groupID, account.getName(), description),
+                new UpdateRoleEvent(groupID, account.getName(), Role.ADMIN));
 
         eventService.saveEventList(eventList);
     }
 
-    public void addUser(Account account, Group group){
-        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(),group.getId(),account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
+    private void createInviteLink(Long group_id) {
+        inviteLinkRepositoryService.saveInvite(group_id, UUID.randomUUID());
+    }
+
+    public void addUser(Account account, Group group) {
+        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), group.getId(), account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         eventService.saveEvent(addUserEvent);
     }
 }
