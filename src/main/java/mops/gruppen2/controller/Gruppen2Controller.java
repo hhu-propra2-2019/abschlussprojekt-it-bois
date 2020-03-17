@@ -117,6 +117,15 @@ public class Gruppen2Controller {
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @PostMapping("/detailsBeitreten")
+    public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws EventException {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        Account account = keyCloakService.createAccountFromPrincipal (token);
+        controllerService.addUser(account,id);
+        return "redirect:/gruppen2/";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/detailsSearch")
     public String showGroupDetailsNoMember (KeycloakAuthenticationToken token, Model model, @RequestParam (value="id") Long id) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
