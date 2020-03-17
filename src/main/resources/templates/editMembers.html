@@ -36,8 +36,8 @@
                             <th scope="col">Optionen</th>
                         </tr>
                         </thead>
-                        <tr th:each="member: ${members}">
-                            <th th:value="${member.getName()}"></th>
+                        <tr th:each="member : ${group.getMembers()}">
+                            <th th:value="${member.getUser_id()}"></th>
                             <th>
                                 <button class="btn btn-warning">Adminrecht zuweisen</button>
                                 <button class="btn btn-danger"> Mitglied entfernen</button>
