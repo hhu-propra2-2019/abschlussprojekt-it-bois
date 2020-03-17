@@ -97,7 +97,7 @@ public class GroupService {
     public List<Group> findGroupWith(String search) throws EventException {
         List<Group> groups = new ArrayList<>();
         for (Group group: getAllGroupWithVisibilityPublic()) {
-            if (group.getTitle().contains(search)){
+            if (group.getTitle().contains(search)|| group.getDescription().contains(search)){
                 groups.add(group);
             }
         }
