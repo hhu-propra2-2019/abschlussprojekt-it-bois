@@ -27,21 +27,23 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div class="row">
-            <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
-                <form action="/" method="get">
-                    <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
-                    <p style="font-weight: bold">
-                        <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if="${group.getVisibility() == group.getVisibility().PRIVATE }">Private Gruppe</span>
-                        <span class="badge badge-pill badge-primary" th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
-                        <span class="badge badge-pill badge-success" style="background: lightseagreen" th:if="${group.getType() == group.getType().LECTURE}"> Veranstaltung</span>
-                    </p>
-                    <p th:text="${group.getDescription()}"></p>
-                    <div class="form-group">
-                        <div class="text-right">
-                            <button class="btn btn-primary" style="border-style: none;">Gruppe beitreten</button>
+            <div class="col-9">
+                <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
+                    <form action="/" method="get">
+                        <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
+                        <p style="font-weight: bold">
+                            <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if="${group.getVisibility() == group.getVisibility().PRIVATE }">Private Gruppe</span>
+                            <span class="badge badge-pill badge-primary" th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
+                            <span class="badge badge-pill badge-success" style="background: lightseagreen" th:if="${group.getType() == group.getType().LECTURE}"> Veranstaltung</span>
+                        </p>
+                        <p th:text="${group.getDescription()}"></p>
+                        <div class="form-group">
+                            <div class="text-right">
+                                <button class="btn btn-primary" style="border-style: none;">Gruppe beitreten</button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
