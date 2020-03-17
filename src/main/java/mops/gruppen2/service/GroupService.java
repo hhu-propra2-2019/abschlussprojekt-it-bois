@@ -31,11 +31,10 @@ public class GroupService {
      */
     public List<Event> getGroupEvents(List<Long> group_ids) {
         List<EventDTO> eventDTOS = new ArrayList<>();
-        List<Event> events = new ArrayList<>();
         for (Long group_id: group_ids) {
             eventDTOS.addAll(eventRepository.findEventDTOByGroup_id(group_id));
         }
-        return events = eventService.translateEventDTOs(eventDTOS);
+        return eventService.translateEventDTOs(eventDTOS);
     }
 
     /** Erzeugt eine neue Map wo Gruppen aus den Events erzeugt und den Gruppen_ids zugeordnet werden.
@@ -80,6 +79,9 @@ public class GroupService {
     public List<Group> getAllGroupWithVisibilityPublic() throws EventException {
         return projectEventList(eventService.translateEventDTOs(eventRepository.findEventDTOByVisibility(Boolean.TRUE)));
     }
+
+
+    
 
 
     /**

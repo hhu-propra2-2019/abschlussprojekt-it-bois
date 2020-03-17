@@ -36,10 +36,24 @@ public class ControllerService {
         }
         List<Event> eventList = new ArrayList<>();
         Group group = new Group();
+        //Erstellen der Events
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), account.getName(), null , GroupType.LECTURE, visibility1);
+        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(),account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
+        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(eventService.checkGroup(),account.getName(),title);
+        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(eventService.checkGroup(),account.getName(),description);
+        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(eventService.checkGroup(),account.getName(),Role.ADMIN);
+        //Gruppe erzeugen aber eigentlich unnötig?
         createGroupEvent.apply(group);
+        addUserEvent.apply(group);
+        updateGroupTitleEvent.apply(group);
+        updateGroupDescriptionEvent.apply(group);
+        updateRoleEvent.apply(group);
+        //Speichern in DB
         eventList.add(createGroupEvent);
-        System.out.println(group.getId() + "" + group.getVisibility().toString());;
+        eventList.add(addUserEvent);
+        eventList.add(updateGroupTitleEvent);
+        eventList.add(updateGroupDescriptionEvent);
+        eventList.add(updateRoleEvent);
         eventService.saveEventList(eventList);
     }
 
