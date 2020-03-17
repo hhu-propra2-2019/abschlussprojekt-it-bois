@@ -1,4 +1,4 @@
-package mops.gruppen2.domain;
+package mops.gruppen2.domain.dto;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

@@ -3,7 +3,6 @@ package mops.gruppen2.controller;
 import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
-
 import mops.gruppen2.domain.User;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
@@ -12,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
@@ -86,11 +87,7 @@ public class Gruppen2Controller {
                                @RequestParam(value = "visibility", required = false) Boolean visibility) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        if (visibility == null) {
-            visibility = true;
-        }else{
-            visibility = false;
-        }
+        visibility = visibility == null;
         controllerService.createGroup(account, title, beschreibung, visibility);
 
         return "redirect:/gruppen2/";

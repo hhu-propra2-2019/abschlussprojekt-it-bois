@@ -7,7 +7,10 @@ import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.*;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class ControllerService {
@@ -29,9 +32,9 @@ public class ControllerService {
      */
     public void createGroup(Account account, String title, String description, Boolean visibility) {
         Visibility visibility1;
-        if (visibility){
+        if (visibility) {
             visibility1 = Visibility.PUBLIC;
-        }else{
+        } else {
             visibility1 = Visibility.PRIVATE;
         }
         List<Event> eventList = new ArrayList<>();
