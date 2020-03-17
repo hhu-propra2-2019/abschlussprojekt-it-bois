@@ -31,11 +31,10 @@
                 <h1>Meine Gruppen</h1>
                 <form action="/" method="get">
                     <div th:each="gruppe: ${gruppen}">
-                        <div class="shadow" style="border: 10px solid aliceblue; background: aliceblue">
-                            <h3>
-                                <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" style="color: dodgerblue; font-weight: bold" th:text="${gruppe.getTitle()}"></a>
+                        <div class="shadow-sm p-4" style="border: 1px solid white; background: white">
+                            <h3 style="color: dodgerblue; font-weight: bold;">
+                                <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" th:text="${gruppe.getTitle()}"></a>
                             </h3>
-                            <p th:text="${gruppe.getDescription()}"></p>
                         </div>
                         <br>
                     </div>
