@@ -3,7 +3,10 @@ package mops.gruppen2.domain.event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.Exceptions.UserAlreadyExistsException;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 
 /**
@@ -24,8 +27,14 @@ public class AddUserEvent extends Event {
         this.email = email;
     }
 
-    public void apply(Group group) {
+    public void apply(Group group) throws EventException{
         User user = new User(this.user_id, this.givenname, this.familyname, this.email);
+
+        if (group.getMembers().contains(user)){
+            throw new UserAlreadyExistsException("Der User existiert bereits");
+        }
+
         group.getMembers().add(user);
+        group.getRoles().put(user_id, Role.MEMBER);
     }
 }
