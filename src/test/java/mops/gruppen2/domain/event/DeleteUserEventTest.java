@@ -1,5 +1,8 @@
 package mops.gruppen2.domain.event;
 
+import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.Exceptions.UserAlreadyExistsException;
+import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.User;
 import org.junit.jupiter.api.Test;
@@ -11,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DeleteUserEventTest {
 
     @Test
-    void apply() {
+    void applyDeleteUser() throws EventException {
         Group group = new Group();
 
         User user = new User("user1","Stein", "Speck", "@sdasd");
@@ -31,5 +34,23 @@ class DeleteUserEventTest {
         assertThat(group.getMembers().size()).isEqualTo(1);
         assertThat(group.getRoles().size()).isEqualTo(1);
 
+    }
+
+    @Test
+    void userDoesNotExistExeption() {
+        Group group = new Group();
+
+        User user = new User("user1","Stein", "Speck", "@sdasd");
+
+        group.getMembers().add(user);
+        group.getRoles().put("user1", MEMBER);
+
+        Event event = new DeleteUserEvent(17L,"user5");
+
+        assertThrows(UserNotFoundException.class, ()->
+                event.apply(group)
+        );
+
+        assertThat(group.getMembers().size()).isEqualTo(1);
     }
 }

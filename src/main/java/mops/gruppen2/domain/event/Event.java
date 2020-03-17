@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 
 
@@ -31,5 +32,6 @@ public class Event {
     String user_id;
 
 
-    public void apply(Group group){}
+    public void apply(Group group) throws EventException {
+    }
 }
