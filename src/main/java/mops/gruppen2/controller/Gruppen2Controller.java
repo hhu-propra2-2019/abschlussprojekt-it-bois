@@ -57,11 +57,17 @@ public class Gruppen2Controller {
     public String index(KeycloakAuthenticationToken token, Model model) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", userService.getUserGroups(user));
         model.addAttribute("user",user);
         return "index";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @GetMapping("/createLecture")
+    public String createLecture(KeycloakAuthenticationToken token, Model model) {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        return "createLecture";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
