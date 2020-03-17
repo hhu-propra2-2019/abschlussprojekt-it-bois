@@ -3,6 +3,7 @@ package mops.gruppen2.service;
 import mops.gruppen2.domain.EventDTO;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,10 @@ public class GroupService {
      */
     public List<Event> getGroupEvents(List<Long> group_ids) {
         List<EventDTO> eventDTOS = new ArrayList<>();
-        List<Event> events = new ArrayList<>();
         for (Long group_id: group_ids) {
             eventDTOS.addAll(eventRepository.findEventDTOByGroup_id(group_id));
         }
-        return events = eventService.translateEventDTOs(eventDTOS);
+        return eventService.translateEventDTOs(eventDTOS);
     }
 
     /** Erzeugt eine neue Map wo Gruppen aus den Events erzeugt und den Gruppen_ids zugeordnet werden.
@@ -49,7 +49,8 @@ public class GroupService {
         Map<Long, Group> groupMap = new HashMap<>();
 
         for (Event event : events) {
-            getOrCreateGroup(groupMap, event.getGroup_id()).applyEvent(event);
+            Group group = getOrCreateGroup(groupMap, event.getGroup_id());
+            event.apply(group);
         }
 
         return new ArrayList<>(groupMap.values());
@@ -76,8 +77,13 @@ public class GroupService {
      * @return
      * @throws EventException
      */
+
     public List<Group> getAllGroupWithVisibilityPublic() throws EventException {
-        return projectEventList(eventService.translateEventDTOs(eventRepository.findEventDTOByVisibility(Boolean.TRUE)));
+        List<Long> group_ids = eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE);
+        List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(group_ids);
+        List<Event> events = eventService.translateEventDTOs(eventDTOS);
+        List<Group> groups = projectEventList(events);
+        return groups;
     }
 
 
@@ -91,7 +97,7 @@ public class GroupService {
     public List<Group> findGroupWith(String search) throws EventException {
         List<Group> groups = new ArrayList<>();
         for (Group group: getAllGroupWithVisibilityPublic()) {
-            if (group.getTitle().contains(search)){
+            if (group.getTitle().contains(search)|| group.getDescription().contains(search)){
                 groups.add(group);
             }
         }

@@ -5,6 +5,7 @@ import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -78,6 +79,7 @@ public class Gruppen2Controller {
         model.addAttribute("gruppen",groupse);
         return "search";
     }
+
 
     @PostMapping("/createGroup")
     public String pCreateGroup(KeycloakAuthenticationToken token,

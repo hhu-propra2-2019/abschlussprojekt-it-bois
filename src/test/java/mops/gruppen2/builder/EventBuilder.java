@@ -73,7 +73,6 @@ public class EventBuilder {
         String lastname = faker.name().lastName();
 
         return new AddUserEvent(
-                faker.random().nextLong(),
                 group_id,
                 user_id,
                 firstname,
@@ -103,7 +102,6 @@ public class EventBuilder {
         Faker faker = new Faker();
 
         return new DeleteUserEvent(
-                faker.random().nextLong(),
                 group_id,
                 user_id
         );
@@ -129,7 +127,6 @@ public class EventBuilder {
         Faker faker = new Faker();
 
         return new UpdateGroupDescriptionEvent(
-                faker.random().nextLong(),
                 group_id,
                 faker.random().hex(),
                 faker.leagueOfLegends().quote()
@@ -140,7 +137,6 @@ public class EventBuilder {
         Faker faker = new Faker();
 
         return new UpdateGroupTitleEvent(
-                faker.random().nextLong(),
                 group_id,
                 faker.random().hex(),
                 faker.leagueOfLegends().champion()
@@ -151,7 +147,6 @@ public class EventBuilder {
         Faker faker = new Faker();
 
         return new UpdateRoleEvent(
-                faker.random().nextLong(),
                 group_id,
                 user_id,
                 role

@@ -5,14 +5,16 @@ import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.event.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class GroupTest {
 
+class GroupTest {
+/*
     @BeforeEach
     public void setUp() {
     }
@@ -148,5 +150,5 @@ class GroupTest {
         group.applyEvent(updateGroupDescriptionEvent);
 
         assertThat("Tolle Beschreibung").isEqualTo("Tolle Beschreibung");
-    }
+    }*/
 }
