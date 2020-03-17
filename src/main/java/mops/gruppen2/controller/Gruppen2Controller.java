@@ -4,6 +4,7 @@ import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 
+import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.security.Account;
@@ -83,7 +84,6 @@ public class Gruppen2Controller {
         return "search";
     }
 
-
     @PostMapping("/createGroup")
     public String pCreateGroup(KeycloakAuthenticationToken token,
                                @RequestParam(value = "title") String title,
@@ -135,4 +135,19 @@ public class Gruppen2Controller {
         controllerService.deleteUser(account, id);
         return "redirect:/gruppen2/";
     }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @GetMapping("/details/members")
+    public String editMembers(Model model, KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id)  throws  EventException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        Group group = userService.getGroupById(id);
+        if(group.getRoles().get(account.getName()) == Role.ADMIN) {
+            model.addAttribute("members", group.getMembers());
+            model.addAttribute("group", group);
+            return "editMembers";
+        } else {
+            return "redirect:/details/";
+        }
+    }
+
 }

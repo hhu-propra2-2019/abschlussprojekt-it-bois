@@ -49,7 +49,9 @@
             <div class="col-3" style="white-space: nowrap">
                 <div>
                     <h2 style="display: inline-block; margin: 0">Mitglieder</h2>
-                    <button class="btn btn-secondary" type="warning" style="background: slategrey; float: right" >Mitglieder bearbeiten</button>
+                        <form method="get" action="/gruppen2/details/members">
+                            <button th:if="${role == role.ADMIN}" class="btn btn-secondary" type="submit" style="background: slategrey; float: right" >Mitglieder bearbeiten</button>
+                        </form>
                     <p></p>
                 </div>
                 <div>
