@@ -45,7 +45,6 @@
                         <tr>
                             <th scope="col">Gruppenname</th>
                             <th scope="col">Beschreibung</th>
-                            <th scope="col">Öffentlich/Privat</th>
                             <th scope="col">Mitgliederanzahl</th>
                         </tr>
                     </thead>
@@ -55,7 +54,6 @@
                                 <a th:href="@{/gruppen2/detailsSearch(id=${gruppe.getId()})}"  th:text="${gruppe.title}">Gruppenname</a>
                             </th>
                             <td th:text="${gruppe.getDescription()}">Beschreibung</td>
-                            <td th:text="${gruppe.getVisibility()}">Öffentlich</td>
                             <td th:text="${gruppe.getMembers().size()}">Mitgliederanzahl</td>
                         </tr>
                     </tbody>
