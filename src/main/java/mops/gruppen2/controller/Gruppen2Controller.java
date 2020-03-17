@@ -111,7 +111,9 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         if(group!= null) {
             model.addAttribute("group", group);
-            model.addAttribute("role", group.getRoles().get(user.getUser_id()));
+            model.addAttribute("roles", group.getRoles());
+            model.addAttribute("user", user);
+            model.addAttribute("admin", Role.ADMIN);
             return "detailsMember";
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
@@ -163,7 +165,7 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/changeRole")
-    public String changeRole(KeycloakAuthenticationToken token, @RequestParam (value = "group_id") Long id, 
+    public String changeRole(KeycloakAuthenticationToken token, @RequestParam (value = "group_id") Long id,
                              @RequestParam (value = "user") User user) throws EventException {
         controllerService.updateRole(user, id);
         return "redirect:/details/members/";
