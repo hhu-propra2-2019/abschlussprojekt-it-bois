@@ -3,6 +3,7 @@ package mops.gruppen2.service;
 import mops.gruppen2.domain.EventDTO;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.springframework.stereotype.Service;
@@ -76,12 +77,14 @@ public class GroupService {
      * @return
      * @throws EventException
      */
+
     public List<Group> getAllGroupWithVisibilityPublic() throws EventException {
-        return projectEventList(eventService.translateEventDTOs(eventRepository.findEventDTOByVisibility(Boolean.TRUE)));
+        List<Long> group_ids = eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE);
+        List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(group_ids);
+        List<Event> events = eventService.translateEventDTOs(eventDTOS);
+        List<Group> groups = projectEventList(events);
+        return groups;
     }
-
-
-    
 
 
     /**
