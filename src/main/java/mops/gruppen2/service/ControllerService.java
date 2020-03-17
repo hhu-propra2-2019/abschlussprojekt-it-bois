@@ -68,7 +68,6 @@ public class ControllerService {
 
     public void deleteUser(Account account, Long group_id){
         DeleteUserEvent deleteUserEvent = new DeleteUserEvent(group_id,account.getName());
-        System.out.println(deleteUserEvent.getGroup_id() + " " + deleteUserEvent.getUser_id());
         eventService.saveEvent(deleteUserEvent);
     }
 }

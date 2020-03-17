@@ -133,7 +133,6 @@ public class Gruppen2Controller {
     public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         controllerService.deleteUser(account, id);
-        System.out.println(id);
         return "redirect:/gruppen2/";
     }
 }
