@@ -6,3 +6,6 @@ Außerdem haben wir die Detailseite überarbeitet, auf die man weitergeleitet wi
 
 == Keycloak
 Änderungen an Keycloakanbindung -> APIController abgesichert
+
+== Backend
+Wir haben uns heute um die Umstrukturierung der Vererbung gekümmert. Vorher hatten wir die Methoden die Einfluss auf die Gruppe nehmen(also die Events) in der Klasse Group. Jetzt haben wir es so umgebaut, dass wir in die einzelnen Events die Gruppe reingeben und die Methode in dem jeweiligen Event ausgeführt wird.
