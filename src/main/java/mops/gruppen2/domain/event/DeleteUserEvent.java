@@ -9,6 +9,7 @@ import mops.gruppen2.domain.Group;
  * Entfernt ein einzelnes Mitglied einer Gruppe.
  */
 @Getter
+@NoArgsConstructor
 public class DeleteUserEvent extends Event {
     public DeleteUserEvent(Long group_id, String user_id) {
         super(group_id, user_id);

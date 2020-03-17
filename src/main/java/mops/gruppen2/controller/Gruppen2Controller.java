@@ -15,13 +15,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Controller
+@SessionScope
 @RequestMapping("/gruppen2")
 public class Gruppen2Controller {
 
@@ -56,7 +59,7 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
 
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        model.addAttribute("gruppen", userService.getUserGroups(user.getUser_id()));
+        model.addAttribute("gruppen", userService.getUserGroups(user));
         model.addAttribute("user",user);
         return "index";
     }
@@ -125,4 +128,12 @@ public class Gruppen2Controller {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
     }
 
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @PostMapping("/leaveGroup")
+    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id) {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        controllerService.deleteUser(account, id);
+        System.out.println(id);
+        return "redirect:/gruppen2/";
+    }
 }

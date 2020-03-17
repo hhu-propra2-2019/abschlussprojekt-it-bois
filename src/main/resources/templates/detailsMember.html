@@ -27,6 +27,7 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div class="row">
+
             <div class="col-9">
                 <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
                     <form action="/" method="get">
@@ -39,7 +40,9 @@
                         <p th:text="${group.getDescription()}"></p>
                         <div class="form-group">
                             <div class="text-right">
-                                <button class="btn btn-danger" type="danger" style="border-style: none;">Gruppe verlassen</button>
+                                <form method="post" action="/gruppen2/leaveGroup">
+                                    <button th:value="${group.getId()}" th:name="group_id" class="btn btn-danger" type="submit" style="border-style: none;">Gruppe verlassen</button>
+                                </form>
                             </div>
                         </div>
                     </form>
@@ -54,8 +57,8 @@
                 <div>
                     <ul th:each="member : ${group.getMembers()}" class="list-group-flush" style="background: slategrey">
                         <li  class="list-group-item" style="background: aliceblue">
-                                <span th:text="${member.getUser_id()}"></span>
-                                <span th:if="${role == role.ADMIN}" class="badge badge-success">admin</span>
+                            <span th:text="${member.getUser_id()}"></span>
+                            <span th:if="${role == role.ADMIN}" class="badge badge-success">admin</span>
                         </li>
                     </ul>
                 </div>
