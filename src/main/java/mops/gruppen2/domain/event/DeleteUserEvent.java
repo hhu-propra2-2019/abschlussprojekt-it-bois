@@ -11,7 +11,7 @@ import mops.gruppen2.domain.User;
  * Entfernt ein einzelnes Mitglied einer Gruppe.
  */
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor // For Jackson
 public class DeleteUserEvent extends Event {
 
     public DeleteUserEvent(Long group_id, String user_id) {

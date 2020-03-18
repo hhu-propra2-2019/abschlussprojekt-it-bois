@@ -9,7 +9,7 @@ import mops.gruppen2.domain.Visibility;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // For Jackson
 public class CreateGroupEvent extends Event {
 
     private Visibility groupVisibility;

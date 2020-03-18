@@ -1,11 +1,11 @@
 package mops.gruppen2.domain.dto;
 
-import lombok.Data;
+import lombok.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("event")
-@Data
+@Value
 public class EventDTO {
 
     @Id

@@ -5,14 +5,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonTypeInfo(
         include = JsonTypeInfo.As.PROPERTY,
         use = JsonTypeInfo.Id.NAME,
@@ -26,13 +22,13 @@ import mops.gruppen2.domain.Group;
                       @JsonSubTypes.Type(value = UpdateGroupTitleEvent.class, name = "UpdateGroupTitleEvent"),
                       @JsonSubTypes.Type(value = UpdateRoleEvent.class, name = "UpdateRoleEvent"),
               })
-@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Event {
 
-    Long group_id;
-    String user_id;
+    protected Long group_id;
+    protected String user_id;
 
-
-    public void apply(Group group) throws EventException {
-    }
+    public void apply(Group group) throws EventException {}
 }

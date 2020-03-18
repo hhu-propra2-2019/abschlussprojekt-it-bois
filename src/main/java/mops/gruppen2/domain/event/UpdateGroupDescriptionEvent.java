@@ -10,10 +10,10 @@ import mops.gruppen2.domain.Group;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // For Jackson
 public class UpdateGroupDescriptionEvent extends Event {
 
-    String newGroupDescription;
+    private String newGroupDescription;
 
     public UpdateGroupDescriptionEvent(Long group_id, String user_id, String newGroupDescription) {
         super(group_id, user_id);

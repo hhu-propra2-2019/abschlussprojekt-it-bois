@@ -14,8 +14,8 @@ import java.util.List;
 @Service
 public class UserService {
 
-    final EventRepository eventRepository;
-    final GroupService groupService;
+    private final EventRepository eventRepository;
+    private final GroupService groupService;
 
     public UserService(EventRepository eventRepository, GroupService groupService) {
         this.eventRepository = eventRepository;

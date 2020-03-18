@@ -40,23 +40,19 @@ public class EventService {
      * @return EventDTO
      */
     public EventDTO getDTO(Event event) {
-        EventDTO eventDTO = new EventDTO();
-        eventDTO.setGroup_id(event.getGroup_id());
-        eventDTO.setUser_id(event.getUser_id());
+        boolean visibility = false;
         if (event instanceof CreateGroupEvent) {
-            if (((CreateGroupEvent) event).getGroupVisibility() == Visibility.PRIVATE) {
-                eventDTO.setVisibility(false);
-            } else {
-                eventDTO.setVisibility(true);
-            }
+            visibility = ((CreateGroupEvent) event).getGroupVisibility() == Visibility.PRIVATE;
         }
 
+        String payload = "";
         try {
-            eventDTO.setEvent_payload(serializationService.serializeEvent(event));
+            payload = serializationService.serializeEvent(event);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return eventDTO;
+
+        return new EventDTO(null, event.getGroup_id(), event.getUser_id(), payload, visibility);
     }
 
     /**

@@ -14,12 +14,12 @@ import mops.gruppen2.domain.User;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // For Jackson
 public class AddUserEvent extends Event {
 
-    String givenname;
-    String familyname;
-    String email;
+    private String givenname;
+    private String familyname;
+    private String email;
 
     public AddUserEvent(Long group_id, String user_id, String givenname, String familyname, String email) {
         super(group_id, user_id);

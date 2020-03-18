@@ -12,10 +12,10 @@ import mops.gruppen2.domain.Role;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // For Jackson
 public class UpdateRoleEvent extends Event {
 
-    Role newRole;
+    private Role newRole;
 
     public UpdateRoleEvent(Long group_id, String user_id, Role newRole) {
         super(group_id, user_id);
