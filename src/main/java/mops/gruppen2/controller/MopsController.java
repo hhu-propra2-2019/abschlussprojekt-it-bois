@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MopsController {
 
     @GetMapping("")
-    public String redirect(){
+    public String redirect() {
         return "redirect:/gruppen2/";
     }
 

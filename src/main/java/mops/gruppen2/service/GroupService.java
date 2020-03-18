@@ -1,11 +1,12 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.EventDTO;
+import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
+import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -71,15 +72,21 @@ public class GroupService {
         return groups.get(group_id);
     }
 
+    private List<Long> removeUserGroups(List<Long> group_ids, List<Long> user_groups) {
+        for (Long group_id: user_groups) {
+            group_ids.remove(group_id);
+        }
+        return group_ids;
+    }
+
     /**
-     * sucht alle Zeilen in der DB wo die Visibility gleich true ist und wandelt diese in
-     * eine Liste von Gruppen
+     * sucht alle Zeilen in der DB wo die Visibility true ist und entfernt alle Gruppen des Users.
+     * Erstellt eine Liste aus Gruppen.
      * @return
      * @throws EventException
      */
-
-    public List<Group> getAllGroupWithVisibilityPublic() throws EventException {
-        List<Long> group_ids = eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE);
+    public List<Group> getAllGroupWithVisibilityPublic(String user_id) throws EventException {
+        List<Long> group_ids = removeUserGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE), eventRepository.findGroup_idsWhereUser_id(user_id));
         List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(group_ids);
         List<Event> events = eventService.translateEventDTOs(eventDTOS);
         List<Group> groups = projectEventList(events);
@@ -94,10 +101,10 @@ public class GroupService {
      * @return
      * @throws EventException
      */
-    public List<Group> findGroupWith(String search) throws EventException {
+    public List<Group> findGroupWith(String search, Account account) throws EventException {
         List<Group> groups = new ArrayList<>();
-        for (Group group: getAllGroupWithVisibilityPublic()) {
-            if (group.getTitle().contains(search)|| group.getDescription().contains(search)){
+        for (Group group: getAllGroupWithVisibilityPublic(account.getName())) {
+            if (group.getTitle().toLowerCase().contains(search.toLowerCase()) || group.getDescription().toLowerCase().contains(search.toLowerCase())){
                 groups.add(group);
             }
         }

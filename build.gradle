@@ -68,6 +68,7 @@ dependencies {
 	implementation 'io.springfox:springfox-swagger2:2.9.2'
 	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 	implementation 'com.github.javafaker:javafaker:1.0.2'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.10.2'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -76,6 +77,8 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java'
 
 	compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.4.0.RELEASE'
+
+	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.10.3'
 
 	testImplementation 'org.assertj:assertj-core:3.15.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

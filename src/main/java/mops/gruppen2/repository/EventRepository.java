@@ -1,6 +1,6 @@
 package mops.gruppen2.repository;
 
-import mops.gruppen2.domain.EventDTO;
+import mops.gruppen2.domain.dto.EventDTO;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -30,4 +30,7 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
     @Query("SELECT MAX(event_id) FROM event")
     public Long getHighesEvent_ID();
+
+    @Query("SELECT MAX(group_id) FROM event")
+    public Long getMaxGroupID();
 }

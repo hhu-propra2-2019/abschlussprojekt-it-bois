@@ -1,8 +1,8 @@
 package mops.gruppen2.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import mops.gruppen2.domain.EventDTO;
 import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
@@ -59,22 +59,17 @@ public class EventService {
     }
 
     /**
-     * Sorgt dafür die Group_id immer um 1 zu erhöhen
+     * Gibt die nächst höhere groupID zurück die belegt werden kann.
+     * Gibt 1 zurück, falls keine Gruppe vorhanden ist.
      *
      * @return Gibt Long zurück
      */
     public Long checkGroup() {
-        Long tmpId = 1L;
-        Iterable<EventDTO> eventDTOS = eventStore.findAll();
-        for (EventDTO event : eventDTOS) {
-            if (event.getGroup_id() == null) {
-                return tmpId;
-            }
-            if (tmpId <= event.getGroup_id()) {
-                tmpId++;
-            }
+        Long maxGroupID = eventStore.getMaxGroupID();
+        if (maxGroupID == null) {
+            return 1L;
         }
-        return tmpId;
+        return maxGroupID + 1;
     }
 
     /**
