@@ -1,0 +1,8 @@
+= Tag 11
+
+== Eventservice
+Checkgroup Methode auf Query umgestellt(performence)
+
+== ErrorHandling
+Errorpage angepasst und als default gesetzt. Außerdem die Exceptions überarbeitet, deren Message wird nun auch auf der Errorpage angezeigt.
+
