@@ -66,7 +66,6 @@ public class Gruppen2Controller {
         return "index";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @GetMapping("/createLecture")
     public String createLecture(KeycloakAuthenticationToken token, Model model) {
