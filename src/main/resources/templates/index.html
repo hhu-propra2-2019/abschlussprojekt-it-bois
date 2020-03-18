@@ -40,10 +40,12 @@
                     <div th:each="gruppe: ${gruppen}">
                         <div class="shadow-sm p-4" style="border: none; background: aliceblue">
 
-                            <h3 style="color: dodgerblue; font-weight: bold;">
+                            <h3 style="color: black; font-weight: bold;">
                                 <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" th:text="${gruppe.getTitle()}"></a>
                             </h3>
-                            <p style="overflow-wrap: break-word" th:text="${#strings.abbreviate(gruppe.getDescription(),300)}"></p>
+                            <div class="shadow-sm p-4" style="background: white">
+                                <p style="overflow-wrap: break-word" th:text="${#strings.abbreviate(gruppe.getDescription(),300)}"></p>
+                            </div>
                         </div>
                         <br>
                     </div>

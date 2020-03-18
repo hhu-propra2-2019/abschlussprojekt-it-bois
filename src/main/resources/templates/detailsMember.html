@@ -31,7 +31,6 @@
             <div class="col-9">
                 <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
                         <h1 style="color: black; font-weight: bold" th:text="${group.getTitle()}"></h1>
-                        <p style="font-weight: bold">
                         <h3>
                             <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
                             <span class="badge badge-pill badge-primary" th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
@@ -43,9 +42,15 @@
                         </div>
                     <br>
                         <div class="text-right">
-                            <form method="post" action="/gruppen2/leaveGroup">
-                                <button th:value="${group.getId()}" th:name="group_id" class="btn btn-danger" type="submit" style="border-style: none;">Gruppe verlassen</button>
+                            <form>
+                                <button class="btn btn-primary" style="background: dodgerblue; border: none">
+                                    <a th:href="@{/gruppen2}" style="color: white">Zurück</a>
+                                </button>
+                                <form method="post" action="/gruppen2/leaveGroup">
+                                    <button th:value="${group.getId()}" th:name="group_id" class="btn btn-danger" type="submit" style="border-style: none;">Gruppe verlassen</button>
+                                </form>
                             </form>
+
                         </div>
                 </div>
             </div>
