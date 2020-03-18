@@ -120,7 +120,11 @@ public class ControllerService {
                 user = member;
             }
         }
-        assert user != null;
+
+        if (user == null) {
+            throw new UserNotFoundException(this.getClass().toString());
+        }
+
         DeleteUserEvent deleteUserEvent = new DeleteUserEvent(groupId, user.getId());
         eventService.saveEvent(deleteUserEvent);
     }

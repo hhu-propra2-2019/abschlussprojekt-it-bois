@@ -7,9 +7,9 @@ import java.util.Set;
 @Value
 public class Account {
 
+    String name; //user_id
     String email;
     String image;
-    String name; //user_id
     String givenname;
     String familyname;
     Set<String> roles;

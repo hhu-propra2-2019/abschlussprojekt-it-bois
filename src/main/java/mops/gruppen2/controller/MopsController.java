@@ -21,6 +21,6 @@ public class MopsController {
 
     @GetMapping("*")
     public String defaultLink() {
-        return "errorRenameLater";
+        return "error";
     }
 }

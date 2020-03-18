@@ -21,10 +21,12 @@ public class UpdateRoleEvent extends Event {
         super(groupId, userId);
         this.newRole = newRole;
     }
+
     @Override
     public void applyEvent(Group group) throws UserNotFoundException {
         if (group.getRoles().containsKey(this.userId)) {
             group.getRoles().put(this.userId, this.newRole);
+            return;
         }
 
         throw new UserNotFoundException(this.getClass().toString());

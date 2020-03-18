@@ -79,9 +79,9 @@
                     <ul class="list-group-flush" style="background: slategrey"
                         th:each="member : ${group.getMembers()}">
                         <li class="list-group-item" style="background: aliceblue">
-                            <span th:text="${member.getUser_id()}"></span>
+                            <span th:text="${member.getId()}"></span>
                             <span class="badge badge-success"
-                                  th:if='${group.getRoles().get(member.getUser_id()) == admin}'>admin</span>
+                                  th:if='${group.getRoles().get(member.getId()) == admin}'>admin</span>
                         </li>
                     </ul>
                 </div>
