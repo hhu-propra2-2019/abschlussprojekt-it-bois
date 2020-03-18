@@ -79,10 +79,13 @@ public class Gruppen2Controller {
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung,
                                @RequestParam(value = "visibility", required = false) Boolean visibility,
-                               @RequestParam("file") MultipartFile file) throws IOException {
+                               @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        List<User> userList = CsvService.read(file.getInputStream());
+        List<User> userList = new ArrayList<>();
+        if(!file.isEmpty()) {
+            userList = CsvService.read(file.getInputStream());
+        }
         visibility = visibility == null;
         controllerService.createLecture(account, title, beschreibung, visibility, userList);
 
