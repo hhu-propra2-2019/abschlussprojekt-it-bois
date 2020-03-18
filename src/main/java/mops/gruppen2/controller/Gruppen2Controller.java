@@ -55,17 +55,18 @@ public class Gruppen2Controller {
      * @param model tolles model
      * @return index.html
      */
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("")
     public String index(KeycloakAuthenticationToken token, Model model) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", userService.getUserGroups(user));
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         return "index";
     }
 
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @GetMapping("/createLecture")
     public String createLecture(KeycloakAuthenticationToken token, Model model) {
@@ -96,7 +97,7 @@ public class Gruppen2Controller {
         return "create";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/findGroup")
     public String findGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "suchbegriff", required = false) String suchbegriff) throws EventException {
         List<Group> groupse = new ArrayList<>();
@@ -108,6 +109,7 @@ public class Gruppen2Controller {
         return "search";
     }
 
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/createGroup")
     public String pCreateGroup(KeycloakAuthenticationToken token,
                                @RequestParam(value = "title") String title,
@@ -121,7 +123,7 @@ public class Gruppen2Controller {
         return "redirect:/gruppen2/";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/details")
     public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws EventException, ResponseStatusException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
@@ -136,16 +138,16 @@ public class Gruppen2Controller {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/detailsBeitreten")
     public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        Account account = keyCloakService.createAccountFromPrincipal (token);
-        controllerService.addUser(account,id);
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        controllerService.addUser(account, id);
         return "redirect:/gruppen2/";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/detailsSearch")
     public String showGroupDetailsNoMember(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
@@ -157,7 +159,7 @@ public class Gruppen2Controller {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/acceptinvite/{link}")
     public String acceptInvite(KeycloakAuthenticationToken token, Model model, @PathVariable String link) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
@@ -168,11 +170,17 @@ public class Gruppen2Controller {
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found");
     }
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/leaveGroup")
-    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id) {
+    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam(value = "group_id") Long id) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         controllerService.deleteUser(account, id);
         return "redirect:/gruppen2/";
+    }
+
+    @GetMapping("*")
+    public String defaultLink() {
+        return "errorRenameLater";
     }
 }
