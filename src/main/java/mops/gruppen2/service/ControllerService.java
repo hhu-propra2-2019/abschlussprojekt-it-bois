@@ -13,6 +13,7 @@ import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
 import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.exception.EventException;
+import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +39,8 @@ public class ControllerService {
      * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
      * Aus diesen Event Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
      *
-     * @param account Keycloak-Account
-     * @param title Gruppentitel
+     * @param account     Keycloak-Account
+     * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
     public void createGroup(Account account, String title, String description, Boolean visibility) throws EventException {
@@ -98,7 +99,11 @@ public class ControllerService {
                 user = member;
             }
         }
-        assert user != null;
+
+        if (user == null) {
+            throw new UserNotFoundException(this.getClass().toString());
+        }
+
         if (group.getRoles().get(user.getId()) == Role.ADMIN) {
             updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), Role.MEMBER);
         } else {

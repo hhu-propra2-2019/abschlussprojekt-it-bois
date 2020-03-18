@@ -1,12 +1,13 @@
 package mops.gruppen2.domain.dto;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@SuppressWarnings("checkstyle:membername")
 @Table("invite")
-@Value
+@Getter
+@AllArgsConstructor
 public class InviteLinkDTO {
 
     @Id
