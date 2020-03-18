@@ -4,15 +4,21 @@ import mops.gruppen2.domain.*;
 import mops.gruppen2.domain.event.*;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ControllerService {
 
     private final EventService eventService;
+    private final InviteLinkRepositoryService inviteLinkRepositoryService;
 
-    public ControllerService(EventService eventService) {
+    public ControllerService(EventService eventService, InviteLinkRepositoryService inviteLinkRepositoryService) {
         this.eventService = eventService;
+        this.inviteLinkRepositoryService = inviteLinkRepositoryService;
     }
 
     /**
@@ -32,6 +38,7 @@ public class ControllerService {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
+            createInviteLink(group_id);
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.SIMPLE, visibility1);
@@ -42,6 +49,11 @@ public class ControllerService {
         updateDescription(account, group_id, description);
         updateRole(account, group_id);
     }
+
+    private void createInviteLink(Long group_id) {
+        inviteLinkRepositoryService.saveInvite(group_id, UUID.randomUUID());
+    }
+
 
     public void addUser(Account account, Long group_id){
         AddUserEvent addUserEvent = new AddUserEvent(group_id,account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());

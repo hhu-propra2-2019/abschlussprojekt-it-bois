@@ -2,7 +2,6 @@ package mops.gruppen2.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mops.gruppen2.domain.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.slf4j.Logger;
