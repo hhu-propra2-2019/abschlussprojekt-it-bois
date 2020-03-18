@@ -2,3 +2,9 @@
 
 == Frontend
 Heute haben wir eine Seite zum Bearbeiten der Mitglieder eine Gruppe mit den entsprechenden Controllern geschrieben. Außerdem haben wir das Styling aller Seiten vereinheitlicht.
+
+== InviteLink
+
+Es wird nun beim erstellen einer privaten Gruppe ein Einladungslink erstellt, der zusammen mit der zugehörigen GroupID in einer seperaten Tabelle gespeichert wird.
+Der Link soll Admins auf der Detailsseite der Gruppe angezeigt werden. Über den Link kommt man dann zur Beitrittsseite der jeweiligen Gruppe.
+Bei dem Löschen der Gruppe muss in Zukunft auch noch das löschen des Links hinzugefügt werden.
