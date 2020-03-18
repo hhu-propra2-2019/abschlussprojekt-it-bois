@@ -5,6 +5,7 @@ import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
@@ -68,6 +69,17 @@ public class Gruppen2Controller {
     public String createLecture(KeycloakAuthenticationToken token, Model model) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         return "createLecture";
+    }
+
+    @PostMapping("/createLecture")
+    public String pCreateLecture(KeycloakAuthenticationToken token,
+                               @RequestParam(value = "title") String title,
+                               @RequestParam(value = "beschreibung") String beschreibung) {
+
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        controllerService.createGroup(account, title, beschreibung, true);
+
+        return "redirect:/gruppen2/";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
