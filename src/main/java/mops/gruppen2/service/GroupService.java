@@ -1,6 +1,6 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.EventDTO;
+import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Visibility;

@@ -1,8 +1,8 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.EventDTO;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.repository.EventRepository;
@@ -14,7 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
