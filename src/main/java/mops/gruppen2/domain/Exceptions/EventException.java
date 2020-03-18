@@ -3,15 +3,10 @@ package mops.gruppen2.domain.Exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class EventException extends ResponseStatusException {
-    private String msg;
+public abstract class EventException extends ResponseStatusException {
 
-    public EventException(String msg, HttpStatus status) {
-        super(status, msg);
+    public EventException(HttpStatus status, String msg, String info) {
+        super(status, msg + "    (" + info + ")");
     }
 
-    @Override
-    public String getMessage() {
-        return msg;
-    }
 }

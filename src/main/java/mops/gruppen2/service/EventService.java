@@ -66,9 +66,11 @@ public class EventService {
      */
     public Long checkGroup() {
         Long maxGroupID = eventStore.getMaxGroupID();
+
         if (maxGroupID == null) {
             return 1L;
         }
+
         return maxGroupID + 1;
     }
 

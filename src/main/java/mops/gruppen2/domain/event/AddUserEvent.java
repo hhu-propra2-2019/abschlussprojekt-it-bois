@@ -16,9 +16,10 @@ import mops.gruppen2.domain.User;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddUserEvent extends Event {
-    String givenname;
-    String familyname;
-    String email;
+
+    private String givenname;
+    private String familyname;
+    private String email;
 
     public AddUserEvent(Long group_id, String user_id, String givenname, String familyname, String email) {
         super(group_id, user_id);
@@ -32,7 +33,7 @@ public class AddUserEvent extends Event {
         User user = new User(this.user_id, this.givenname, this.familyname, this.email);
 
         if (group.getMembers().contains(user)) {
-            throw new UserAlreadyExistsException();
+            throw new UserAlreadyExistsException(this.getClass().toString());
         }
 
         group.getMembers().add(user);

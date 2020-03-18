@@ -1,8 +1,7 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.*;
-
 import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.*;
 import mops.gruppen2.domain.event.*;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
@@ -47,12 +46,11 @@ public class ControllerService {
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.SIMPLE, visibility1);
         eventService.saveEvent(createGroupEvent);
-        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
 
         addUser(account, group_id);
         updateTitle(account, group_id, title);
         updateDescription(account, group_id, description);
-        updateRole(user.getUser_id(), group_id);
+        updateRole(account.getName(), group_id);
     }
 
     private void createInviteLink(Long group_id) {

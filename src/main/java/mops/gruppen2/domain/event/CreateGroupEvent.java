@@ -11,6 +11,7 @@ import mops.gruppen2.domain.Visibility;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateGroupEvent extends Event {
+
     private Visibility groupVisibility;
     private Long groupParent;
     private GroupType groupType;

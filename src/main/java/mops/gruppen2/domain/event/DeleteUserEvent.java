@@ -13,6 +13,7 @@ import mops.gruppen2.domain.User;
 @Getter
 @NoArgsConstructor
 public class DeleteUserEvent extends Event {
+
     public DeleteUserEvent(Long group_id, String user_id) {
         super(group_id, user_id);
     }
@@ -26,6 +27,6 @@ public class DeleteUserEvent extends Event {
                 return;
             }
         }
-        throw new UserNotFoundException("Der User existiert nicht");
+        throw new UserNotFoundException(this.getClass().toString());
     }
 }

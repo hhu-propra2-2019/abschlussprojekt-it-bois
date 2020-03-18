@@ -15,7 +15,7 @@ import mops.gruppen2.domain.Role;
 @NoArgsConstructor
 public class UpdateRoleEvent extends Event {
 
-    Role newRole;
+    private Role newRole;
 
     public UpdateRoleEvent(Long group_id, String user_id, Role newRole) {
         super(group_id, user_id);
@@ -24,10 +24,11 @@ public class UpdateRoleEvent extends Event {
 
     @Override
     public void applyEvent(Group group) throws UserNotFoundException {
-        if (!group.getRoles().containsKey(user_id)) {
-            throw new UserNotFoundException();
+        if (group.getRoles().containsKey(user_id)) {
+            group.getRoles().put(this.user_id, this.newRole);
         }
-        group.getRoles().put(this.user_id, this.newRole);
+
+        throw new UserNotFoundException(this.getClass().toString());
     }
 
 }

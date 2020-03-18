@@ -3,6 +3,7 @@ package mops.gruppen2.domain.event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mops.gruppen2.domain.Exceptions.NoValueException;
 import mops.gruppen2.domain.Group;
 
 /**
@@ -12,7 +13,8 @@ import mops.gruppen2.domain.Group;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateGroupDescriptionEvent extends Event {
-    String newGroupDescription;
+
+    private String newGroupDescription;
 
     public UpdateGroupDescriptionEvent(Long group_id, String user_id, String newGroupDescription) {
         super(group_id, user_id);
@@ -21,6 +23,10 @@ public class UpdateGroupDescriptionEvent extends Event {
 
     @Override
     public void applyEvent(Group group) {
+        if (this.newGroupDescription.isEmpty()) {
+            throw new NoValueException(this.getClass().toString());
+        }
+
         group.setDescription(this.newGroupDescription);
     }
 }
