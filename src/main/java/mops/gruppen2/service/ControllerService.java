@@ -34,7 +34,7 @@ public class ControllerService {
             visibility1 = Visibility.PRIVATE;
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.LECTURE, visibility1);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.SIMPLE, visibility1);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, group_id);
