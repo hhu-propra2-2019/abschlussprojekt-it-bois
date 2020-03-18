@@ -35,7 +35,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-9">
-                <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
+                <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
                     <!-- absichern im controller nicht vergessen -->
                     <div class="form-group pt-4" th:if="${account.getRoles().contains('orga')}">
                         <form method="post" action="/gruppen2/details/members/addUsersFromCsv" enctype="multipart/form-data">
