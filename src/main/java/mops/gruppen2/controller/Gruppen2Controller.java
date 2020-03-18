@@ -82,7 +82,7 @@ public class Gruppen2Controller {
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung,
                                @RequestParam(value = "visibility", required = false) Boolean visibility,
-                               @RequestParam("file") MultipartFile file) throws IOException {
+                               @RequestParam(value = "file") MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = CsvService.read(file.getInputStream());
@@ -219,10 +219,10 @@ public class Gruppen2Controller {
                              @RequestParam (value = "user_id") String user_id) throws EventException {
         controllerService.deleteUser(user_id, group_id);
         return "redirect:/gruppen2/details/members/" + group_id;
+    }
 
     @GetMapping("*")
     public String defaultLink() {
         return "errorRenameLater";
-
     }
 }

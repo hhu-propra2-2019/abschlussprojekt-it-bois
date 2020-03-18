@@ -7,12 +7,6 @@ import mops.gruppen2.domain.event.*;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
-import mops.gruppen2.domain.event.*;
-import mops.gruppen2.security.Account;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,8 +19,9 @@ public class ControllerService {
     private final UserService userService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
 
-    public ControllerService(EventService eventService, InviteLinkRepositoryService inviteLinkRepositoryService) {
+    public ControllerService(EventService eventService, UserService userService, InviteLinkRepositoryService inviteLinkRepositoryService) {
         this.eventService = eventService;
+        this.userService = userService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
     }
 
@@ -117,9 +112,9 @@ public class ControllerService {
     public void deleteGroupEvent(User user, Long group_id) {
         DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(group_id, user.getUser_id());
         eventService.saveEvent(deleteGroupEvent);
+    }
 
-
-    public void createLecture(Account account, String title, String description, Boolean visibility, List<User> users) {
+    public void createLecture(Account account, String title, String description, Boolean visibility, List<User> users) throws EventException {
         Visibility visibility1;
         Long group_id = eventService.checkGroup();
 
@@ -135,7 +130,7 @@ public class ControllerService {
         addUser(account, group_id);
         updateTitle(account, group_id, title);
         updateDescription(account, group_id, description);
-        updateRole(account, group_id);
+        updateRole(account.getName(), group_id);
         addUserList(users, group_id);
 
     }
