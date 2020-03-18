@@ -9,7 +9,7 @@ import com.tngtech.archunit.library.Architectures;
 @AnalyzeClasses(packages = "mops.gruppen2", importOptions = ImportOption.DoNotIncludeTests.class)
 public class LayeredArchitectureTest {
 
-    private static Architectures.LayeredArchitecture layeredArchitecture = Architectures
+    private static final Architectures.LayeredArchitecture layeredArchitecture = Architectures
             .layeredArchitecture()
             .layer("Domain").definedBy("..domain..")
             .layer("Service").definedBy("..service")

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -56,14 +58,14 @@ class EventServiceTest {
     void getDTOOffentlichTest() {
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "test", null, GroupType.LECTURE, Visibility.PUBLIC);
         EventDTO eventDTO = eventService.getDTO(createGroupEvent);
-        assertEquals(eventDTO.isVisibility(), true);
+        assertTrue(eventDTO.isVisibility());
     }
 
     @Test
     void getDTOPrivatTest() {
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), "test", "franz", "mueller", "a@a");
         EventDTO eventDTO = eventService.getDTO(addUserEvent);
-        assertEquals(eventDTO.isVisibility(), false);
+        assertFalse(eventDTO.isVisibility());
     }
 
 }

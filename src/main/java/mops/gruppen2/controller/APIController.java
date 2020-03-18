@@ -45,7 +45,7 @@ public class APIController {
     @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
     @Secured("ROLE_api_user")
     @ApiOperation("Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
-    public List<Long> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) throws EventException {
+    public List<Long> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) {
         return eventService.getGroupsOfUser(teilnehmer);
     }
 
@@ -55,7 +55,7 @@ public class APIController {
     public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable Long groupId) throws EventException {
         List<Event> eventList = eventService.getEventsOfGroup(groupId);
         List<Group> groups = groupService.projectEventList(eventList);
-        
+
         return groups.get(0);
     }
 

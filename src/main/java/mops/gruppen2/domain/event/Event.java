@@ -10,7 +10,6 @@ import mops.gruppen2.domain.exception.EventException;
 
 
 @JsonTypeInfo(
-        include = JsonTypeInfo.As.PROPERTY,
         use = JsonTypeInfo.Id.NAME,
         property = "type"
 )

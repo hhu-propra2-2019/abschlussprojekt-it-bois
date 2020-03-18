@@ -24,13 +24,13 @@ public class EventBuilder {
      *
      * @param count       Gruppenanzahl
      * @param membercount Gesamte Mitgliederanzahl
-     * @return
+     * @return Eventliste
      */
     public static List<Event> completeGroups(int count, int membercount) {
         List<Event> eventList = new ArrayList<>();
 
         for (int i = 1; i <= count; i++) {
-            eventList.addAll(EventBuilder.completeGroup(i, membercount / count));
+            eventList.addAll(completeGroup(i, membercount / count));
         }
 
         return eventList;
@@ -39,11 +39,11 @@ public class EventBuilder {
     public static List<Event> completeGroup(long groupId, int membercount) {
         List<Event> eventList = new ArrayList<>();
 
-        eventList.add(EventBuilder.createGroupEvent(groupId));
-        eventList.add(EventBuilder.updateGroupTitleEvent(groupId));
-        eventList.add(EventBuilder.updateGroupDescriptionEvent(groupId));
+        eventList.add(createGroupEvent(groupId));
+        eventList.add(updateGroupTitleEvent(groupId));
+        eventList.add(updateGroupDescriptionEvent(groupId));
 
-        eventList.addAll(EventBuilder.addUserEvents(membercount, groupId));
+        eventList.addAll(addUserEvents(membercount, groupId));
 
         return eventList;
     }
@@ -102,7 +102,7 @@ public class EventBuilder {
         List<Event> eventList = new ArrayList<>();
 
         for (int i = 1; i <= count; i++) {
-            eventList.add(EventBuilder.addUserEvent(groupId, "" + i));
+            eventList.add(addUserEvent(groupId, String.valueOf(i)));
         }
 
         return eventList;
@@ -125,7 +125,7 @@ public class EventBuilder {
         List<DeleteUserEvent> eventList = new ArrayList<>();
 
         for (User user : group.getMembers()) {
-            eventList.add(EventBuilder.deleteUserEvent(group.getId(), user.getId()));
+            eventList.add(deleteUserEvent(group.getId(), user.getId()));
         }
 
         return eventList;
