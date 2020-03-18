@@ -7,6 +7,10 @@
     <title>Gruppenerstellung</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     </th:block>
 </head>
 <body>
@@ -49,7 +53,7 @@
                         </div>
                         <div class="form-group pt-4">
                             <div class="row">
-                                <div class="col-10">
+                                <div class="col">
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="file" th:name="file">
                                         <label class="custom-file-label" for="file">CSV Datei von Mitgliedern hochladen</label>
@@ -65,6 +69,13 @@
             </div>
         </div>
     </div>
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
 </main>
 </body>
 </html>

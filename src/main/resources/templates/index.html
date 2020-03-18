@@ -43,7 +43,6 @@
                     <br>
                     <div th:each="gruppe: ${gruppen}">
                         <div class="shadow-sm p-4" style="border: none; background: aliceblue">
-
                             <h3 style="color: dodgerblue; font-weight: bold;">
                                 <a th:href="@{/gruppen2/details/{id}(id=${gruppe.getId()})}" th:text="${gruppe.getTitle()}"></a>
                             </h3>

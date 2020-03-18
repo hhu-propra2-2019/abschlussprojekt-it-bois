@@ -1,7 +1,6 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.*;
-
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.event.*;
 import mops.gruppen2.security.Account;
@@ -15,7 +14,6 @@ import java.util.UUID;
 public class ControllerService {
 
     private final EventService eventService;
-
     private final UserService userService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
 
@@ -25,20 +23,11 @@ public class ControllerService {
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
     }
 
-    /**
-     * Erzeugt eine neue Gruppe, fügt den User, der die Gruppe erstellt hat, hinzu und setzt seine Rolle als Admin fest.
-     * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
-     * Aus diesen Event Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
-     *
-     * @param account Keycloak-Account
-     * @param title Gruppentitel
-     * @param description Gruppenbeschreibung
-     */
     public void createGroup(Account account, String title, String description, Boolean visibility) throws EventException {
         Visibility visibility1;
         Long group_id = eventService.checkGroup();
 
-        if(visibility) {
+        if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
@@ -90,7 +79,7 @@ public class ControllerService {
             if(member.getUser_id().equals(user_id)) user = member;
         }
         assert user != null;
-        if(group.getRoles().get(user.getUser_id()) == Role.ADMIN) {
+        if (group.getRoles().get(user.getUser_id()) == Role.ADMIN) {
             updateRoleEvent = new UpdateRoleEvent(group_id, user.getUser_id(), Role.MEMBER);
         } else {
             updateRoleEvent = new UpdateRoleEvent(group_id, user.getUser_id(), Role.ADMIN);
@@ -132,6 +121,5 @@ public class ControllerService {
         updateDescription(account, group_id, description);
         updateRole(account.getName(), group_id);
         addUserList(users, group_id);
-
     }
 }
