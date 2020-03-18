@@ -13,7 +13,7 @@ public class DeleteGroupEvent extends Event {
     }
 
     @Override
-    public void apply(Group group) {
+    public void applyEvent(Group group) {
         group.getRoles().clear();
         group.getMembers().clear();
         group.setTitle(null);

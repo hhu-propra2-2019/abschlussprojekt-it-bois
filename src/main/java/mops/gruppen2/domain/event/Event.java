@@ -31,7 +31,22 @@ public class Event {
     Long group_id;
     String user_id;
 
-
     public void apply(Group group) throws EventException {
+        checkGroupIdMatch(group.getId());
+        applyEvent(group);
+    }
+
+    protected void applyEvent(Group group) throws EventException {
+
+    }
+
+    private void checkGroupIdMatch(Long group_id) {
+        if (this.group_id.equals(group_id)) {
+            return;
+        }
+
+        //throw new GroupIdMismatchException(this.getClass().toString());
+        System.out.println(group_id);
+        System.out.println(this.group_id);
     }
 }

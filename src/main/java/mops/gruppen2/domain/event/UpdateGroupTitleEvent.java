@@ -19,7 +19,8 @@ public class UpdateGroupTitleEvent extends Event {
         this.newGroupTitle = newGroupTitle;
     }
 
-    public void apply(Group group) {
+    @Override
+    public void applyEvent(Group group) {
         group.setTitle(this.newGroupTitle);
     }
 

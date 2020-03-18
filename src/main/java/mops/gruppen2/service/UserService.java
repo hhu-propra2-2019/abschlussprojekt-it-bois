@@ -1,6 +1,7 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.Exceptions.GroupNotFoundException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.event.Event;
@@ -39,7 +40,12 @@ public class UserService {
     public Group getGroupById(Long group_id) throws EventException {
         List<Long> group_ids = new ArrayList<>();
         group_ids.add(group_id);
-        List<Event> events = groupService.getGroupEvents(group_ids);
-        return groupService.projectEventList(events).get(0);
+
+        try {
+            List<Event> events = groupService.getGroupEvents(group_ids);
+            return groupService.projectEventList(events).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            throw new GroupNotFoundException("Gruppe nicht gefunden");
+        }
     }
 }

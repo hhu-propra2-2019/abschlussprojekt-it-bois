@@ -19,7 +19,8 @@ public class UpdateGroupDescriptionEvent extends Event {
         this.newGroupDescription = newGroupDescription;
     }
 
-    public void apply(Group group) {
+    @Override
+    public void applyEvent(Group group) {
         group.setDescription(this.newGroupDescription);
     }
 }

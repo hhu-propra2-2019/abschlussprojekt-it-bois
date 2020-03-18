@@ -27,11 +27,12 @@ public class AddUserEvent extends Event {
         this.email = email;
     }
 
-    public void apply(Group group) throws EventException{
+    @Override
+    public void applyEvent(Group group) throws EventException {
         User user = new User(this.user_id, this.givenname, this.familyname, this.email);
 
-        if (group.getMembers().contains(user)){
-            throw new UserAlreadyExistsException("Der User existiert bereits");
+        if (group.getMembers().contains(user)) {
+            throw new UserAlreadyExistsException();
         }
 
         group.getMembers().add(user);
