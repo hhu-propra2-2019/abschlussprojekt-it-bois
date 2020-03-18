@@ -56,24 +56,36 @@
                         <thead>
                         <tr>
                             <th scope="col">Mitglied</th>
-                            <th scope="col">Rolle</th>
-                            <th scope="col" style="width: 320px">Optionen</th>
+                            <th scope="col" style="width: 180px">Rolle</th>
+                            <th scope="col" style="width: 270px">Optionen</th>
                         </tr>
                         </thead>
                         <tbody class="table-striped">
-                            <tr th:each="member : ${group.getMembers()}">
+
+                            <tr  th:each="member : ${group.getMembers()}">
                                 <th th:text="${member.getUser_id()}"></th>
                                 <td>
-                                    <span th:if='${group.getRoles().get(member.getUser_id()) == admin}'>Mitglied</span>
-                                    <span th:if='${group.getRoles().get(member.getUser_id()) != admin}'>Admin</span>
+                                    <span th:if='${group.getRoles().get(member.getUser_id()) != admin}'>Mitglied</span>
+                                    <span th:if='${group.getRoles().get(member.getUser_id()) == admin}'>Admin</span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-warning">Rolle ändern</button> <!-- th:if -->
-                                    <button class="btn btn-danger">Mitglied entfernen</button>
+                                    <form method="post" action="/gruppen2/details/members/changeRole">
+                                        <input type="hidden" th:name="group_id" th:value="${group.getId()}">
+                                        <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
+                                        <button type="submit"  class="btn btn-warning btn-sm">Rolle ändern</button><!-- th:if -->
+                                    </form>
+                                    <form method="post" action="/gruppen2/details/members/deleteUser">
+                                        <input type="hidden" th:name="group_id" th:value="${group.getId()}">
+                                        <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
+                                        <button class="btn btn-danger btn-sm">Mitglied entfernen</button>
+                                    </form>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <button type="button" class="btn btn-primary" style="background: #52a1eb; border-style: none">
+                        <a th:href="@{/gruppen2/details(id=${group.getId()})}" style="color: white">Fertig</a>
+                    </button>
                 </div>
             </div>
         </div>
