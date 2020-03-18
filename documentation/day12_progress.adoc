@@ -1,0 +1,5 @@
+= Tag 12
+
+== Backend
+Heute haben wir uns darum gekümmert eine Veranstaltung mit einer csv Datei zu erstellen. Außerdem haben wir die Suchfunktion verbessert. 
+Bedeutet Groß und Kleinschreibung wird ignoriert, damit eine bessere suche möglich ist.
