@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import mops.gruppen2.domain.User;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+@Service
 public class CsvService {
 
     public static List<User> read(InputStream stream) throws IOException {
