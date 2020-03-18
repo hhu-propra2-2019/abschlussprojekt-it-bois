@@ -4,6 +4,7 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
+import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class UserService {
 
     public Group getGroupById(Long groupId) throws EventException {
         List<Long> groupIds = new ArrayList<>();
-        group_ids.add(groupId);
+        groupIds.add(groupId);
 
         try {
             List<Event> events = groupService.getGroupEvents(groupIds);

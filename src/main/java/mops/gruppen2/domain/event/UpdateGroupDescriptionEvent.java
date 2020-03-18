@@ -3,8 +3,8 @@ package mops.gruppen2.domain.event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mops.gruppen2.domain.Exceptions.NoValueException;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.exception.NoValueException;
 
 /**
  * Ändert nur die Gruppenbeschreibung.

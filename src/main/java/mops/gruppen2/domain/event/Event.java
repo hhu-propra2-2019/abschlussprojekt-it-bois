@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.exception.EventException;
+import mops.gruppen2.domain.exception.GroupIdMismatchException;
 
 
 @JsonTypeInfo(
@@ -37,7 +38,7 @@ public abstract class Event {
     protected abstract void applyEvent(Group group) throws EventException;
 
     private void checkGroupIdMatch(Long groupId) {
-        if (groupId == null || this.group_id.equals(groupId)) {
+        if (groupId == null || this.groupId.equals(groupId)) {
             return;
         }
 
