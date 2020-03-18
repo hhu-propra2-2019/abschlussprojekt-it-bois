@@ -125,6 +125,9 @@ public class Gruppen2Controller {
     public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Account account = keyCloakService.createAccountFromPrincipal (token);
+        User user = new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
+        Group group = userService.getGroupById(id);
+        if(group.getMembers().contains(user)) return "errorRenameLater"; //hier soll eigentlich auf die bereits beigetretene Gruppe weitergeleitet werden
         controllerService.addUser(account,id);
         return "redirect:/gruppen2/";
     }
