@@ -35,7 +35,7 @@
                             <h3 style="color: dodgerblue; font-weight: bold;">
                                 <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" th:text="${gruppe.getTitle()}"></a>
                             </h3>
-                            <p th:text="${gruppe.getDescription()}"></p>
+                            <p style="overflow-wrap: break-word" th:text="${#strings.abbreviate(gruppe.getDescription(),300)}"></p>
                         </div>
                         <br>
                     </div>

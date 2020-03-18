@@ -53,7 +53,7 @@
                             <th scope="row">
                                 <a th:href="@{/gruppen2/detailsSearch(id=${gruppe.getId()})}"  th:text="${gruppe.title}">Gruppenname</a>
                             </th>
-                            <td th:text="${gruppe.getDescription()}">Beschreibung</td>
+                            <td style="" th:text="${#strings.abbreviate(gruppe.getDescription(), 50)}">Beschreibung</td>
                             <td th:text="${gruppe.getMembers().size()}">Mitgliederanzahl</td>
                         </tr>
                     </tbody>
