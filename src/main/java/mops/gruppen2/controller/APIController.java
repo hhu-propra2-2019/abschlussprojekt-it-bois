@@ -13,7 +13,10 @@ import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.SerializationService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -58,5 +61,15 @@ public class APIController {
 
         List<Group> groups = groupService.projectEventList(eventList);
         return groups.get(0);
+    }
+
+    @PostMapping(value = "/uploadcsv", consumes = "text/csv")
+    public void uploadCsv(@RequestBody InputStream body) throws IOException {
+        System.out.println(CsvService.read(body));
+    }
+
+    @PostMapping(value = "/uploadcsv", consumes = "multipart/form-data")
+    public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
+        System.out.println(CsvService.read(file.getInputStream()));
     }
 }
