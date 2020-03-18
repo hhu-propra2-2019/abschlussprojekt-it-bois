@@ -1,4 +1,4 @@
-package mops.gruppen2.domain.Exceptions;
+package mops.gruppen2.domain.exception;
 
 public class UserNotFoundException extends EventException {
 

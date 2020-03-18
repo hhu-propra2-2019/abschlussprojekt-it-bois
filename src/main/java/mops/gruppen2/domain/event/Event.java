@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.exception.EventException;
 
 
 @JsonTypeInfo(

@@ -3,11 +3,11 @@ package mops.gruppen2.domain.event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mops.gruppen2.domain.Exceptions.EventException;
-import mops.gruppen2.domain.Exceptions.UserAlreadyExistsException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.exception.EventException;
+import mops.gruppen2.domain.exception.UserAlreadyExistsException;
 
 /**
  * Fügt einen einzelnen Nutzer einer Gruppe hinzu.

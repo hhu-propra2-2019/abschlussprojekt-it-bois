@@ -1,9 +1,9 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.event.Event;
+import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.repository.EventRepository;
 import org.springframework.stereotype.Service;
 

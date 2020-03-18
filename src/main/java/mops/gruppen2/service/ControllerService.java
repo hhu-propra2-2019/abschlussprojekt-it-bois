@@ -1,6 +1,5 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -13,6 +12,7 @@ import mops.gruppen2.domain.event.DeleteUserEvent;
 import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
 import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
+import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 

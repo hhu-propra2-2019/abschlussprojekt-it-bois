@@ -3,10 +3,10 @@ package mops.gruppen2.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.apiWrapper.UpdatedGroupRequestMapper;
+import mops.gruppen2.domain.api.GroupRequestWrapper;
 import mops.gruppen2.domain.event.Event;
+import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.service.APIFormatterService;
 import mops.gruppen2.service.EventService;
 import mops.gruppen2.service.GroupService;
@@ -36,10 +36,10 @@ public class APIController {
     @GetMapping("/updateGroups/{status}")
     @Secured("ROLE_api_user")
     @ApiOperation("Gibt alle Gruppen zurück in denen sich etwas geändert hat")
-    public UpdatedGroupRequestMapper updateGroup(@ApiParam("Letzter Status des Anfragestellers") @PathVariable Long status) throws EventException {
+    public GroupRequestWrapper updateGroup(@ApiParam("Letzter Status des Anfragestellers") @PathVariable Long status) throws EventException {
         List<Event> events = eventService.getNewEvents(status);
 
-        return APIFormatterService.wrapp(eventService.getMaxEvent_id(), groupService.projectEventList(events));
+        return APIFormatterService.wrap(eventService.getMaxEvent_id(), groupService.projectEventList(events));
     }
 
     @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
