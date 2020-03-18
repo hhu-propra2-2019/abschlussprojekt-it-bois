@@ -34,31 +34,51 @@ public class ControllerService {
      * @param description Gruppenbeschreibung
      */
     public void createGroup(Account account, String title, String description, Boolean visibility) {
-        Long groupID = eventService.checkGroup();
+        Long group_id = eventService.checkGroup();
         Visibility visibility1;
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
-            createInviteLink(groupID);
+            createInviteLink(group_id);
         }
-        List<Event> eventList = new ArrayList<>();
-        Collections.addAll(eventList, new CreateGroupEvent(groupID, account.getName(), null, GroupType.LECTURE, visibility1),
-                new AddUserEvent(groupID, account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()),
-                new UpdateRoleEvent(groupID, account.getName(), Role.ADMIN),
-                new UpdateGroupTitleEvent(groupID, account.getName(), title),
-                new UpdateGroupDescriptionEvent(groupID, account.getName(), description),
-                new UpdateRoleEvent(groupID, account.getName(), Role.ADMIN));
 
-        eventService.saveEventList(eventList);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.LECTURE, visibility1);
+        eventService.saveEvent(createGroupEvent);
+
+        addUser(account, group_id);
+        updateTitle(account, group_id, title);
+        updateDescription(account, group_id, description);
+        updateRole(account, group_id);
     }
 
     private void createInviteLink(Long group_id) {
         inviteLinkRepositoryService.saveInvite(group_id, UUID.randomUUID());
     }
 
-    public void addUser(Account account, Group group) {
-        AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), group.getId(), account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+
+    public void addUser(Account account, Long group_id){
+        AddUserEvent addUserEvent = new AddUserEvent(group_id,account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
         eventService.saveEvent(addUserEvent);
+    }
+
+    public void updateTitle(Account account, Long group_id, String title){
+        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(group_id,account.getName(),title);
+        eventService.saveEvent(updateGroupTitleEvent);
+    }
+
+    public void updateDescription(Account account, Long group_id, String description){
+        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(group_id,account.getName(),description);
+        eventService.saveEvent(updateGroupDescriptionEvent);
+    }
+
+    public void updateRole(Account account,Long group_id){
+        UpdateRoleEvent updateRoleEvent = new UpdateRoleEvent(group_id,account.getName(),Role.ADMIN);
+        eventService.saveEvent(updateRoleEvent);
+    }
+
+    public void deleteUser(Account account, Long group_id){
+        DeleteUserEvent deleteUserEvent = new DeleteUserEvent(group_id,account.getName());
+        eventService.saveEvent(deleteUserEvent);
     }
 }

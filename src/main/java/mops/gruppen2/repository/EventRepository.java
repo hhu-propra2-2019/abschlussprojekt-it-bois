@@ -19,8 +19,8 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
     //@Query("SELECT * FROM event WHERE event_id > ?#{[0]}")
     //Iterable<EventDTO> findNewEventSinceStatus(@Param("status") Long status);
 
-    @Query("select * from event where visibility =:vis")
-    List<EventDTO> findEventDTOByVisibility(@Param("vis") Boolean visibility);
+   @Query("select distinct group_id from event where visibility =:vis")
+   List<Long> findGroup_idsWhereVisibility(@Param("vis") Boolean visibility);
   
     @Query("SELECT DISTINCT group_id FROM event WHERE event_id > :status")
     public List<Long> findNewEventSinceStatus(@Param("status") Long status);

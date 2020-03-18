@@ -6,11 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mops.gruppen2.domain.Exceptions.EventException;
+import mops.gruppen2.domain.Group;
 
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonTypeInfo(
         include = JsonTypeInfo.As.PROPERTY,
         use = JsonTypeInfo.Id.NAME,
@@ -26,13 +28,10 @@ import lombok.Setter;
 })
 @Setter
 public class Event {
-    Long event_id;
     Long group_id;
     String user_id;
 
 
-    public Event(Long group_id,String user_id){
-        this.group_id = group_id;
-        this.user_id = user_id;
+    public void apply(Group group) throws EventException {
     }
 }
