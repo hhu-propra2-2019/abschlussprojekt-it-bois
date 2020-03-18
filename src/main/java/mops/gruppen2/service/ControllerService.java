@@ -43,7 +43,7 @@ public class ControllerService {
         addUser(account, group_id);
         updateTitle(account, group_id, title);
         updateDescription(account, group_id, description);
-        updateRole(user, group_id);
+        updateRole(user.getUser_id(), group_id);
     }
 
     public void addUser(Account account, Long group_id){
@@ -61,9 +61,14 @@ public class ControllerService {
         eventService.saveEvent(updateGroupDescriptionEvent);
     }
 
-    public void updateRole(User user, Long group_id) throws EventException {
+    public void updateRole(String user_id, Long group_id) throws EventException {
         UpdateRoleEvent updateRoleEvent;
         Group group = userService.getGroupById(group_id);
+        User user = null;
+        for (User member : group.getMembers()) {
+            if(member.getUser_id().equals(user_id)) user = member;
+        }
+        assert user != null;
         if(group.getRoles().get(user.getUser_id()) == Role.ADMIN) {
             updateRoleEvent = new UpdateRoleEvent(group_id, user.getUser_id(), Role.MEMBER);
         } else {
