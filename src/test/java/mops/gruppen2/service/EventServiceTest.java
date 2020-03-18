@@ -20,8 +20,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 class EventServiceTest {
-    EventService eventService;
-    EventRepository eventRepositoryMock = mock(EventRepository.class);
+
+    private EventService eventService;
+    private EventRepository eventRepositoryMock = mock(EventRepository.class);
 
     @BeforeEach
     void setUp() {

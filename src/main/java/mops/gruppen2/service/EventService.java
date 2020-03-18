@@ -42,7 +42,7 @@ public class EventService {
     public EventDTO getDTO(Event event) {
         boolean visibility = false;
         if (event instanceof CreateGroupEvent) {
-            visibility = ((CreateGroupEvent) event).getGroupVisibility() == Visibility.PRIVATE;
+            visibility = ((CreateGroupEvent) event).getGroupVisibility() == Visibility.PUBLIC;
         }
 
         String payload = "";
