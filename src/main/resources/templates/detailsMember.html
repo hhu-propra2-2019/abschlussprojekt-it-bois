@@ -28,8 +28,7 @@
     <div class="container-fluid">
         <div class="row">
 
-            <div class="col-9">
-                <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
+            <div class="col-9 shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
                         <h1 style="color: black; font-weight: bold" th:text="${group.getTitle()}"></h1>
                         <h3>
                             <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
@@ -41,18 +40,14 @@
                             <p style="overflow-wrap: break-word" th:text="${group.getDescription()}"></p>
                         </div>
                     <br>
-                        <div class="text-right">
-                            <form>
-                                <button class="btn btn-primary" style="background: dodgerblue; border: none">
+                        <div class="text-right btn-toolbar" style="float: right" role="toolbar">
+                                <button class="btn btn-primary" style="background: dodgerblue; border: none; margin: 5px">
                                     <a th:href="@{/gruppen2}" style="color: white">Zurück</a>
                                 </button>
                                 <form method="post" action="/gruppen2/leaveGroup">
-                                    <button th:value="${group.getId()}" th:name="group_id" class="btn btn-danger" type="submit" style="border-style: none;">Gruppe verlassen</button>
+                                    <button th:value="${group.getId()}" th:name="group_id" class="btn btn-danger" type="submit" style="border-style: none; margin: 5px">Gruppe verlassen</button>
                                 </form>
-                            </form>
-
                         </div>
-                </div>
             </div>
             <div class="col-3" style="white-space: nowrap">
                 <div style="display: inline-block; margin: 0">
