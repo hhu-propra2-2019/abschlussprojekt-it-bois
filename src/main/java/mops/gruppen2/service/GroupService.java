@@ -72,11 +72,9 @@ public class GroupService {
         return groups.get(group_id);
     }
 
-    private List<Long> removeUserGroups(List<Long> group_ids, List<Long> user_groups){
+    private List<Long> removeUserGroups(List<Long> group_ids, List<Long> user_groups) {
         for (Long group_id: user_groups) {
-            if(group_ids.contains(group_id)){
-                group_ids.remove(group_id);
-            }
+            group_ids.remove(group_id);
         }
         return group_ids;
     }
@@ -88,7 +86,8 @@ public class GroupService {
      * @throws EventException
      */
     public List<Group> getAllGroupWithVisibilityPublic(String user_id) throws EventException {
-        List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(removeUserGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE), eventRepository.findGroup_idsWhereUser_id(user_id)));
+        List<Long> group_ids = removeUserGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE), eventRepository.findGroup_idsWhereUser_id(user_id));
+        List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(group_ids);
         List<Event> events = eventService.translateEventDTOs(eventDTOS);
         List<Group> groups = projectEventList(events);
         return groups;
