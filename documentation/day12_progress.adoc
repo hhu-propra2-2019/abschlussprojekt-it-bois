@@ -3,3 +3,7 @@
 == Backend
 Heute haben wir uns darum gekümmert eine Veranstaltung mit einer csv Datei zu erstellen. Außerdem haben wir die Suchfunktion verbessert. 
 Bedeutet Groß und Kleinschreibung wird ignoriert, damit eine bessere suche möglich ist.
+
+== Frontend
+Heute haben wir die Templates für das Editieren von Mitgliedern der Gruppe fertiggestellt und den entsprechenden Buttons ihre Funktion gegeben. Das Frontend ist nun im groben fertig, es fehlt nur noch der Feinschliff.
+Außerdem haben wir einige Changes am Styling gemacht, damit alles konsistenter und schöner aussieht.
