@@ -35,11 +35,11 @@
                 <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
                         <h1 style="color: dodgerblue; font-weight: bold" th:text="${group.getTitle()}"></h1>
                         <p style="font-weight: bold">
-                            <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if="${group.getVisibility() == group.getVisibility().PRIVATE }">Private Gruppe</span>
+                            <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
                             <span class="badge badge-pill badge-primary" th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
-                            <span class="badge badge-pill badge-success" style="background: lightseagreen" th:if="${group.getType() == group.getType().LECTURE}"> Veranstaltung</span>
+                            <span class="badge badge-pill badge-success" style="background: lightseagreen" th:if='${group.getType() == group.getType().LECTURE}'> Veranstaltung</span>
                         </p>
-                        <p th:text="${group.getDescription()}"></p>
+                        <p style="overflow-wrap: break-word" th:text="${group.getDescription()}"></p>
                         <div class="form-group">
                             <div class="text-right">
                                 <form method="post" action="/gruppen2/leaveGroup">
@@ -52,14 +52,18 @@
             <div class="col-3" style="white-space: nowrap">
                 <div>
                     <h2 style="display: inline-block; margin: 0">Mitglieder</h2>
-                    <button class="btn btn-secondary" type="warning" style="background: slategrey; float: right" >Mitglieder bearbeiten</button>
+                    <div th:if='${group.getRoles().get(user.getUser_id()) == admin}'>
+                        <form method="get" action="/gruppen2/details/members">
+                                <button th:name="group_id" th:value="${group.getId()}" class="btn btn-secondary" type="submit" style="background: slategrey; margin-top: 200px; float: right" >Mitglieder bearbeiten</button>
+                        </form>
+                    </div>
                     <p></p>
                 </div>
                 <div>
                     <ul th:each="member : ${group.getMembers()}" class="list-group-flush" style="background: slategrey">
                         <li  class="list-group-item" style="background: aliceblue">
                             <span th:text="${member.getUser_id()}"></span>
-                            <span th:if="${role == role.ADMIN}" class="badge badge-success">admin</span>
+                            <span th:if='${group.getRoles().get(member.getUser_id()) == admin}' class="badge badge-success">admin</span>
                         </li>
                     </ul>
                 </div>
