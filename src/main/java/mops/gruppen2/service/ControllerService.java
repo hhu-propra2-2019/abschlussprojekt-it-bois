@@ -1,6 +1,7 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.*;
+import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.event.*;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ public class ControllerService {
     private final UserService userService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
 
-    public ControllerService(EventService eventService, UserService userService) {
+    public ControllerService(EventService eventService, UserService userService, InviteLinkRepositoryService inviteLinkRepositoryService) {
         this.eventService = eventService;
         this.userService = userService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
@@ -92,7 +93,7 @@ public class ControllerService {
         eventService.saveEvent(deleteUserEvent);
     }
 
-    public void createLecture(Account account, String title, String description, Boolean visibility, List<User> users) {
+    public void createLecture(Account account, String title, String description, Boolean visibility, List<User> users) throws EventException {
         Visibility visibility1;
         Long group_id = eventService.checkGroup();
 
@@ -104,11 +105,12 @@ public class ControllerService {
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null, GroupType.LECTURE, visibility1);
         eventService.saveEvent(createGroupEvent);
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
 
         addUser(account, group_id);
         updateTitle(account, group_id, title);
         updateDescription(account, group_id, description);
-        updateRole(account, group_id);
+        updateRole(user, group_id);
         addUserList(users, group_id);
     }
 

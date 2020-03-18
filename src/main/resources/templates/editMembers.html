@@ -21,6 +21,9 @@
             <li>
                 <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
             </li>
+            <li th:if="${account.getRoles().contains('orga')}">
+                <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
+            </li>
         </ul>
     </nav>
 </header>
@@ -29,6 +32,22 @@
         <div class="row">
             <div class="col-9">
                 <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
+                    <!-- absichern im controller nicht vergessen -->
+                    <div class="form-group pt-4" th:if="${account.getRoles().contains('orga')}">
+                        <form method="post" action="/gruppen2/details/members/addUsersFromCsv" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="file" th:name="file">
+                                        <label class="custom-file-label" for="file">CSV Datei von Mitgliedern hochladen</label>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <button th:name="group_id" th:value="${group.getId()}" class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Mitglieder hinzufügen</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <table class="table">
                         <thead>
                         <tr>

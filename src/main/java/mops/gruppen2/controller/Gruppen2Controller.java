@@ -83,7 +83,7 @@ public class Gruppen2Controller {
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung,
                                @RequestParam(value = "visibility", required = false) Boolean visibility,
-                               @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+                               @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
@@ -93,6 +93,18 @@ public class Gruppen2Controller {
         visibility = visibility == null;
         controllerService.createLecture(account, title, beschreibung, visibility, userList);
 
+        return "redirect:/gruppen2/";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @PostMapping("/details/members/addUsersFromCsv")
+    public String addUsersFromCsv(@RequestParam (value = "group_id") Long id,
+                                  @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        List<User> userList = new ArrayList<>();
+        if(!file.isEmpty()) {
+            userList = CsvService.read(file.getInputStream());
+        }
+        controllerService.addUserList(userList, id);
         return "redirect:/gruppen2/";
     }
 
@@ -193,10 +205,11 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/details/members")
-    public String editMembers(Model model, KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id)  throws  EventException {
+    public String editMembers(Model model, KeycloakAuthenticationToken token, @RequestParam (value = "group_id") Long id)  throws  EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(id);
         if(group.getRoles().get(account.getName()) == Role.ADMIN) {
+            model.addAttribute("account", account);
             model.addAttribute("members", group.getMembers());
             model.addAttribute("group", group);
             return "editMembers";
