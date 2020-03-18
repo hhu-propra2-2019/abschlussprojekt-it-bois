@@ -5,36 +5,27 @@ import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
-import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.event.CreateGroupEvent;
-import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @SessionScope
 @RequestMapping("/gruppen2")
 public class Gruppen2Controller {
 
-    @Autowired
     Gruppen2Config gruppen2Config;
-
     private final KeyCloakService keyCloakService;
     private final EventService eventService;
     private final GroupService groupService;
@@ -86,7 +77,7 @@ public class Gruppen2Controller {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
-        if(!file.isEmpty()) {
+        if (!file.isEmpty()) {
             userList = CsvService.read(file.getInputStream());
         }
         visibility = visibility == null;
@@ -97,14 +88,14 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/details/members/addUsersFromCsv")
-    public String addUsersFromCsv(@RequestParam (value = "group_id") Long id,
+    public String addUsersFromCsv(@RequestParam (value = "group_id") Long group_id,
                                   @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         List<User> userList = new ArrayList<>();
-        if(!file.isEmpty()) {
+        if (!file.isEmpty()) {
             userList = CsvService.read(file.getInputStream());
         }
-        controllerService.addUserList(userList, id);
-        return "redirect:/gruppen2/";
+        controllerService.addUserList(userList, group_id);
+        return "redirect:/gruppen2/details/members/" + group_id;
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
