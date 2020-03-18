@@ -39,7 +39,7 @@
                         </thead>
                         <tr th:each="member : ${group.getMembers()}">
                             <th th:value="${member.getUser_id()}"></th>
-                            <th th:text="${group.getRoles.get(member.getUser_id())}"></th>
+                            <th ></th>
                             <th>
                                 <button class="btn btn-warning">Rolle ändern</button> <!-- th:if -->
                                 <button class="btn btn-danger">Mitglied entfernen</button>
