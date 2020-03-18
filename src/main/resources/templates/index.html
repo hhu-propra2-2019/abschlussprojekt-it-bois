@@ -30,8 +30,16 @@
             <div class="col-10">
                 <h1>Meine Gruppen</h1>
                 <form action="/" method="get">
+                    <h3 style="color: dodgerblue; font-weight: bold;">
+                        <small style="font-weight: normal; color: black">Mitglied in </small>
+                        <small style="font-weight: bold; color: black" th:text="${gruppen.size()}"></small>
+                        <small style="font-weight: normal; color: black" th:if='${gruppen.size()==1}'> Gruppe.</small>
+                        <small style="font-weight: normal; color: black" th:if='${gruppen.size()!=1}'> Gruppen.</small>
+                    </h3>
+                    <br>
                     <div th:each="gruppe: ${gruppen}">
                         <div class="shadow-sm p-4" style="border: none; background: aliceblue">
+
                             <h3 style="color: dodgerblue; font-weight: bold;">
                                 <a th:href="@{/gruppen2/details(id=${gruppe.getId()})}" th:text="${gruppe.getTitle()}"></a>
                             </h3>
@@ -40,22 +48,6 @@
                         <br>
                     </div>
                 </form>
-            </div>
-            <div class="col-2">
-                <div class="card" style="background: lightgrey">
-                    <div class="card-body">
-                        <h2 class="card-title" th:text="${user.getUser_id()}" style="text-align: center">user_id</h2>
-                        <h3 class="card-text">
-                            <span th:text="${user.getGivenname()}">username</span>
-                            <span th:text="${user.getFamilyname()}">usersurname</span>
-                        </h3>
-                        <p class="card-text" th:text="${user.getEmail()}">usermail</p>
-                        <p>
-                            <small class="card-text">In Gruppen:</small>
-                            <small   class="card-text" th:text="${gruppen.size()}"></small>
-                        </p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

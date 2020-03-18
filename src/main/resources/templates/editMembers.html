@@ -28,13 +28,13 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-9">
-                <div class="shadow-sm p-4" style="border: 10px solid aliceblue; background: aliceblue">
+                <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
                     <table class="table">
                         <thead>
                         <tr>
                             <th scope="col">Mitglied</th>
-                            <th scope="col">Rolle</th>
-                            <th scope="col" style="width: 320px">Optionen</th>
+                            <th scope="col" style="width: 180px">Rolle</th>
+                            <th scope="col" style="width: 270px">Optionen</th>
                         </tr>
                         </thead>
                         <tbody class="table-striped">
@@ -45,12 +45,15 @@
                                     <span th:if='${group.getRoles().get(member.getUser_id()) != admin}'>Admin</span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-warning">Rolle ändern</button> <!-- th:if -->
-                                    <button class="btn btn-danger">Mitglied entfernen</button>
+                                    <button class="btn btn-warning btn-sm">Rolle ändern</button> <!-- th:if -->
+                                    <button class="btn btn-danger btn-sm" >Mitglied entfernen</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <button type="button" class="btn btn-primary" style="background: #52a1eb; border-style: none">
+                        <a th:href="@{/gruppen2/details(id=${group.getId()})}" style="color: white">Fertig</a>
+                    </button>
                 </div>
             </div>
         </div>
