@@ -146,10 +146,10 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/leaveGroup")
-    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id) {
+    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        controllerService.deleteUser(user, id);
+        controllerService.deleteUser(user.getUser_id(), id);
         return "redirect:/gruppen2/";
     }
 
@@ -179,7 +179,8 @@ public class Gruppen2Controller {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/deleteUser")
     public String deleteUser(KeycloakAuthenticationToken token,@RequestParam (value = "group_id") Long group_id,
-                             @RequestParam (value = "user_id") String user_id) {
-        return null;
+                             @RequestParam (value = "user_id") String user_id) throws EventException {
+        controllerService.deleteUser(user_id, group_id);
+        return "redirect:/gruppen2/details/members/" + group_id;
     }
 }

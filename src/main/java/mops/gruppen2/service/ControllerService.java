@@ -77,7 +77,13 @@ public class ControllerService {
         eventService.saveEvent(updateRoleEvent);
     }
 
-    public void deleteUser(User user, Long group_id){
+    public void deleteUser(String user_id, Long group_id) throws EventException {
+        Group group = userService.getGroupById(group_id);
+        User user = null;
+        for (User member : group.getMembers()) {
+            if(member.getUser_id().equals(user_id)) user = member;
+        }
+        assert user != null;
         DeleteUserEvent deleteUserEvent = new DeleteUserEvent(group_id, user.getUser_id());
         eventService.saveEvent(deleteUserEvent);
     }
