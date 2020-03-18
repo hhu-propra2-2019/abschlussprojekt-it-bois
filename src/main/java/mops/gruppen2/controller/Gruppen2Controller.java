@@ -99,9 +99,10 @@ public class Gruppen2Controller {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/findGroup")
     public String findGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "suchbegriff", required = false) String suchbegriff) throws EventException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
         List<Group> groupse = new ArrayList<>();
         if (suchbegriff != null) {
-            groupse = groupService.findGroupWith(suchbegriff);
+            groupse = groupService.findGroupWith(suchbegriff,account);
         }
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", groupse);
