@@ -6,6 +6,7 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
+import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -77,9 +78,15 @@ public class GroupService {
      * @return
      * @throws EventException
      */
-
-    public List<Group> getAllGroupWithVisibilityPublic() throws EventException {
+    // Namensänderung fixen und die Forschleife auslagern
+    public List<Group> getAllGroupWithVisibilityPublic(String user_id) throws EventException {
         List<Long> group_ids = eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE);
+        List<Long> group_ids_user = eventRepository.findGroup_idsWhereUser_id(user_id);
+        for (Long group_id: group_ids_user) {
+            if(group_ids.contains(group_id)){
+                group_ids.remove(group_id);
+            }
+        }
         List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(group_ids);
         List<Event> events = eventService.translateEventDTOs(eventDTOS);
         List<Group> groups = projectEventList(events);
@@ -94,9 +101,9 @@ public class GroupService {
      * @return
      * @throws EventException
      */
-    public List<Group> findGroupWith(String search) throws EventException {
+    public List<Group> findGroupWith(String search, Account account) throws EventException {
         List<Group> groups = new ArrayList<>();
-        for (Group group: getAllGroupWithVisibilityPublic()) {
+        for (Group group: getAllGroupWithVisibilityPublic(account.getName())) {
             if (group.getTitle().contains(search)|| group.getDescription().contains(search)){
                 groups.add(group);
             }
