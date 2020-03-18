@@ -60,13 +60,4 @@ public class APIController {
         return groups.get(0);
     }
 
-    @PostMapping(value = "/uploadcsv", consumes = "text/csv")
-    public void uploadCsv(@RequestBody InputStream body) throws IOException {
-        System.out.println(CsvService.read(body));
-    }
-
-    @PostMapping(value = "/uploadcsv", consumes = "multipart/form-data")
-    public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
-        System.out.println(CsvService.read(file.getInputStream()));
-    }
 }

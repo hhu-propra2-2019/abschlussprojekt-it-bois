@@ -17,9 +17,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,13 +73,18 @@ public class Gruppen2Controller {
         return "createLecture";
     }
 
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/createLecture")
     public String pCreateLecture(KeycloakAuthenticationToken token,
                                @RequestParam(value = "title") String title,
-                               @RequestParam(value = "beschreibung") String beschreibung) {
+                               @RequestParam(value = "beschreibung") String beschreibung,
+                               @RequestParam(value = "visibility", required = false) Boolean visibility,
+                               @RequestParam("file") MultipartFile file) throws IOException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        controllerService.createGroup(account, title, beschreibung, true);
+        List<User> userList = CsvService.read(file.getInputStream());
+        visibility = visibility == null;
+        controllerService.createLecture(account, title, beschreibung, visibility, userList);
 
         return "redirect:/gruppen2/";
     }
@@ -109,11 +116,7 @@ public class Gruppen2Controller {
                                @RequestParam(value = "visibility", required = false) Boolean visibility) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        if (visibility == null) {
-            visibility = true;
-        }else{
-            visibility = false;
-        }
+        visibility = visibility == null;
         controllerService.createGroup(account, title, beschreibung, visibility);
 
         return "redirect:/gruppen2/";
