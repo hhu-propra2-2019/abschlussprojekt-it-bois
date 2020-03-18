@@ -16,6 +16,7 @@ import mops.gruppen2.domain.User;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddUserEvent extends Event {
+
     String givenname;
     String familyname;
     String email;
@@ -27,10 +28,10 @@ public class AddUserEvent extends Event {
         this.email = email;
     }
 
-    public void apply(Group group) throws EventException{
+    public void apply(Group group) throws EventException {
         User user = new User(this.user_id, this.givenname, this.familyname, this.email);
 
-        if (group.getMembers().contains(user)){
+        if (group.getMembers().contains(user)) {
             throw new UserAlreadyExistsException("Der User existiert bereits");
         }
 

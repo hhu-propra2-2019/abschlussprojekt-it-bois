@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdatedGroupRequestMapper {
+
     private Long status;
     private List<Group> groupList;
 }

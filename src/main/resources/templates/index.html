@@ -10,23 +10,23 @@
 </head>
 <body>
 <header>
-        <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
-            <ul>
-                <li class="active">
-                    <a th:href="@{/gruppen2}" href="/">Gruppen</a>
-                </li>
-                <li>
-                    <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
-                </li>
-                <li>
-                    <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
-                </li>
-                <!-- Fix double point -->
-                <li th:if="${account.getRoles().contains('orga')}">
-                    <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
-                </li>
-            </ul>
-        </nav>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li class="active">
+                <a href="/" th:href="@{/gruppen2}">Gruppen</a>
+            </li>
+            <li>
+                <a href="/createGroup" th:href="@{/gruppen2/createGroup}">Erstellen</a>
+            </li>
+            <li>
+                <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
+            </li>
+            <!-- Fix double point -->
+            <li th:if="${account.getRoles().contains('orga')}">
+                <a href="/createLecture" th:href="@{/gruppen2/createLecture}">Veranstaltung</a>
+            </li>
+        </ul>
+    </nav>
 </header>
 <main th:fragment="bodycontent">
     <div class="container-fluid">
@@ -36,18 +36,23 @@
                 <form action="/" method="get">
                     <h3 style="color: dodgerblue; font-weight: bold;">
                         <small style="font-weight: normal; color: black">Mitglied in </small>
-                        <small style="font-weight: bold; color: black" th:text="${gruppen.size()}"></small>
-                        <small style="font-weight: normal; color: black" th:if='${gruppen.size()==1}'> Gruppe.</small>
-                        <small style="font-weight: normal; color: black" th:if='${gruppen.size()!=1}'> Gruppen.</small>
+                        <small style="font-weight: bold; color: black"
+                               th:text="${gruppen.size()}"></small>
+                        <small style="font-weight: normal; color: black"
+                               th:if='${gruppen.size()==1}'> Gruppe.</small>
+                        <small style="font-weight: normal; color: black"
+                               th:if='${gruppen.size()!=1}'> Gruppen.</small>
                     </h3>
                     <br>
                     <div th:each="gruppe: ${gruppen}">
                         <div class="shadow-sm p-4" style="border: none; background: aliceblue">
                             <h3 style="color: dodgerblue; font-weight: bold;">
-                                <a th:href="@{/gruppen2/details/{id}(id=${gruppe.getId()})}" th:text="${gruppe.getTitle()}"></a>
+                                <a th:href="@{/gruppen2/details/{id}(id=${gruppe.getId()})}"
+                                   th:text="${gruppe.getTitle()}"></a>
                             </h3>
                             <div class="shadow-sm p-4" style="background: white">
-                                <p style="overflow-wrap: break-word" th:text="${#strings.abbreviate(gruppe.getDescription(),300)}"></p>
+                                <p style="overflow-wrap: break-word"
+                                   th:text="${#strings.abbreviate(gruppe.getDescription(),300)}"></p>
                             </div>
                         </div>
                         <br>

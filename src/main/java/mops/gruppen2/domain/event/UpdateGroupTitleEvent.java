@@ -12,6 +12,7 @@ import mops.gruppen2.domain.Group;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateGroupTitleEvent extends Event {
+
     String newGroupTitle;
 
     public UpdateGroupTitleEvent(Long group_id, String user_id, String newGroupTitle) {

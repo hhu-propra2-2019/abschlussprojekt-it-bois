@@ -11,11 +11,10 @@ import mops.gruppen2.domain.Visibility;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateGroupEvent extends Event {
+
     private Visibility groupVisibility;
     private Long groupParent;
     private GroupType groupType;
-
-
 
     public CreateGroupEvent(Long group_id, String user_id, Long parent, GroupType type, Visibility visibility) {
         super(group_id, user_id);

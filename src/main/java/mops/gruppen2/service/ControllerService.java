@@ -1,8 +1,18 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.*;
 import mops.gruppen2.domain.Exceptions.EventException;
-import mops.gruppen2.domain.event.*;
+import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Role;
+import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.event.AddUserEvent;
+import mops.gruppen2.domain.event.CreateGroupEvent;
+import mops.gruppen2.domain.event.DeleteGroupEvent;
+import mops.gruppen2.domain.event.DeleteUserEvent;
+import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
+import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
+import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +44,7 @@ public class ControllerService {
             createInviteLink(group_id);
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.SIMPLE, visibility1);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null, GroupType.SIMPLE, visibility1);
         eventService.saveEvent(createGroupEvent);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
 
@@ -49,8 +59,8 @@ public class ControllerService {
     }
 
 
-    public void addUser(Account account, Long group_id){
-        AddUserEvent addUserEvent = new AddUserEvent(group_id,account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
+    public void addUser(Account account, Long group_id) {
+        AddUserEvent addUserEvent = new AddUserEvent(group_id, account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         eventService.saveEvent(addUserEvent);
     }
 
@@ -61,13 +71,13 @@ public class ControllerService {
         }
     }
 
-    public void updateTitle(Account account, Long group_id, String title){
-        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(group_id,account.getName(),title);
+    public void updateTitle(Account account, Long group_id, String title) {
+        UpdateGroupTitleEvent updateGroupTitleEvent = new UpdateGroupTitleEvent(group_id, account.getName(), title);
         eventService.saveEvent(updateGroupTitleEvent);
     }
 
-    public void updateDescription(Account account, Long group_id, String description){
-        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(group_id,account.getName(),description);
+    public void updateDescription(Account account, Long group_id, String description) {
+        UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(group_id, account.getName(), description);
         eventService.saveEvent(updateGroupDescriptionEvent);
     }
 
@@ -76,7 +86,9 @@ public class ControllerService {
         Group group = userService.getGroupById(group_id);
         User user = null;
         for (User member : group.getMembers()) {
-            if(member.getUser_id().equals(user_id)) user = member;
+            if (member.getUser_id().equals(user_id)) {
+                user = member;
+            }
         }
         assert user != null;
         if (group.getRoles().get(user.getUser_id()) == Role.ADMIN) {
@@ -91,7 +103,9 @@ public class ControllerService {
         Group group = userService.getGroupById(group_id);
         User user = null;
         for (User member : group.getMembers()) {
-            if(member.getUser_id().equals(user_id)) user = member;
+            if (member.getUser_id().equals(user_id)) {
+                user = member;
+            }
         }
         assert user != null;
         DeleteUserEvent deleteUserEvent = new DeleteUserEvent(group_id, user.getUser_id());

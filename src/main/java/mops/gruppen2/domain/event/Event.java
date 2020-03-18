@@ -19,15 +19,16 @@ import mops.gruppen2.domain.Group;
         property = "type"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AddUserEvent.class, name = "AddUserEvent"),
-        @JsonSubTypes.Type(value = CreateGroupEvent.class, name = "CreateGroupEvent"),
-        @JsonSubTypes.Type(value = DeleteUserEvent.class, name = "DeleteUserEvent"),
-        @JsonSubTypes.Type(value = UpdateGroupDescriptionEvent.class, name = "UpdateGroupDescriptionEvent"),
-        @JsonSubTypes.Type(value = UpdateGroupTitleEvent.class, name = "UpdateGroupTitleEvent"),
-        @JsonSubTypes.Type(value = UpdateRoleEvent.class, name = "UpdateRoleEvent"),
-})
+                      @JsonSubTypes.Type(value = AddUserEvent.class, name = "AddUserEvent"),
+                      @JsonSubTypes.Type(value = CreateGroupEvent.class, name = "CreateGroupEvent"),
+                      @JsonSubTypes.Type(value = DeleteUserEvent.class, name = "DeleteUserEvent"),
+                      @JsonSubTypes.Type(value = UpdateGroupDescriptionEvent.class, name = "UpdateGroupDescriptionEvent"),
+                      @JsonSubTypes.Type(value = UpdateGroupTitleEvent.class, name = "UpdateGroupTitleEvent"),
+                      @JsonSubTypes.Type(value = UpdateRoleEvent.class, name = "UpdateRoleEvent"),
+              })
 @Setter
 public class Event {
+
     Long group_id;
     String user_id;
 

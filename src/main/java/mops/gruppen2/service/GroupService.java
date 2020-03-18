@@ -1,9 +1,8 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import mops.gruppen2.security.Account;
@@ -25,7 +24,8 @@ public class GroupService {
         this.eventRepository = eventRepository;
     }
 
-    /** Sucht in der DB alle Zeilen raus welche eine der Gruppen_ids hat.
+    /**
+     * Sucht in der DB alle Zeilen raus welche eine der Gruppen_ids hat.
      * Wandelt die Zeilen in Events um und gibt davon eine Liste zurück.
      *
      * @param group_ids
@@ -33,14 +33,15 @@ public class GroupService {
      */
     public List<Event> getGroupEvents(List<Long> group_ids) {
         List<EventDTO> eventDTOS = new ArrayList<>();
-        for (Long group_id: group_ids) {
+        for (Long group_id : group_ids) {
             eventDTOS.addAll(eventRepository.findEventDTOByGroup_id(group_id));
         }
         return eventService.translateEventDTOs(eventDTOS);
     }
 
-    /** Erzeugt eine neue Map wo Gruppen aus den Events erzeugt und den Gruppen_ids zugeordnet werden.
-     *  Die Gruppen werden als Liste zurückgegeben
+    /**
+     * Erzeugt eine neue Map wo Gruppen aus den Events erzeugt und den Gruppen_ids zugeordnet werden.
+     * Die Gruppen werden als Liste zurückgegeben
      *
      * @param events
      * @return
@@ -57,8 +58,9 @@ public class GroupService {
         return new ArrayList<>(groupMap.values());
     }
 
-    /** guckt in der Map anhand der Id nach ob die Gruppe schon in der Map vorhanden ist, wenn nicht wird eine neue
-     *  Gruppe erzeugt
+    /**
+     * guckt in der Map anhand der Id nach ob die Gruppe schon in der Map vorhanden ist, wenn nicht wird eine neue
+     * Gruppe erzeugt
      *
      * @param groups
      * @param group_id
@@ -73,7 +75,7 @@ public class GroupService {
     }
 
     private List<Long> removeUserGroups(List<Long> group_ids, List<Long> user_groups) {
-        for (Long group_id: user_groups) {
+        for (Long group_id : user_groups) {
             group_ids.remove(group_id);
         }
         return group_ids;
@@ -82,6 +84,7 @@ public class GroupService {
     /**
      * sucht alle Zeilen in der DB wo die Visibility true ist und entfernt alle Gruppen des Users.
      * Erstellt eine Liste aus Gruppen.
+     *
      * @return
      * @throws EventException
      */
@@ -97,14 +100,15 @@ public class GroupService {
     /**
      * Filtert alle öffentliche Gruppen nach dem suchbegriff und gibt diese als Liste von Gruppen zurück.
      * Groß und kleinschreibung wird beachtet.
+     *
      * @param search
      * @return
      * @throws EventException
      */
     public List<Group> findGroupWith(String search, Account account) throws EventException {
         List<Group> groups = new ArrayList<>();
-        for (Group group: getAllGroupWithVisibilityPublic(account.getName())) {
-            if (group.getTitle().toLowerCase().contains(search.toLowerCase()) || group.getDescription().toLowerCase().contains(search.toLowerCase())){
+        for (Group group : getAllGroupWithVisibilityPublic(account.getName())) {
+            if (group.getTitle().toLowerCase().contains(search.toLowerCase()) || group.getDescription().toLowerCase().contains(search.toLowerCase())) {
                 groups.add(group);
             }
         }

@@ -8,7 +8,8 @@ import java.util.List;
 
 @Service
 public class APIFormatterService {
-    static public UpdatedGroupRequestMapper wrapp(Long status, List<Group> groupList){
+
+    static public UpdatedGroupRequestMapper wrapp(Long status, List<Group> groupList) {
         return new UpdatedGroupRequestMapper(status, groupList);
     }
 }

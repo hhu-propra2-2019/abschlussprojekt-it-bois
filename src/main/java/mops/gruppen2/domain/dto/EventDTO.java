@@ -7,6 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("event")
 @Data
 public class EventDTO {
+
     @Id
     Long event_id;
     Long group_id;

@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Data
 @AllArgsConstructor
 public class InviteLinkDTO {
+
     @Id
     Long link_id;
     Long group_id;

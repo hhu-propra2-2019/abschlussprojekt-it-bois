@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 //Hallo
 @Service
 public class UserService {
@@ -25,11 +26,11 @@ public class UserService {
 
     public List<Group> getUserGroups(User user) throws EventException {
         List<Long> group_ids = eventRepository.findGroup_idsWhereUser_id(user.getUser_id());
-        List<Event> events =  groupService.getGroupEvents(group_ids);
+        List<Event> events = groupService.getGroupEvents(group_ids);
         List<Group> groups = groupService.projectEventList(events);
         List<Group> newGroups = new ArrayList<>();
-        for (Group group: groups) {
-            if(group.getMembers().contains(user)){
+        for (Group group : groups) {
+            if (group.getMembers().contains(user)) {
                 newGroups.add(group);
             }
         }

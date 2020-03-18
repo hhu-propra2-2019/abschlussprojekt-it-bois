@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public class EventService {
+
     private final SerializationService serializationService;
     private final EventRepository eventStore;
 
