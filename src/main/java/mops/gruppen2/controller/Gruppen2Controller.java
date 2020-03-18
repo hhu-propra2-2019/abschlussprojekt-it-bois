@@ -2,16 +2,19 @@ package mops.gruppen2.controller;
 
 import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Exceptions.EventException;
-import mops.gruppen2.domain.Exceptions.GroupNotFoundException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -76,7 +79,7 @@ public class Gruppen2Controller {
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung,
                                @RequestParam(value = "visibility", required = false) Boolean visibility,
-                               @RequestParam("file") MultipartFile file) throws IOException {
+                               @RequestParam(value = "file") MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = CsvService.read(file.getInputStream());
@@ -111,7 +114,7 @@ public class Gruppen2Controller {
     public String pCreateGroup(KeycloakAuthenticationToken token,
                                @RequestParam(value = "title") String title,
                                @RequestParam(value = "beschreibung") String beschreibung,
-                               @RequestParam(value = "visibility", required = false) Boolean visibility) {
+                               @RequestParam(value = "visibility", required = false) Boolean visibility) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         visibility = visibility == null;
@@ -120,16 +123,19 @@ public class Gruppen2Controller {
         return "redirect:/gruppen2/";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @GetMapping("/details")
-    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws ResponseStatusException, EventException {
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @GetMapping("/details/{id}")
+    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @PathVariable (value="id") Long id) throws EventException, ResponseStatusException {
+
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(id);
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         if (group != null) {
             model.addAttribute("group", group);
-            model.addAttribute("role", group.getRoles().get(user.getUser_id()));
+            model.addAttribute("roles", group.getRoles());
+            model.addAttribute("user", user);
+            model.addAttribute("admin", Role.ADMIN);
             return "detailsMember";
         }
         throw new GroupNotFoundException();
@@ -139,8 +145,11 @@ public class Gruppen2Controller {
     @PostMapping("/detailsBeitreten")
     public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "id") Long id) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        Account account = keyCloakService.createAccountFromPrincipal(token);
-        controllerService.addUser(account, id);
+        Account account = keyCloakService.createAccountFromPrincipal (token);
+        User user = new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
+        Group group = userService.getGroupById(id);
+        if(group.getMembers().contains(user)) return "errorRenameLater"; //hier soll eigentlich auf die bereits beigetretene Gruppe weitergeleitet werden
+        controllerService.addUser(account,id);
         return "redirect:/gruppen2/";
     }
 
@@ -168,12 +177,44 @@ public class Gruppen2Controller {
         throw new GroupNotFoundException();
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/leaveGroup")
-    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam(value = "group_id") Long id) {
+    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam (value="group_id") Long id) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        controllerService.deleteUser(account, id);
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        controllerService.deleteUser(user.getUser_id(), id);
         return "redirect:/gruppen2/";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @GetMapping("/details/members/{id}")
+    public String editMembers(Model model, KeycloakAuthenticationToken token, @PathVariable (value="id") Long id)  throws  EventException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        Group group = userService.getGroupById(id);
+        if(group.getRoles().get(account.getName()) == Role.ADMIN) {
+            model.addAttribute("members", group.getMembers());
+            model.addAttribute("group", group);
+            model.addAttribute("admin", Role.ADMIN);
+            return "editMembers";
+        } else {
+            return "redirect:/details/";
+        }
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @PostMapping("/details/members/changeRole")
+    public String changeRole(KeycloakAuthenticationToken token, @RequestParam (value = "group_id") Long group_id,
+                             @RequestParam (value = "user_id") String user_id) throws EventException {
+        controllerService.updateRole(user_id, group_id);
+        return "redirect:/gruppen2/details/members/" + group_id;
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @PostMapping("/details/members/deleteUser")
+    public String deleteUser(KeycloakAuthenticationToken token,@RequestParam (value = "group_id") Long group_id,
+                             @RequestParam (value = "user_id") String user_id) throws EventException {
+        controllerService.deleteUser(user_id, group_id);
+        return "redirect:/gruppen2/details/members/" + group_id;
     }
 
     @GetMapping("*")

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Gruppendetails</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li class="active">
+                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+            </li>
+            <li>
+                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
+            </li>
+            <li>
+                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-9">
+                <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Mitglied</th>
+                            <th scope="col" style="width: 180px">Rolle</th>
+                            <th scope="col" style="width: 270px">Optionen</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-striped">
+
+                            <tr  th:each="member : ${group.getMembers()}">
+                                <th th:text="${member.getUser_id()}"></th>
+                                <td>
+                                    <span th:if='${group.getRoles().get(member.getUser_id()) != admin}'>Mitglied</span>
+                                    <span th:if='${group.getRoles().get(member.getUser_id()) == admin}'>Admin</span>
+                                </td>
+                                <td>
+                                    <form method="post" action="/gruppen2/details/members/changeRole">
+                                        <input type="hidden" th:name="group_id" th:value="${group.getId()}">
+                                        <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
+                                        <button type="submit"  class="btn btn-warning btn-sm">Rolle ändern</button><!-- th:if -->
+                                    </form>
+                                    <form method="post" action="/gruppen2/details/members/deleteUser">
+                                        <input type="hidden" th:name="group_id" th:value="${group.getId()}">
+                                        <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
+                                        <button class="btn btn-danger btn-sm">Mitglied entfernen</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary" style="background: #52a1eb; border-style: none">
+                        <a th:href="@{/gruppen2/details(id=${group.getId()})}" style="color: white">Fertig</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
