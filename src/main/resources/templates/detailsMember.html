@@ -58,8 +58,10 @@
                 <div style="display: inline-block; margin: 0">
                     <h2>Mitglieder</h2>
                     <div th:if='${group.getRoles().get(user.getUser_id()) == admin}'>
-                        <form method="get" action="/gruppen2/details/members">
-                                <button th:name="group_id" th:value="${group.getId()}" class="btn btn-secondary" type="submit" style="background: slategrey; float: right" >Mitglieder bearbeiten</button>
+                        <form method="get" th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
+                                <button class="btn btn-secondary" style="background: slategrey; float: right" >
+                                    Mitglieder bearbeiten
+                                </button>
                         </form>
                     </div>
                     <br>
