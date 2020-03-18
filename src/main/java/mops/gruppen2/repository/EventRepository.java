@@ -30,4 +30,7 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
     @Query("SELECT MAX(event_id) FROM event")
     public Long getHighesEvent_ID();
+
+    @Query("SELECT MAX(group_id) FROM event")
+    public Long getMaxGroupID();
 }
