@@ -1,9 +1,6 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.GroupType;
-import mops.gruppen2.domain.Role;
-import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.*;
 import mops.gruppen2.domain.event.*;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
@@ -34,16 +31,17 @@ public class ControllerService {
      * @param description Gruppenbeschreibung
      */
     public void createGroup(Account account, String title, String description, Boolean visibility) {
-        Long group_id = eventService.checkGroup();
         Visibility visibility1;
-        if (visibility) {
+        Long group_id = eventService.checkGroup();
+
+        if(visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
             createInviteLink(group_id);
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.LECTURE, visibility1);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null , GroupType.SIMPLE, visibility1);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, group_id);
@@ -60,6 +58,13 @@ public class ControllerService {
     public void addUser(Account account, Long group_id){
         AddUserEvent addUserEvent = new AddUserEvent(group_id,account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail());
         eventService.saveEvent(addUserEvent);
+    }
+
+    public void addUserList(List<User> users, Long group_id) {
+        for (User user : users) {
+            AddUserEvent addUserEvent = new AddUserEvent(group_id, user.getUser_id(), user.getGivenname(), user.getFamilyname(), user.getEmail());
+            eventService.saveEvent(addUserEvent);
+        }
     }
 
     public void updateTitle(Account account, Long group_id, String title){
@@ -80,5 +85,25 @@ public class ControllerService {
     public void deleteUser(Account account, Long group_id){
         DeleteUserEvent deleteUserEvent = new DeleteUserEvent(group_id,account.getName());
         eventService.saveEvent(deleteUserEvent);
+    }
+
+    public void createLecture(Account account, String title, String description, Boolean visibility, List<User> users) {
+        Visibility visibility1;
+        Long group_id = eventService.checkGroup();
+
+        if (visibility) {
+            visibility1 = Visibility.PUBLIC;
+        } else {
+            visibility1 = Visibility.PRIVATE;
+        }
+
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(group_id, account.getName(), null, GroupType.LECTURE, visibility1);
+        eventService.saveEvent(createGroupEvent);
+
+        addUser(account, group_id);
+        updateTitle(account, group_id, title);
+        updateDescription(account, group_id, description);
+        updateRole(account, group_id);
+        addUserList(users, group_id);
     }
 }

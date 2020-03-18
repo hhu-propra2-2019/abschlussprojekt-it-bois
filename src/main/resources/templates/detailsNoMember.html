@@ -21,6 +21,9 @@
             <li>
                 <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
             </li>
+            <li th:if="${account.getRoles().contains('orga')}">
+                <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
+            </li>
         </ul>
     </nav>
 </header>

@@ -16,13 +16,13 @@
             <li>
                 <a th:href="@{/gruppen2}" href="/">Gruppen</a>
             </li>
-            <li  class="active">
+            <li>
                 <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
             </li>
             <li>
                 <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
             </li>
-            <li th:if="${account.getRoles().contains('orga')}">
+            <li th:if="${account.getRoles().contains('orga')}" class="active">
                 <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
             </li>
         </ul>
@@ -32,9 +32,9 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-10">
-                <h1>Gruppenerstellung</h1>
-                <form method="post" action="/gruppen2/createGroup">
-                    <div class="shadow p-2" style=" border: 10px solid aliceblue; background: aliceblue">
+                <h1>Veranstaltung erstellen</h1>
+                <div class="shadow p-2" style=" border: 10px solid aliceblue; background: aliceblue">
+                    <form method="post" action="/gruppen2/createLecture" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="titel">Titel</label>
                             <input type="text" class="form-control" id="titel" th:name="title" required>
@@ -47,21 +47,21 @@
                             <input type="checkbox" id="visibility" class="custom-control-input" th:name="visibility">
                             <label class="custom-control-label" for="visibility">Private Gruppe</label>
                         </div>
-                        <div class="form-group">
-                            <label for="sel1"></label>
-                            <select class="form-control" id="sel1">
-                                <option selected="true" disabled>--Bitte Veranstaltung auswählen--</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                            </select>
+                        <div class="form-group pt-4">
+                            <div class="row">
+                                <div class="col-10">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="file" th:name="file">
+                                        <label class="custom-file-label" for="file">CSV Datei von Mitgliedern hochladen</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group pt-4">
                             <button class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Erstellen</button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

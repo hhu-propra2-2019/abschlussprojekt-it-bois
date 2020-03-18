@@ -7,13 +7,13 @@ import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.apiWrapper.UpdatedGroupRequestMapper;
 import mops.gruppen2.domain.event.Event;
-import mops.gruppen2.service.APIFormatterService;
-import mops.gruppen2.service.EventService;
-import mops.gruppen2.service.GroupService;
-import mops.gruppen2.service.SerializationService;
+import mops.gruppen2.service.*;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -59,4 +59,5 @@ public class APIController {
         List<Group> groups = groupService.projectEventList(eventList);
         return groups.get(0);
     }
+
 }

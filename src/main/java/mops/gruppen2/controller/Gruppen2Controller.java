@@ -4,6 +4,7 @@ import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Exceptions.EventException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
@@ -13,13 +14,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@SessionScope
 @RequestMapping("/gruppen2")
 public class Gruppen2Controller {
 
@@ -54,14 +60,36 @@ public class Gruppen2Controller {
     public String index(KeycloakAuthenticationToken token, Model model) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", userService.getUserGroups(user));
         model.addAttribute("user", user);
         return "index";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @GetMapping("/createLecture")
+    public String createLecture(KeycloakAuthenticationToken token, Model model) {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        return "createLecture";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @PostMapping("/createLecture")
+    public String pCreateLecture(KeycloakAuthenticationToken token,
+                               @RequestParam(value = "title") String title,
+                               @RequestParam(value = "beschreibung") String beschreibung,
+                               @RequestParam(value = "visibility", required = false) Boolean visibility,
+                               @RequestParam("file") MultipartFile file) throws IOException {
+
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        List<User> userList = CsvService.read(file.getInputStream());
+        visibility = visibility == null;
+        controllerService.createLecture(account, title, beschreibung, visibility, userList);
+
+        return "redirect:/gruppen2/";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/createGroup")
     public String createGroup(KeycloakAuthenticationToken token, Model model) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
