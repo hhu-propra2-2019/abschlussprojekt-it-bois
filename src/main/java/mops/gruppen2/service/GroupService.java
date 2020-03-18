@@ -72,22 +72,23 @@ public class GroupService {
         return groups.get(group_id);
     }
 
-    /**
-     * sucht alle Zeilen in der DB wo die Visibility gleich true ist und wandelt diese in
-     * eine Liste von Gruppen
-     * @return
-     * @throws EventException
-     */
-    // Namensänderung fixen und die Forschleife auslagern
-    public List<Group> getAllGroupWithVisibilityPublic(String user_id) throws EventException {
-        List<Long> group_ids = eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE);
-        List<Long> group_ids_user = eventRepository.findGroup_idsWhereUser_id(user_id);
-        for (Long group_id: group_ids_user) {
+    private List<Long> removeUserGroups(List<Long> group_ids, List<Long> user_groups){
+        for (Long group_id: user_groups) {
             if(group_ids.contains(group_id)){
                 group_ids.remove(group_id);
             }
         }
-        List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(group_ids);
+        return group_ids;
+    }
+
+    /**
+     * sucht alle Zeilen in der DB wo die Visibility true ist und entfernt alle Gruppen des Users.
+     * Erstellt eine Liste aus Gruppen.
+     * @return
+     * @throws EventException
+     */
+    public List<Group> getAllGroupWithVisibilityPublic(String user_id) throws EventException {
+        List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(removeUserGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE), eventRepository.findGroup_idsWhereUser_id(user_id)));
         List<Event> events = eventService.translateEventDTOs(eventDTOS);
         List<Group> groups = projectEventList(events);
         return groups;
