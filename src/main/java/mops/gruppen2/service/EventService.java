@@ -14,11 +14,11 @@ import java.util.List;
 @Service
 public class EventService {
 
-    private final SerializationService serializationService;
+    private final JsonService jsonService;
     private final EventRepository eventStore;
 
-    public EventService(SerializationService serializationService, EventRepository eventStore) {
-        this.serializationService = serializationService;
+    public EventService(JsonService jsonService, EventRepository eventStore) {
+        this.jsonService = jsonService;
         this.eventStore = eventStore;
     }
 
@@ -47,7 +47,7 @@ public class EventService {
 
         String payload = "";
         try {
-            payload = serializationService.serializeEvent(event);
+            payload = jsonService.serializeEvent(event);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -93,7 +93,7 @@ public class EventService {
 
         for (EventDTO eventDTO : eventDTOS) {
             try {
-                events.add(serializationService.deserializeEvent(eventDTO.getEvent_payload()));
+                events.add(jsonService.deserializeEvent(eventDTO.getEvent_payload()));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

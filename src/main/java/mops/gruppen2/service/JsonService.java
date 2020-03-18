@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * Übersetzt JSON-Event-Payloads zu Java-Event-Repräsentationen und zurück.
  */
 @Service
-public class SerializationService {
+public class JsonService {
 
     /**
      * Übersetzt mithilfe der Jackson-Library eine Java-Event-Repräsentation zu einem JSON-Event-Payload.

@@ -26,7 +26,7 @@ class EventServiceTest {
 
     @BeforeEach
     void setUp() {
-        eventService = new EventService(mock(SerializationService.class), eventRepositoryMock);
+        eventService = new EventService(mock(JsonService.class), eventRepositoryMock);
     }
 
     @Test
