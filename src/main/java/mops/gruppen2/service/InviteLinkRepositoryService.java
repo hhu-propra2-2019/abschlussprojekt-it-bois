@@ -19,8 +19,8 @@ public class InviteLinkRepositoryService {
         return inviteLinkRepository.findGroupIdByLink(link);
     }
 
-    public void saveInvite(Long group_id, UUID link) {
-        inviteLinkRepository.save(new InviteLinkDTO(null, group_id, link.toString()));
+    public void saveInvite(Long groupId, UUID link) {
+        inviteLinkRepository.save(new InviteLinkDTO(null, groupId, link.toString()));
     }
 
 }

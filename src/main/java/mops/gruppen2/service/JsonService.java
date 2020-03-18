@@ -16,7 +16,7 @@ public class JsonService {
      *
      * @param event Java-Event-Repräsentation
      * @return JSON-Event-Payload als String
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException Bei JSON Fehler
      */
 
     public String serializeEvent(Event event) throws JsonProcessingException {
@@ -29,7 +29,7 @@ public class JsonService {
      *
      * @param json JSON-Event-Payload als String
      * @return Java-Event-Repräsentation
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException Bei JSON Fehler
      */
     public Event deserializeEvent(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();

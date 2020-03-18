@@ -14,15 +14,16 @@ import mops.gruppen2.domain.exception.UserNotFoundException;
 @NoArgsConstructor // For Jackson
 public class DeleteUserEvent extends Event {
 
-    public DeleteUserEvent(Long group_id, String user_id) {
-        super(group_id, user_id);
+    public DeleteUserEvent(Long groupId, String userId) {
+        super(groupId, userId);
     }
 
+    @Override
     public void apply(Group group) throws EventException {
         for (User user : group.getMembers()) {
-            if (user.getUser_id().equals(this.user_id)) {
+            if (user.getId().equals(this.userId)) {
                 group.getMembers().remove(user);
-                group.getRoles().remove(user.getUser_id());
+                group.getRoles().remove(user.getId());
                 return;
             }
         }

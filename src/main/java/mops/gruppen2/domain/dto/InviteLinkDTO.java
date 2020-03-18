@@ -4,6 +4,7 @@ import lombok.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+@SuppressWarnings("checkstyle:membername")
 @Table("invite")
 @Value
 public class InviteLinkDTO {

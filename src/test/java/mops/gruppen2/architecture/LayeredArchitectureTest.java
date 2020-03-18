@@ -6,7 +6,7 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.library.Architectures;
 
-@AnalyzeClasses(packages = "mops.gruppen2", importOptions = { ImportOption.DoNotIncludeTests.class })
+@AnalyzeClasses(packages = "mops.gruppen2", importOptions = ImportOption.DoNotIncludeTests.class)
 public class LayeredArchitectureTest {
 
     private static Architectures.LayeredArchitecture layeredArchitecture = Architectures

@@ -17,16 +17,17 @@ public class UpdateRoleEvent extends Event {
 
     private Role newRole;
 
-    public UpdateRoleEvent(Long group_id, String user_id, Role newRole) {
-        super(group_id, user_id);
+    public UpdateRoleEvent(Long groupId, String userId, Role newRole) {
+        super(groupId, userId);
         this.newRole = newRole;
     }
 
+    @Override
     public void apply(Group group) throws UserNotFoundException {
-        if (!group.getRoles().containsKey(user_id)) {
+        if (!group.getRoles().containsKey(userId)) {
             throw new UserNotFoundException("Der User wurde nicht gefunden");
         }
-        group.getRoles().put(this.user_id, this.newRole);
+        group.getRoles().put(this.userId, this.newRole);
     }
 
 }

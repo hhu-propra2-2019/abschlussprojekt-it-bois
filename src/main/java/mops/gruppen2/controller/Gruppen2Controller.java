@@ -98,14 +98,14 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/details/members/addUsersFromCsv")
-    public String addUsersFromCsv(@RequestParam("group_id") Long group_id,
+    public String addUsersFromCsv(@RequestParam("group_id") Long groupId,
                                   @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         List<User> userList = new ArrayList<>();
         if (!file.isEmpty()) {
             userList = CsvService.read(file.getInputStream());
         }
-        controllerService.addUserList(userList, group_id);
-        return "redirect:/gruppen2/details/members/" + group_id;
+        controllerService.addUserList(userList, groupId);
+        return "redirect:/gruppen2/details/members/" + groupId;
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
@@ -117,11 +117,11 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/findGroup")
-    public String findGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "suchbegriff", required = false) String suchbegriff) throws EventException {
+    public String findGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "suchbegriff", required = false) String search) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<Group> groupse = new ArrayList<>();
-        if (suchbegriff != null) {
-            groupse = groupService.findGroupWith(suchbegriff, account);
+        if (search != null) {
+            groupse = groupService.findGroupWith(search, account);
         }
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", groupse);
@@ -144,10 +144,10 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/details/{id}")
-    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @PathVariable("id") Long id) throws EventException, ResponseStatusException {
+    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @PathVariable("id") Long groupId) throws EventException, ResponseStatusException {
 
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        Group group = userService.getGroupById(id);
+        Group group = userService.getGroupById(groupId);
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         if (group != null) {
@@ -162,23 +162,23 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/detailsBeitreten")
-    public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long id) throws EventException {
+    public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        Group group = userService.getGroupById(id);
+        Group group = userService.getGroupById(groupId);
         if (group.getMembers().contains(user)) {
             return "errorRenameLater"; //hier soll eigentlich auf die bereits beigetretene Gruppe weitergeleitet werden
         }
-        controllerService.addUser(account, id);
+        controllerService.addUser(account, groupId);
         return "redirect:/gruppen2/";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/detailsSearch")
-    public String showGroupDetailsNoMember(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long id) throws EventException {
+    public String showGroupDetailsNoMember(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        Group group = userService.getGroupById(id);
+        Group group = userService.getGroupById(groupId);
         if (group != null) {
             model.addAttribute("group", group);
             return "detailsNoMember";
@@ -200,18 +200,18 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/leaveGroup")
-    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long id) throws EventException {
+    public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        controllerService.deleteUser(user.getUser_id(), id);
+        controllerService.deleteUser(user.getId(), groupId);
         return "redirect:/gruppen2/";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/details/members/{id}")
-    public String editMembers(Model model, KeycloakAuthenticationToken token, @PathVariable("id") Long id) throws EventException {
+    public String editMembers(Model model, KeycloakAuthenticationToken token, @PathVariable("id") Long groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        Group group = userService.getGroupById(id);
+        Group group = userService.getGroupById(groupId);
         if (group.getRoles().get(account.getName()) == Role.ADMIN) {
             model.addAttribute("account", account);
             model.addAttribute("members", group.getMembers());
@@ -225,17 +225,17 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/changeRole")
-    public String changeRole(KeycloakAuthenticationToken token, @RequestParam("group_id") Long group_id,
-                             @RequestParam("user_id") String user_id) throws EventException {
-        controllerService.updateRole(user_id, group_id);
-        return "redirect:/gruppen2/details/members/" + group_id;
+    public String changeRole(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId,
+                             @RequestParam("user_id") String userId) throws EventException {
+        controllerService.updateRole(userId, groupId);
+        return "redirect:/gruppen2/details/members/" + groupId;
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/deleteUser")
-    public String deleteUser(KeycloakAuthenticationToken token, @RequestParam("group_id") Long group_id,
-                             @RequestParam("user_id") String user_id) throws EventException {
-        controllerService.deleteUser(user_id, group_id);
-        return "redirect:/gruppen2/details/members/" + group_id;
+    public String deleteUser(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId,
+                             @RequestParam("user_id") String userId) throws EventException {
+        controllerService.deleteUser(userId, groupId);
+        return "redirect:/gruppen2/details/members/" + groupId;
     }
 }

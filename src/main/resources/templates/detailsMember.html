@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>Gruppendetails</title>
@@ -13,16 +14,16 @@
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
             <li class="active">
-                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+                <a href="/" th:href="@{/gruppen2}">Gruppen</a>
             </li>
             <li>
-                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
+                <a href="/createGroup" th:href="@{/gruppen2/createGroup}">Erstellen</a>
             </li>
             <li>
-                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+                <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
             </li>
             <li th:if="${account.getRoles().contains('orga')}">
-                <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
+                <a href="/createLecture" th:href="@{/gruppen2/createLecture}">Veranstaltung</a>
             </li>
         </ul>
     </nav>
@@ -46,12 +47,12 @@
                     <p style="overflow-wrap: break-word" th:text="${group.getDescription()}"></p>
                 </div>
                 <br>
-                <div class="text-right btn-toolbar" style="float: right" role="toolbar">
+                <div class="text-right btn-toolbar" role="toolbar" style="float: right">
                     <button class="btn btn-primary"
                             style="background: dodgerblue; border: none; margin: 5px">
-                        <a th:href="@{/gruppen2}" style="color: white">Zurück</a>
+                        <a style="color: white" th:href="@{/gruppen2}">Zurück</a>
                     </button>
-                    <form method="post" action="/gruppen2/leaveGroup">
+                    <form action="/gruppen2/leaveGroup" method="post">
                         <button class="btn btn-danger" style="border-style: none; margin: 5px"
                                 th:name="group_id" th:value="${group.getId()}"
                                 type="submit">Gruppe verlassen
@@ -62,7 +63,7 @@
             <div class="col-3" style="white-space: nowrap">
                 <div style="display: inline-block; margin: 0">
                     <h2>Mitglieder</h2>
-                    <div th:if='${group.getRoles().get(user.getUser_id()) == admin}'>
+                    <div th:if="${group.getRoles().get(user.getId()) == admin}">
                         <form method="get"
                               th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
                             <button class="btn btn-secondary"

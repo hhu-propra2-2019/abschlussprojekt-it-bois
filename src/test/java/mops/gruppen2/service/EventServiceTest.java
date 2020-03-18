@@ -21,24 +21,25 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 class EventServiceTest {
 
+    private EventRepository eventRepository;
     private EventService eventService;
-    private EventRepository eventRepositoryMock = mock(EventRepository.class);
 
     @BeforeEach
     void setUp() {
-        eventService = new EventService(mock(JsonService.class), eventRepositoryMock);
+        eventRepository = mock(EventRepository.class);
+        eventService = new EventService(mock(JsonService.class), eventRepository);
     }
 
     @Test
     void getMaxID() {
-        when(eventRepositoryMock.getHighesEvent_ID()).thenReturn(42L);
+        when(eventRepository.getHighesEvent_ID()).thenReturn(42L);
 
         assertEquals(eventService.getMaxEvent_id(), 42L);
     }
 
     @Test
     void checkGroupReturnNextValue() {
-        when(eventRepositoryMock.getMaxGroupID()).thenReturn(2L);
+        when(eventRepository.getMaxGroupID()).thenReturn(2L);
 
         assertEquals(eventService.checkGroup(), 3L);
     }
@@ -46,7 +47,7 @@ class EventServiceTest {
     @Test
     void checkGroupReturnOneIfDBIsEmpty() {
         List<EventDTO> eventDTOS = new ArrayList<>();
-        when(eventRepositoryMock.findAll()).thenReturn(eventDTOS);
+        when(eventRepository.findAll()).thenReturn(eventDTOS);
 
         assertEquals(eventService.checkGroup(), 1);
     }

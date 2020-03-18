@@ -6,7 +6,7 @@ import mops.gruppen2.domain.Group;
 import java.util.List;
 
 /**
- * Kombiniert den Status und die Gruppenliste zur ausgabe über die API
+ * Kombiniert den Status und die Gruppenliste zur ausgabe über die API.
  */
 @AllArgsConstructor
 public class GroupRequestWrapper {

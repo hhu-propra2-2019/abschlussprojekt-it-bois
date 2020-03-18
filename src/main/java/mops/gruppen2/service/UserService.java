@@ -25,8 +25,8 @@ public class UserService {
     //Test nötig??
 
     public List<Group> getUserGroups(User user) throws EventException {
-        List<Long> group_ids = eventRepository.findGroup_idsWhereUser_id(user.getUser_id());
-        List<Event> events = groupService.getGroupEvents(group_ids);
+        List<Long> groupIds = eventRepository.findGroup_idsWhereUser_id(user.getId());
+        List<Event> events = groupService.getGroupEvents(groupIds);
         List<Group> groups = groupService.projectEventList(events);
         List<Group> newGroups = new ArrayList<>();
         for (Group group : groups) {
@@ -37,10 +37,10 @@ public class UserService {
         return newGroups;
     }
 
-    public Group getGroupById(Long group_id) throws EventException {
-        List<Long> group_ids = new ArrayList<>();
-        group_ids.add(group_id);
-        List<Event> events = groupService.getGroupEvents(group_ids);
+    public Group getGroupById(Long groupId) throws EventException {
+        List<Long> groupIds = new ArrayList<>();
+        groupIds.add(groupId);
+        List<Event> events = groupService.getGroupEvents(groupIds);
         return groupService.projectEventList(events).get(0);
     }
 }

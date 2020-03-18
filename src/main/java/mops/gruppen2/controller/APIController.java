@@ -54,8 +54,8 @@ public class APIController {
     @ApiOperation("Gibt die Gruppe mit der als Parameter mitgegebenden groupId zurück")
     public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable Long groupId) throws EventException {
         List<Event> eventList = eventService.getEventsOfGroup(groupId);
-
         List<Group> groups = groupService.projectEventList(eventList);
+        
         return groups.get(0);
     }
 

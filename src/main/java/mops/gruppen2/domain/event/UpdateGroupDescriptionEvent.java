@@ -15,11 +15,12 @@ public class UpdateGroupDescriptionEvent extends Event {
 
     private String newGroupDescription;
 
-    public UpdateGroupDescriptionEvent(Long group_id, String user_id, String newGroupDescription) {
-        super(group_id, user_id);
+    public UpdateGroupDescriptionEvent(Long groupId, String userId, String newGroupDescription) {
+        super(groupId, userId);
         this.newGroupDescription = newGroupDescription;
     }
 
+    @Override
     public void apply(Group group) {
         group.setDescription(this.newGroupDescription);
     }

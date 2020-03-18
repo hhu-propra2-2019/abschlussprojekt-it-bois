@@ -27,8 +27,8 @@ import mops.gruppen2.domain.exception.EventException;
 @AllArgsConstructor
 public class Event {
 
-    protected Long group_id;
-    protected String user_id;
+    protected Long groupId;
+    protected String userId;
 
     public void apply(Group group) throws EventException {}
 }
