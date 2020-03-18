@@ -9,23 +9,23 @@ import mops.gruppen2.domain.Visibility;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // For Jackson
 public class CreateGroupEvent extends Event {
 
     private Visibility groupVisibility;
     private Long groupParent;
     private GroupType groupType;
 
-    public CreateGroupEvent(Long group_id, String user_id, Long parent, GroupType type, Visibility visibility) {
-        super(group_id, user_id);
+    public CreateGroupEvent(Long groupId, String userId, Long parent, GroupType type, Visibility visibility) {
+        super(groupId, userId);
         this.groupParent = parent;
         this.groupType = type;
         this.groupVisibility = visibility;
     }
 
     @Override
-    public void applyEvent(Group group) {
-        group.setId(this.group_id);
+    public void apply(Group group) {
+        group.setId(this.groupId);
         group.setParent(this.groupParent);
         group.setType(this.groupType);
         group.setVisibility(this.groupVisibility);

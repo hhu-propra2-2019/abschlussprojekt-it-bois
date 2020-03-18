@@ -6,6 +6,11 @@
     <title>Gruppendetails</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+              rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     </th:block>
 </head>
 <body>
@@ -21,6 +26,9 @@
             <li>
                 <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
             </li>
+            <li th:if="${account.getRoles().contains('orga')}">
+                <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
+            </li>
         </ul>
     </nav>
 </header>
@@ -29,6 +37,31 @@
         <div class="row">
             <div class="col-9">
                 <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
+                    <!-- absichern im controller nicht vergessen -->
+                    <div class="form-group pt-4" th:if="${account.getRoles().contains('orga')}">
+                        <form action="/gruppen2/details/members/addUsersFromCsv"
+                              enctype="multipart/form-data"
+                              method="post">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="custom-file">
+                                        <input class="custom-file-input" id="file" th:name="file"
+                                               type="file">
+                                        <label class="custom-file-label" for="file">CSV Datei von
+                                            Mitgliedern hochladen</label>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <button class="btn btn-primary"
+                                            style="background: #52a1eb; border-style: none"
+                                            th:name="group_id" th:value="${group.getId()}"
+                                            type="submit">
+                                        Mitglieder hinzufügen
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <table class="table">
                         <thead>
                         <tr>
@@ -39,32 +72,47 @@
                         </thead>
                         <tbody class="table-striped">
 
-                            <tr  th:each="member : ${group.getMembers()}">
-                                <th th:text="${member.getUser_id()}"></th>
-                                <td>
-                                    <span th:if='${group.getRoles().get(member.getUser_id()) != admin}'>Mitglied</span>
-                                    <span th:if='${group.getRoles().get(member.getUser_id()) == admin}'>Admin</span>
-                                </td>
-                                <td>
-                                    <form method="post" action="/gruppen2/details/members/changeRole">
-                                        <input type="hidden" th:name="group_id" th:value="${group.getId()}">
-                                        <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
-                                        <button type="submit"  class="btn btn-warning btn-sm">Rolle ändern</button><!-- th:if -->
-                                    </form>
-                                    <form method="post" action="/gruppen2/details/members/deleteUser">
-                                        <input type="hidden" th:name="group_id" th:value="${group.getId()}">
-                                        <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
-                                        <button class="btn btn-danger btn-sm">Mitglied entfernen</button>
-                                    </form>
-                                </td>
-                            </tr>
+                        <tr th:each="member : ${group.getMembers()}">
+                            <th th:text="${member.getUser_id()}"></th>
+                            <td>
+                                <span th:if='${group.getRoles().get(member.getUser_id()) != admin}'>Mitglied</span>
+                                <span th:if='${group.getRoles().get(member.getUser_id()) == admin}'>Admin</span>
+                            </td>
+                            <td>
+                                <form action="/gruppen2/details/members/changeRole" method="post">
+                                    <input th:name="group_id" th:value="${group.getId()}"
+                                           type="hidden">
+                                    <input th:name="user_id" th:value="${member.getUser_id()}"
+                                           type="hidden">
+                                    <button class="btn btn-warning btn-sm" type="submit">Rolle
+                                        ändern
+                                    </button><!-- th:if -->
+                                </form>
+                                <form action="/gruppen2/details/members/deleteUser" method="post">
+                                    <input th:name="group_id" th:value="${group.getId()}"
+                                           type="hidden">
+                                    <input th:name="user_id" th:value="${member.getUser_id()}"
+                                           type="hidden">
+                                    <button class="btn btn-danger btn-sm">Mitglied entfernen
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-primary" style="background: #52a1eb; border-style: none">
+                    <button class="btn btn-primary" style="background: #52a1eb; border-style: none"
+                            type="button">
                         <a th:href="@{/gruppen2/details(id=${group.getId()})}" style="color: white">Fertig</a>
                     </button>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
 </main>

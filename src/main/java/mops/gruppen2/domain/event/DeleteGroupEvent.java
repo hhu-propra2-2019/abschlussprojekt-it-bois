@@ -1,15 +1,15 @@
 package mops.gruppen2.domain.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.Group;
 
-@EqualsAndHashCode(callSuper = true)
-@Value
+@Getter
+@NoArgsConstructor // For Jackson
 public class DeleteGroupEvent extends Event {
 
-    public DeleteGroupEvent(long group_id, String user_id) {
-        super(group_id, user_id);
+    public DeleteGroupEvent(Long groupId, String userId) {
+        super(groupId, userId);
     }
 
     @Override

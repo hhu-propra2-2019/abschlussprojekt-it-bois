@@ -15,29 +15,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 class EventServiceTest {
-    EventService eventService;
-    EventRepository eventRepositoryMock = mock(EventRepository.class);
+
+    private EventRepository eventRepository;
+    private EventService eventService;
 
     @BeforeEach
     void setUp() {
-        eventService = new EventService(mock(SerializationService.class), eventRepositoryMock);
+        eventRepository = mock(EventRepository.class);
+        eventService = new EventService(mock(JsonService.class), eventRepository);
     }
 
     @Test
     void getMaxID() {
-        when(eventRepositoryMock.getHighesEvent_ID()).thenReturn(42L);
+        when(eventRepository.getHighesEvent_ID()).thenReturn(42L);
 
         assertEquals(eventService.getMaxEvent_id(), 42L);
     }
 
     @Test
     void checkGroupReturnNextValue() {
-        when(eventRepositoryMock.getMaxGroupID()).thenReturn(2L);
+        when(eventRepository.getMaxGroupID()).thenReturn(2L);
 
         assertEquals(eventService.checkGroup(), 3L);
     }
@@ -45,7 +49,7 @@ class EventServiceTest {
     @Test
     void checkGroupReturnOneIfDBIsEmpty() {
         List<EventDTO> eventDTOS = new ArrayList<>();
-        when(eventRepositoryMock.findAll()).thenReturn(eventDTOS);
+        when(eventRepository.findAll()).thenReturn(eventDTOS);
 
         assertEquals(eventService.checkGroup(), 1);
     }
@@ -54,14 +58,14 @@ class EventServiceTest {
     void getDTOOffentlichTest() {
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "test", null, GroupType.LECTURE, Visibility.PUBLIC);
         EventDTO eventDTO = eventService.getDTO(createGroupEvent);
-        assertEquals(eventDTO.isVisibility(), true);
+        assertTrue(eventDTO.isVisibility());
     }
 
     @Test
     void getDTOPrivatTest() {
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), "test", "franz", "mueller", "a@a");
         EventDTO eventDTO = eventService.getDTO(addUserEvent);
-        assertEquals(eventDTO.isVisibility(), false);
+        assertFalse(eventDTO.isVisibility());
     }
 
 }

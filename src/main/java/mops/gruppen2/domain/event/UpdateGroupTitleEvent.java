@@ -11,13 +11,13 @@ import mops.gruppen2.domain.Group;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // For Jackson
 public class UpdateGroupTitleEvent extends Event {
 
     private String newGroupTitle;
 
-    public UpdateGroupTitleEvent(Long group_id, String user_id, String newGroupTitle) {
-        super(group_id, user_id);
+    public UpdateGroupTitleEvent(Long groupId, String userId, String newGroupTitle) {
+        super(groupId, userId);
         this.newGroupTitle = newGroupTitle;
     }
 

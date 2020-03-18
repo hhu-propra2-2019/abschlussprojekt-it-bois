@@ -3,29 +3,28 @@ package mops.gruppen2.domain.event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mops.gruppen2.domain.Exceptions.UserNotFoundException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
+import mops.gruppen2.domain.exception.UserNotFoundException;
 
 /**
  * Aktualisiert die Gruppenrolle eines Teilnehmers.
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // For Jackson
 public class UpdateRoleEvent extends Event {
 
     private Role newRole;
 
-    public UpdateRoleEvent(Long group_id, String user_id, Role newRole) {
-        super(group_id, user_id);
+    public UpdateRoleEvent(Long groupId, String userId, Role newRole) {
+        super(groupId, userId);
         this.newRole = newRole;
     }
-
     @Override
     public void applyEvent(Group group) throws UserNotFoundException {
-        if (group.getRoles().containsKey(user_id)) {
-            group.getRoles().put(this.user_id, this.newRole);
+        if (group.getRoles().containsKey(this.userId)) {
+            group.getRoles().put(this.userId, this.newRole);
         }
 
         throw new UserNotFoundException(this.getClass().toString());

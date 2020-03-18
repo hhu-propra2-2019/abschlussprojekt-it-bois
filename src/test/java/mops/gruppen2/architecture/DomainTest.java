@@ -2,14 +2,13 @@ package mops.gruppen2.architecture;
 
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
-import com.tngtech.archunit.junit.ArchIgnore;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
-@AnalyzeClasses(packages = "mops.gruppen2", importOptions = { ImportOption.DoNotIncludeTests.class })
+@AnalyzeClasses(packages = "mops.gruppen2", importOptions = ImportOption.DoNotIncludeTests.class)
 public class DomainTest {
 
     @ArchTest
@@ -30,11 +29,11 @@ public class DomainTest {
     @ArchTest
     public static final ArchRule exceptionClassesShouldBeInExceptionPackage = classes()
             .that().haveSimpleNameEndingWith("Exception")
-            .should().resideInAPackage("..domain.Exceptions..");
+            .should().resideInAPackage("..domain.exception..");
 
     @ArchTest
     public static final ArchRule classesInExceptionPackageShouldHaveExceptionInName = classes()
-            .that().resideInAPackage("..domain.Exceptions..")
+            .that().resideInAPackage("..domain.exception..")
             .should().haveSimpleNameEndingWith("Exception");
 
     @ArchTest
