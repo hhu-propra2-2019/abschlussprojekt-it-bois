@@ -6,3 +6,7 @@ Dann ist uns aufgefallen das das wahrscheinlich so gar nicht so sinnvoll ist.
 
 == Entadminisierung
 Wir haben um gekümmert dass in jedem Fall mindestens ein admin in einer gruppe bestehen bleibt.
+
+== Funktionen
+Heute haben wir uns darum gekümmert das unsere Gruppen ein Beitrittslimit haben. Das kann man bei normalen Gruppen über die UI einstellen.
+Für Vorlesungen haben wir uns entschieden erstmal einen festen Wert zu nehmen, da wir uns noch uneinig sind ob wir die Gruppengröße Anpassbar machen wollen. Ebenfalls haben wir Probleme bei der Suchefunktion und beim Beitrittslimit gefixt.
