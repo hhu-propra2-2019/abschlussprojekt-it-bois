@@ -6,6 +6,7 @@ import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
+import mops.gruppen2.domain.exception.NoAdminAfterActionExeption;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.CsvService;
@@ -202,6 +203,7 @@ public class Gruppen2Controller {
     public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        controllerService.passIfLastAdmin(account, groupId);
         controllerService.deleteUser(user.getId(), groupId);
         return "redirect:/gruppen2/";
     }
@@ -230,7 +232,9 @@ public class Gruppen2Controller {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         if (userId.equals(account.getName())) {
-            controllerService.passIfLastAdmin(account, groupId);
+            if (controllerService.passIfLastAdmin(account, groupId)){
+                throw new NoAdminAfterActionExeption("Du otto bist letzter Admin");
+            }
             controllerService.updateRole(userId, groupId);
             return "redirect:/gruppen2/details/" + groupId;
         }

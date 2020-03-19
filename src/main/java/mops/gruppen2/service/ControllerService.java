@@ -160,16 +160,17 @@ public class ControllerService {
         addUserList(users, groupId);
     }
 
-    public void passIfLastAdmin(Account account, Long groupId){
+    public boolean passIfLastAdmin(Account account, Long groupId){
         Group group = userService.getGroupById(groupId);
         if (group.getMembers().size() <= 1){
-            throw new NoAdminAfterActionExeption("Du otto bist letzter Admin");
+            return true;
         }
 
         if (isLastAdmin(account, group)){
             String newAdminId = getVeteranMember(account, group);
             updateRole(newAdminId, groupId);
         }
+        return false;
     }
 
     private boolean isLastAdmin(Account account, Group group){
