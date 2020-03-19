@@ -164,6 +164,7 @@ public class Gruppen2Controller {
     @PostMapping("/detailsBeitreten")
     public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(groupId);

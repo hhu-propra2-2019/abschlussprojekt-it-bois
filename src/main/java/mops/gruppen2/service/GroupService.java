@@ -1,6 +1,7 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
@@ -66,11 +67,11 @@ public class GroupService {
         return groups.get(groupId);
     }
 
-    private List<Long> removeUserGroups(List<Long> groupIds, List<Long> userGroups) {
-        for (Long groupId : userGroups) {
-            groupIds.remove(groupId);
+    private List<Group> removeUserGroups(List<Group> visibleGroups, List<Group> userGroups) {
+        for (Group group : userGroups) {
+            visibleGroups.remove(group);
         }
-        return groupIds;
+        return visibleGroups;
     }
 
     /**
@@ -81,10 +82,18 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
-        List<Long> groupIds = removeUserGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE), eventRepository.findGroup_idsWhereUser_id(userId));
-        List<EventDTO> eventDTOS = eventRepository.findAllEventsOfGroups(groupIds);
-        List<Event> events = eventService.translateEventDTOs(eventDTOS);
-        return projectEventList(events);
+        User user = new User(userId,null, null, null);
+        List<Event> eventsVisible = eventService.translateEventDTOs(eventRepository.findAllEventsOfGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE)));
+        List<Group> visibleGroups = projectEventList(eventsVisible);
+        List<Event> eventsUser = getGroupEvents(eventRepository.findGroup_idsWhereUser_id(userId));
+        List<Group> groups = projectEventList(eventsUser);
+        List<Group> newGroups = new ArrayList<>();
+        for (Group group : groups) {
+            if (group.getMembers().contains(user)) {
+                newGroups.add(group);
+            }
+        }
+        return removeUserGroups(visibleGroups, newGroups);
     }
 
 

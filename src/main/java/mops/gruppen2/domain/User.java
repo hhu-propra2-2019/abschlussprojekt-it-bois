@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(exclude = {"givenname", "familyname", "email"})
 public class User {
 
-    private String id;
-    private String givenname;
-    private String familyname;
-    private String email;
+    private  String id;
+    private  String givenname;
+    private  String familyname;
+    private  String email;
 }
