@@ -66,7 +66,7 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, List<User> users) throws EventException {
+    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Long maximmum, List<User> users) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -82,7 +82,8 @@ public class ControllerService {
         } else {
             groupType = GroupType.LECTURE;
         }
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, groupType, visibility1);
+
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, groupType, visibility1, maximmum);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);
@@ -161,26 +162,6 @@ public class ControllerService {
     public void deleteGroupEvent(User user, Long groupId) {
         DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, user.getId());
         eventService.saveEvent(deleteGroupEvent);
-    }
-
-    public void createLecture(Account account, String title, String description, Boolean visibility, List<User> users) throws EventException {
-        Visibility visibility1;
-        Long groupId = eventService.checkGroup();
-
-        if (visibility) {
-            visibility1 = Visibility.PUBLIC;
-        } else {
-            visibility1 = Visibility.PRIVATE;
-        }
-
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.LECTURE, visibility1, 1000L); //this has to be changed also Usermaximum
-        eventService.saveEvent(createGroupEvent);
-
-        addUser(account, groupId);
-        updateTitle(account, groupId, title);
-        updateDescription(account, groupId, description);
-        updateRole(account.getName(), groupId);
-        addUserList(users, groupId);
     }
 
     public boolean passIfLastAdmin(Account account, Long groupId){

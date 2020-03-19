@@ -16,7 +16,6 @@ import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.InviteLinkRepositoryService;
 import mops.gruppen2.service.KeyCloakService;
 import mops.gruppen2.service.UserService;
-import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.security.RolesAllowed;
 import java.io.CharConversionException;
 import java.io.IOException;
@@ -84,11 +82,12 @@ public class Gruppen2Controller {
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/createOrga")
     public String pCreateOrga(KeycloakAuthenticationToken token,
-                          @RequestParam("title") String title,
-                          @RequestParam("beschreibung") String beschreibung,
-                          @RequestParam(value = "visibility", required = false) Boolean visibility,
-                          @RequestParam(value = "lecture", required = false) Boolean lecture,
-                          @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
+                              @RequestParam("title") String title,
+                              @RequestParam("description") String description,
+                              @RequestParam(value = "visibility", required = false) Boolean visibility,
+                              @RequestParam(value = "lecture", required = false) Boolean lecture,
+                              @RequestParam("userMaximum") Long userMaximum,
+                              @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
@@ -102,7 +101,7 @@ public class Gruppen2Controller {
         visibility = visibility == null;
         lecture = lecture == null;
 
-        controllerService.createOrga(account, title, beschreibung, visibility, lecture, userList);
+        controllerService.createOrga(account, title, description, visibility, lecture, userMaximum, userList);
 
         return "redirect:/gruppen2/";
     }
@@ -117,13 +116,14 @@ public class Gruppen2Controller {
     @RolesAllowed({"ROLE_studentin"})
     @PostMapping("/createStudent")
     public String pCreateStudent(KeycloakAuthenticationToken token,
-                               @RequestParam("title") String title,
-                               @RequestParam("beschreibung") String beschreibung,
-                               @RequestParam(value = "visibility", required = false) Boolean visibility) throws EventException {
+                                 @RequestParam("title") String title,
+                                 @RequestParam("description") String description,
+                                 @RequestParam(value = "visibility", required = false) Boolean visibility,
+                                 @RequestParam("userMaximum") Long userMaximum) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         visibility = visibility == null;
-        controllerService.createGroup(account, title, beschreibung, visibility);
+        controllerService.createGroup(account, title, description, visibility, userMaximum);
 
         return "redirect:/gruppen2/";
     }
@@ -137,8 +137,6 @@ public class Gruppen2Controller {
             try {
                 userList = CsvService.read(file.getInputStream());
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
-                throw new WrongFileException(file.getOriginalFilename());
-            } catch (IllegalStateException ex) {
                 throw new WrongFileException(file.getOriginalFilename());
             }
         }
@@ -157,21 +155,6 @@ public class Gruppen2Controller {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", groupse);
         return "search";
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @PostMapping("/createGroup")
-    public String pCreateGroup(KeycloakAuthenticationToken token,
-                               @RequestParam("title") String title,
-                               @RequestParam("description") String description,
-                               @RequestParam(value = "visibility", required = false) Boolean visibility,
-                               @RequestParam("userMaximum") Long userMaximum) throws EventException {
-
-        Account account = keyCloakService.createAccountFromPrincipal(token);
-        visibility = visibility == null;
-        controllerService.createGroup(account, title, description, visibility, userMaximum);
-
-        return "redirect:/gruppen2/";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
