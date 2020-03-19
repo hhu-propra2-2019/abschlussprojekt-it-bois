@@ -3,14 +3,16 @@ package mops.gruppen2.domain;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(exclude = {"givenname", "familyname", "email"})
 public class User {
 
-    private final String id;
-    private final String givenname;
-    private final String familyname;
-    private final String email;
+    private  String id;
+    private  String givenname;
+    private  String familyname;
+    private  String email;
 }

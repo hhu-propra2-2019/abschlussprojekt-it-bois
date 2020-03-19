@@ -226,7 +226,9 @@ public class Gruppen2Controller {
     @PostMapping("/details/members/changeRole")
     public String changeRole(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId,
                              @RequestParam("user_id") String userId) throws EventException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
         controllerService.updateRole(userId, groupId);
+        if(userId.equals(account.getName())) return "redirect:/gruppen2/details/" + groupId;
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
