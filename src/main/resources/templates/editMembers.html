@@ -100,10 +100,9 @@
                         </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-primary" style="background: #52a1eb; border-style: none"
-                            type="button">
-                        <a th:href="@{/gruppen2/details(id=${group.getId()})}" style="color: white">Fertig</a>
-                    </button>
+                    <form method="get" th:action="@{/gruppen2/details/{id}(id=${group.getId()})}">
+                        <button class="btn btn-primary" style="background: #52a1eb; border-style: none" type="submit">Fertig</button>
+                    </form>
                 </div>
             </div>
         </div>
