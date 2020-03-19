@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Seite nicht gefunden</title>
+</head>
+<body>
+<div class="mx-auto" style="vertical-align: center; horiz-align: center; top: 50%; left: 50%;">
+    <div class="jumbotron" style="background: aliceblue">
+        <div class="container">
+            <h1 class="display-3">UPSI</h1>
+            <p class="lead">Da ist wohl etwas schiefgelaufen :(</p><br>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal" th:text="${status} + ': ' + ${error}"></h4>
+            </div>
+            <div class="card-body">
+                <p th:text="${message}"></p>
+            </div>
+        </div>
+        <p><a class="btn btn-primary btn-lg" href="#" onclick="window.history.back(-1);return false;" role="button">Zurück</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
