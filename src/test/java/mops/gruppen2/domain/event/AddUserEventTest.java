@@ -16,6 +16,7 @@ class AddUserEventTest {
         Group group = new Group();
         User user = new User("user1", "Stein", "Speck", "@sdasd");
         group.getMembers().add(user);
+        group.setUserMaximum(10L);
         Event event1 = new AddUserEvent(4L, "user2", "Rock", "Roll", "and");
         event1.apply(group);
 
