@@ -3,3 +3,6 @@
 == Performance Tests
 Wir haben ein paar Performancetests geschrieben und geschaut, wo man eventuell noch optimierungen vornehmen kann.
 Dann ist uns aufgefallen das das wahrscheinlich so gar nicht so sinnvoll ist.
+
+== Entadminisierung
+Wir haben um gekümmert dass in jedem Fall mindestens ein admin in einer gruppe bestehen bleibt.
