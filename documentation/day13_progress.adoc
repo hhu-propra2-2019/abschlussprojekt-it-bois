@@ -1,0 +1,5 @@
+= Tag 13
+
+== Performance Tests
+Wir haben ein paar Performancetests geschrieben und geschaut, wo man eventuell noch optimierungen vornehmen kann.
+Dann ist uns aufgefallen das das wahrscheinlich so gar nicht so sinnvoll ist.
