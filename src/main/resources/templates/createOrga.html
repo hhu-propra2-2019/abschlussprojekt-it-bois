@@ -16,19 +16,19 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li>
                 <a th:href="@{/gruppen2}" href="/">Gruppen</a>
             </li>
-            <li>
-                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
+            <li th:case="${true}" class="active">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}" class="active">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
             </li>
             <li>
                 <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
-            </li>
-            <li th:if="${account.getRoles().contains('orga')}" class="active">
-                <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
             </li>
         </ul>
     </nav>
@@ -37,26 +37,46 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-10">
-                <h1>Veranstaltung erstellen</h1>
-                <div class="shadow p-2"
-                     style=" border: 10px solid aliceblue; background: aliceblue">
-                    <form action="/gruppen2/createLecture" enctype="multipart/form-data"
-                          method="post">
+                <h1>Gruppenerstellung</h1>
+                <form method="post" action="/gruppen2/createOrga" enctype="multipart/form-data">
+                    <div class="shadow p-2"
+                         style=" border: 10px solid aliceblue; background: aliceblue">
                         <div class="form-group">
                             <label for="titel">Titel</label>
                             <input class="form-control" id="titel" required th:name="title"
                                    type="text">
                         </div>
                         <div class="form-group">
-                            <label for="beschreibung">Beschreibung</label>
-                            <textarea class="form-control" id="beschreibung" required
-                                      rows="3" th:name="beschreibung"></textarea>
+                            <label for="description">Beschreibung</label>
+                            <textarea class="form-control" id="description" required
+                                      rows="3" th:name="description"></textarea>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="userMaximum">Teilnehmeranzahl</label>
+                            <input class="form-control" id="userMaximum" required th:name="userMaximum"
+                                   type="number" min="1">
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input class="custom-control-input" id="visibility" th:name="visibility"
                                    type="checkbox">
                             <label class="custom-control-label" for="visibility">Private
                                 Gruppe</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" id="lecture" th:name="lecture"
+                                   type="checkbox">
+                            <label class="custom-control-label" for="lecture">Veranstaltung</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="sel1"></label>
+                            <select class="form-control" id="sel1">
+                                <option disabled selected="true">--Bitte Veranstaltung auswählen--
+                                </option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
                         </div>
                         <div class="form-group pt-4">
                             <div class="row">
@@ -76,8 +96,8 @@
                                     type="submit">Erstellen
                             </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

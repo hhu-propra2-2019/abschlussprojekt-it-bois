@@ -15,19 +15,19 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li class="active">
                 <a th:href="@{/gruppen2}" href="/">Gruppen</a>
             </li>
-            <li>
-                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
+            <li th:case="${true}">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
             </li>
             <li>
                 <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
-            </li>
-            <li th:if="${account.getRoles().contains('orga')}">
-                <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
             </li>
         </ul>
     </nav>
@@ -46,7 +46,6 @@
                     </h5>
                 </div>
                 <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
-                    <!-- absichern im controller nicht vergessen -->
                     <div class="form-group pt-4" th:if="${account.getRoles().contains('orga')}">
                         <form action="/gruppen2/details/members/addUsersFromCsv"
                               enctype="multipart/form-data"
