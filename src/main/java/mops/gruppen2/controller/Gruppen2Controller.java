@@ -164,6 +164,7 @@ public class Gruppen2Controller {
     @PostMapping("/detailsBeitreten")
     public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(groupId);
@@ -228,12 +229,15 @@ public class Gruppen2Controller {
     @PostMapping("/details/members/changeRole")
     public String changeRole(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId,
                              @RequestParam("user_id") String userId) throws EventException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
         controllerService.updateRole(userId, groupId);
+        if(userId.equals(account.getName())) return "redirect:/gruppen2/details/" + groupId;
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/deleteUser")
+
     public String deleteUser(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId,
                              @RequestParam("user_id") String userId) throws EventException {
         controllerService.deleteUser(userId, groupId);
