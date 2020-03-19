@@ -13,12 +13,9 @@ import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
 import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.exception.EventException;
-import mops.gruppen2.domain.exception.NoAdminAfterActionExeption;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.security.Account;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;
-import springfox.documentation.schema.Entry;
 
 import java.util.List;
 import java.util.Map;
