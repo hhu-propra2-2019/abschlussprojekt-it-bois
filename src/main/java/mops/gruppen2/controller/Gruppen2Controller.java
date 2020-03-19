@@ -170,6 +170,7 @@ public class Gruppen2Controller {
         if (group.getMembers().contains(user)) {
             return "error"; //hier soll eigentlich auf die bereits beigetretene Gruppe weitergeleitet werden
         }
+        if (group.getUserMaximum() < group.getMembers().size()) return "error";
         controllerService.addUser(account, groupId);
         return "redirect:/gruppen2/";
     }
@@ -179,7 +180,7 @@ public class Gruppen2Controller {
     public String showGroupDetailsNoMember(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(groupId);
-        if (group != null) {
+        if (group != null && group.getUserMaximum() > group.getMembers().size()) {
             model.addAttribute("group", group);
             return "detailsNoMember";
         }

@@ -31,5 +31,6 @@ public class CreateGroupEvent extends Event {
         group.setParent(this.groupParent);
         group.setType(this.groupType);
         group.setVisibility(this.groupVisibility);
+        group.setUserMaximum(this.groupUserMaximum);
     }
 }
