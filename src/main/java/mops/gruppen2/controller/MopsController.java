@@ -18,4 +18,9 @@ public class MopsController {
         request.logout();
         return "redirect:/gruppen2/";
     }
+
+    @GetMapping("*")
+    public String defaultLink() {
+        return "error";
+    }
 }

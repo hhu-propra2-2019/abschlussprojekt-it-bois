@@ -34,17 +34,27 @@
                 <div class="shadow-sm p-4" style="border: 10px solid aliceblue; border-radius: 5px; background: aliceblue">
                     <h1 style="color: black; font-weight: bold" th:text="${group.getTitle()}"></h1>
                     <h3>
-                        <span class="badge badge-pill badge-dark" style="background: darkslategray" th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
-                        <span class="badge badge-pill badge-primary" th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
-                        <span class="badge badge-pill badge-success" style="background: lightseagreen" th:if='${group.getType() == group.getType().LECTURE}'> Veranstaltung</span>
+                        <span class="badge badge-pill badge-dark" style="background: darkslategray"
+                              th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
+                        <span class="badge badge-pill badge-primary"
+                              th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
+                        <span class="badge badge-pill badge-success"
+                              style="background: lightseagreen"
+                              th:if='${group.getType() == group.getType().LECTURE}'> Veranstaltung</span>
                     </h3>
                     <div class="shadow-sm p-4" style="background: white">
-                        <p style="overflow-wrap: break-word" th:text="${group.getDescription()}"></p>
+                        <p style="overflow-wrap: break-word"
+                           th:text="${group.getDescription()}"></p>
                     </div>
                     <div class="form-group">
                         <div class="text-right">
                             <form method="post" action="/gruppen2/detailsBeitreten">
-                                <button type="submit" th:href="@{/gruppen2/detailsBeitreten(id=${group.getId()})}" th:name="id" th:value="${group.id}" class="btn btn-primary" style="border-style: none;">Gruppe beitreten</button>
+                                <button class="btn btn-primary"
+                                        style="border-style: none;"
+                                        th:href="@{/gruppen2/detailsBeitreten(id=${group.getId()})}"
+                                        th:name="id" th:value="${group.id}"
+                                        type="submit">Gruppe beitreten
+                                </button>
                             </form>
                         </div>
                     </div>

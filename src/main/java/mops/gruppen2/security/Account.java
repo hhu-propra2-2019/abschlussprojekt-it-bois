@@ -1,16 +1,16 @@
 package mops.gruppen2.security;
 
-import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 
-@Getter
-@AllArgsConstructor
+import java.util.Set;
+
+@Value
 public class Account {
-    private final String name; //user_id
-    private final String email;
-    private final String image;
-    private final String givenname;
-    private final String familyname;
-    private final Set<String> roles;
+
+    String name; //user_id
+    String email;
+    String image;
+    String givenname;
+    String familyname;
+    Set<String> roles;
 }

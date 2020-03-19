@@ -1,3 +1,5 @@
+-- noinspection SqlDialectInspectionForFile
+
 -- noinspection SqlNoDataSourceInspectionForFile
 
 DROP TABLE IF EXISTS event;

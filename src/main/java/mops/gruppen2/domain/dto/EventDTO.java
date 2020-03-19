@@ -1,12 +1,15 @@
 package mops.gruppen2.domain.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("event")
-@Data
+@Getter
+@AllArgsConstructor
 public class EventDTO {
+
     @Id
     Long event_id;
     Long group_id;

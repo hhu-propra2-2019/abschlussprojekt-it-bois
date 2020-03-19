@@ -1,8 +1,18 @@
 package mops.gruppen2.builder;
 
 import com.github.javafaker.Faker;
-import mops.gruppen2.domain.*;
-import mops.gruppen2.domain.event.*;
+import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Role;
+import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.event.AddUserEvent;
+import mops.gruppen2.domain.event.CreateGroupEvent;
+import mops.gruppen2.domain.event.DeleteUserEvent;
+import mops.gruppen2.domain.event.Event;
+import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
+import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
+import mops.gruppen2.domain.event.UpdateRoleEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,39 +20,39 @@ import java.util.List;
 public class EventBuilder {
 
     /**
-     * Generiert ein EventLog mit mehreren Gruppen nud Usern
+     * Generiert ein EventLog mit mehreren Gruppen nud Usern.
      *
-     * @param count Gruppenanzahl
+     * @param count       Gruppenanzahl
      * @param membercount Gesamte Mitgliederanzahl
-     * @return
+     * @return Eventliste
      */
     public static List<Event> completeGroups(int count, int membercount) {
         List<Event> eventList = new ArrayList<>();
 
         for (int i = 1; i <= count; i++) {
-            eventList.addAll(EventBuilder.completeGroup(i, membercount / count));
+            eventList.addAll(completeGroup(i, membercount / count));
         }
 
         return eventList;
     }
 
-    public static List<Event> completeGroup(long group_id, int membercount) {
+    public static List<Event> completeGroup(long groupId, int membercount) {
         List<Event> eventList = new ArrayList<>();
 
-        eventList.add(EventBuilder.createGroupEvent(group_id));
-        eventList.add(EventBuilder.updateGroupTitleEvent(group_id));
-        eventList.add(EventBuilder.updateGroupDescriptionEvent(group_id));
+        eventList.add(createGroupEvent(groupId));
+        eventList.add(updateGroupTitleEvent(groupId));
+        eventList.add(updateGroupDescriptionEvent(groupId));
 
-        eventList.addAll(EventBuilder.addUserEvents(membercount, group_id));
+        eventList.addAll(addUserEvents(membercount, groupId));
 
         return eventList;
     }
 
-    public static CreateGroupEvent createGroupEvent(long group_id) {
+    public static CreateGroupEvent createGroupEvent(long groupId) {
         Faker faker = new Faker();
 
         return new CreateGroupEvent(
-                group_id,
+                groupId,
                 faker.random().hex(),
                 null,
                 GroupType.SIMPLE,
@@ -51,10 +61,10 @@ public class EventBuilder {
     }
 
     /**
-     * Generiert mehrere CreateGroupEvents, 1 <= group_id <= count
+     * Generiert mehrere CreateGroupEvents, 1 <= groupId <= count.
      *
-     * @param count Anzahl der verschiedenen Gruppen.
-     * @return
+     * @param count Anzahl der verschiedenen Gruppen
+     * @return Eventliste
      */
     public static List<CreateGroupEvent> createGroupEvents(int count) {
         List<CreateGroupEvent> eventList = new ArrayList<>();
@@ -66,15 +76,15 @@ public class EventBuilder {
         return eventList;
     }
 
-    public static AddUserEvent addUserEvent(long group_id, String user_id) {
+    public static AddUserEvent addUserEvent(long groupId, String userId) {
         Faker faker = new Faker();
 
         String firstname = faker.name().firstName();
         String lastname = faker.name().lastName();
 
         return new AddUserEvent(
-                group_id,
-                user_id,
+                groupId,
+                userId,
                 firstname,
                 lastname,
                 firstname + "." + lastname + "@mail.de"
@@ -82,73 +92,69 @@ public class EventBuilder {
     }
 
     /**
-     * Generiert mehrere AddUserEvents für eine Gruppe, 1 <= user_id <= count
+     * Generiert mehrere AddUserEvents für eine Gruppe, 1 <= user_id <= count.
      *
-     * @param count
-     * @param group_id
-     * @return
+     * @param count   Anzahl der Mitglieder
+     * @param groupId Gruppe, zu welcher geaddet wird
+     * @return Eventliste
      */
-    public static List<Event> addUserEvents(int count, long group_id) {
+    public static List<Event> addUserEvents(int count, long groupId) {
         List<Event> eventList = new ArrayList<>();
 
         for (int i = 1; i <= count; i++) {
-            eventList.add(EventBuilder.addUserEvent(group_id, "" + i));
+            eventList.add(addUserEvent(groupId, String.valueOf(i)));
         }
 
         return eventList;
     }
 
-    public static DeleteUserEvent deleteUserEvent(long group_id, String user_id) {
-        Faker faker = new Faker();
-
+    public static DeleteUserEvent deleteUserEvent(long groupId, String userId) {
         return new DeleteUserEvent(
-                group_id,
-                user_id
+                groupId,
+                userId
         );
     }
 
     /**
-     * Erzeugt mehrere DeleteUserEvents, sodass eine Gruppe komplett geleert wird
+     * Erzeugt mehrere DeleteUserEvents, sodass eine Gruppe komplett geleert wird.
      *
      * @param group Gruppe welche geleert wird
-     * @return
+     * @return Eventliste
      */
     public static List<DeleteUserEvent> deleteUserEvents(Group group) {
         List<DeleteUserEvent> eventList = new ArrayList<>();
 
         for (User user : group.getMembers()) {
-            eventList.add(EventBuilder.deleteUserEvent(group.getId(), user.getUser_id()));
+            eventList.add(deleteUserEvent(group.getId(), user.getId()));
         }
 
         return eventList;
     }
 
-    public static UpdateGroupDescriptionEvent updateGroupDescriptionEvent(long group_id) {
+    public static UpdateGroupDescriptionEvent updateGroupDescriptionEvent(long groupId) {
         Faker faker = new Faker();
 
         return new UpdateGroupDescriptionEvent(
-                group_id,
+                groupId,
                 faker.random().hex(),
                 faker.leagueOfLegends().quote()
         );
     }
 
-    public static UpdateGroupTitleEvent updateGroupTitleEvent(long group_id) {
+    public static UpdateGroupTitleEvent updateGroupTitleEvent(long groupId) {
         Faker faker = new Faker();
 
         return new UpdateGroupTitleEvent(
-                group_id,
+                groupId,
                 faker.random().hex(),
                 faker.leagueOfLegends().champion()
         );
     }
 
-    public static UpdateRoleEvent randomUpdateRoleEvent(long group_id, String user_id, Role role) {
-        Faker faker = new Faker();
-
+    public static UpdateRoleEvent randomUpdateRoleEvent(long groupId, String userId, Role role) {
         return new UpdateRoleEvent(
-                group_id,
-                user_id,
+                groupId,
+                userId,
                 role
         );
     }

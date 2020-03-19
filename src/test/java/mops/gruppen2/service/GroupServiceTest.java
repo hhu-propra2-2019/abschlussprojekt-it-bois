@@ -5,12 +5,9 @@ import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
-import mops.gruppen2.domain.event.DeleteGroupEvent;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -20,23 +17,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 class GroupServiceTest {
-    GroupService groupService;
-    EventRepository eventRepository;
+
+    private GroupService groupService;
 
     @BeforeEach
-    public void setUp() {
-        groupService = new GroupService(mock(EventService.class), eventRepository);
+    void setUp() {
+        groupService = new GroupService(mock(EventService.class), mock(EventRepository.class));
     }
 
 
     @Test
-    void rightClassForSucsessfulGroup() throws Exception {
+    void rightClassForSuccessfulGroup() throws Exception {
         List<Event> eventList = new ArrayList<>();
-
         eventList.add(new CreateGroupEvent(1L, "Prof", null, GroupType.LECTURE, Visibility.PRIVATE));
-
         eventList.add(new AddUserEvent(1L, "Ulli", "Ulli", "Honnis", "FC@B.de"));
 
-        assertThat(groupService.projectEventList(eventList).get(0)).isInstanceOf(Group.class);
+        List<Group> groups = groupService.projectEventList(eventList);
+
+        assertThat(groups.get(0)).isInstanceOf(Group.class);
     }
 }

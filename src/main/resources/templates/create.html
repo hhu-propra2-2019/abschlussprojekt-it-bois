@@ -16,7 +16,7 @@
             <li>
                 <a th:href="@{/gruppen2}" href="/">Gruppen</a>
             </li>
-            <li  class="active">
+            <li class="active">
                 <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
             </li>
             <li>
@@ -35,22 +35,28 @@
                 <h1>Gruppenerstellung</h1>
                 <form method="post" action="/gruppen2/createGroup">
                     <div class="shadow p-2" style=" border: 10px solid aliceblue; border-radius: 5px; background: aliceblue">
+
                         <div class="form-group">
                             <label for="titel">Titel</label>
-                            <input type="text" class="form-control" id="titel" th:name="title" required>
+                            <input class="form-control" id="titel" required th:name="title"
+                                   type="text">
                         </div>
                         <div class="form-group">
                             <label for="beschreibung">Beschreibung</label>
-                            <textarea th:name="beschreibung" class="form-control" id="beschreibung" rows="3" required></textarea>
+                            <textarea class="form-control" id="beschreibung" required
+                                      rows="3" th:name="beschreibung"></textarea>
                         </div>
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" id="visibility" class="custom-control-input" th:name="visibility">
-                            <label class="custom-control-label" for="visibility">Private Gruppe</label>
+                            <input class="custom-control-input" id="visibility" th:name="visibility"
+                                   type="checkbox">
+                            <label class="custom-control-label" for="visibility">Private
+                                Gruppe</label>
                         </div>
                         <div class="form-group">
                             <label for="sel1"></label>
                             <select class="form-control" id="sel1">
-                                <option selected="true" disabled>--Bitte Veranstaltung auswählen--</option>
+                                <option disabled selected="true">--Bitte Veranstaltung auswählen--
+                                </option>
                                 <option>1</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -58,7 +64,10 @@
                             </select>
                         </div>
                         <div class="form-group pt-4">
-                            <button class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Erstellen</button>
+                            <button class="btn btn-primary"
+                                    style="background: #52a1eb; border-style: none"
+                                    type="submit">Erstellen
+                            </button>
                         </div>
                     </div>
                 </form>

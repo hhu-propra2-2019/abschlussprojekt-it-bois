@@ -13,18 +13,19 @@ import java.util.List;
 
 @Service
 public class EventService {
-    private final SerializationService serializationService;
+
+    private final JsonService jsonService;
     private final EventRepository eventStore;
 
-    public EventService(SerializationService serializationService, EventRepository eventStore) {
-        this.serializationService = serializationService;
+    public EventService(JsonService jsonService, EventRepository eventStore) {
+        this.jsonService = jsonService;
         this.eventStore = eventStore;
     }
 
     /**
-     * sichert ein Event Objekt indem es ein EventDTO Objekt erzeugt
+     * Erzeugt ein DTO aus einem Event und speicher es.
      *
-     * @param event
+     * @param event Event, welches gespeichert wird
      */
     public void saveEvent(Event event) {
         EventDTO eventDTO = getDTO(event);
@@ -35,48 +36,46 @@ public class EventService {
      * Erzeugt aus einem Event Objekt ein EventDTO Objekt.
      * Ist die Gruppe öffentlich, dann wird die visibility auf true gesetzt.
      *
-     * @param event
-     * @return EventDTO
+     * @param event Event, welches in DTO übersetzt wird
+     * @return EventDTO Neues DTO
      */
     public EventDTO getDTO(Event event) {
-        EventDTO eventDTO = new EventDTO();
-        eventDTO.setGroup_id(event.getGroup_id());
-        eventDTO.setUser_id(event.getUser_id());
+        boolean visibility = false;
         if (event instanceof CreateGroupEvent) {
-            if (((CreateGroupEvent) event).getGroupVisibility() == Visibility.PRIVATE) {
-                eventDTO.setVisibility(false);
-            } else {
-                eventDTO.setVisibility(true);
-            }
+            visibility = ((CreateGroupEvent) event).getGroupVisibility() == Visibility.PUBLIC;
         }
 
+        String payload = "";
         try {
-            eventDTO.setEvent_payload(serializationService.serializeEvent(event));
+            payload = jsonService.serializeEvent(event);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return eventDTO;
+
+        return new EventDTO(null, event.getGroupId(), event.getUserId(), payload, visibility);
     }
 
     /**
      * Gibt die nächst höhere groupID zurück die belegt werden kann.
      * Gibt 1 zurück, falls keine Gruppe vorhanden ist.
      *
-     * @return Gibt Long zurück
+     * @return Long GruppenId
      */
     public Long checkGroup() {
         Long maxGroupID = eventStore.getMaxGroupID();
+
         if (maxGroupID == null) {
             return 1L;
         }
+
         return maxGroupID + 1;
     }
 
     /**
-     * Findet alle Events welche ab dem neuen Status hinzugekommen sind
+     * Findet alle Events welche ab dem neuen Status hinzugekommen sind.
      *
-     * @param status
-     * @return Liste von Events
+     * @param status Die Id des zuletzt gespeicherten Events
+     * @return Liste von neueren Events
      */
     public List<Event> getNewEvents(Long status) {
         List<Long> groupIdsThatChanged = eventStore.findNewEventSinceStatus(status);
@@ -86,9 +85,9 @@ public class EventService {
     }
 
     /**
-     * Erzeugt aus einer Liste von eventDTOs eine Liste von Events
+     * Erzeugt aus einer Liste von eventDTOs eine Liste von Events.
      *
-     * @param eventDTOS
+     * @param eventDTOS Liste von DTOs
      * @return Liste von Events
      */
     public List<Event> translateEventDTOs(Iterable<EventDTO> eventDTOS) {
@@ -96,7 +95,7 @@ public class EventService {
 
         for (EventDTO eventDTO : eventDTOS) {
             try {
-                events.add(serializationService.deserializeEvent(eventDTO.getEvent_payload()));
+                events.add(jsonService.deserializeEvent(eventDTO.getEvent_payload()));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -105,12 +104,12 @@ public class EventService {
     }
 
     /**
-     * Sichert eine Liste von Event Objekten mithilfe der Methode saveEvent(Event event)
+     * Sichert eine Liste von Event Objekten mithilfe der Methode saveEvent(Event event).
      *
-     * @param createGroupEvents Liste von Event Objekten
+     * @param eventList Liste von Event Objekten
      */
-    public void saveEventList(List<Event> createGroupEvents) {
-        for (Event event : createGroupEvents) {
+    public void saveEventList(List<Event> eventList) {
+        for (Event event : eventList) {
             saveEvent(event);
         }
     }
