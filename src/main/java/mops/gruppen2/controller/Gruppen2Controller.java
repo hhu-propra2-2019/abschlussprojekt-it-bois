@@ -1,11 +1,13 @@
 package mops.gruppen2.controller;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
+import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.CsvService;
@@ -13,6 +15,7 @@ import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.InviteLinkRepositoryService;
 import mops.gruppen2.service.KeyCloakService;
 import mops.gruppen2.service.UserService;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +29,7 @@ import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
+import java.io.CharConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +92,11 @@ public class Gruppen2Controller {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
         if (!file.isEmpty()) {
-            userList = CsvService.read(file.getInputStream());
+            try {
+                userList = CsvService.read(file.getInputStream());
+            } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                throw new WrongFileException(file.getOriginalFilename());
+            }
         }
         visibility = visibility == null;
         lecture = lecture == null;
@@ -125,7 +133,13 @@ public class Gruppen2Controller {
                                   @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         List<User> userList = new ArrayList<>();
         if (!file.isEmpty()) {
-            userList = CsvService.read(file.getInputStream());
+            try {
+                userList = CsvService.read(file.getInputStream());
+            } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                throw new WrongFileException(file.getOriginalFilename());
+            } catch (IllegalStateException ex) {
+                throw new WrongFileException(file.getOriginalFilename());
+            }
         }
         controllerService.addUserList(userList, groupId);
         return "redirect:/gruppen2/details/members/" + groupId;
