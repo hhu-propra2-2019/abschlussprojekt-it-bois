@@ -35,7 +35,16 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-9">
+            <div class="col-10">
+                <h1>Mitglieder bearbeiten</h1>
+                <div>
+                    <h5>
+                        <a th:text="${group.getMembers().size()}"></a>
+                        <a>von maximal</a>
+                        <a th:text="${group.getUserMaximum()}"></a>
+                        <a>Benutzern.</a>
+                    </h5>
+                </div>
                 <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
                     <!-- absichern im controller nicht vergessen -->
                     <div class="form-group pt-4" th:if="${account.getRoles().contains('orga')}">
@@ -43,17 +52,15 @@
                               enctype="multipart/form-data"
                               method="post">
                             <div class="row">
-                                <div class="col-9">
+                                <div class="col-10">
                                     <div class="custom-file">
-                                        <input class="custom-file-input" id="file" th:name="file"
-                                               type="file">
-                                        <label class="custom-file-label" for="file">CSV Datei von
-                                            Mitgliedern hochladen</label>
+                                        <input class="custom-file-input" id="file" th:name="file" type="file">
+                                        <label class="custom-file-label" for="file">CSV Datei von Mitgliedern hochladen</label>
                                     </div>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-2">
                                     <button class="btn btn-primary"
-                                            style="background: #52a1eb; border-style: none"
+                                            style="background: #52a1eb; border-style: none; float: right"
                                             th:name="group_id" th:value="${group.getId()}"
                                             type="submit">
                                         Mitglieder hinzufügen
@@ -62,12 +69,12 @@
                             </div>
                         </form>
                     </div>
-                    <table class="table">
+                    <table class="table" style="table-layout: fixed">
                         <thead>
                         <tr>
                             <th scope="col">Mitglied</th>
                             <th scope="col" style="width: 180px">Rolle</th>
-                            <th scope="col" >Optionen</th>
+                            <th scope="col" style="width: 280px">Optionen</th>
                         </tr>
                         </thead>
                         <tbody class="table-striped">
@@ -78,23 +85,24 @@
                                 <span th:if='${group.getRoles().get(member.getId()) == admin}'>Admin</span>
                             </td>
                             <td>
-                                <form action="/gruppen2/details/members/changeRole" method="post">
-                                    <input th:name="group_id" th:value="${group.getId()}"
-                                           type="hidden">
-                                    <input th:name="user_id" th:value="${member.getId()}"
-                                           type="hidden">
-                                    <button  class="btn btn-warning btn-sm" type="submit">Rolle
-                                        ändern
-                                    </button><!-- th:if -->
-                                </form>
-                                <form action="/gruppen2/details/members/deleteUser" method="post">
-                                    <input th:name="group_id" th:value="${group.getId()}"
-                                           type="hidden">
-                                    <input th:name="user_id" th:value="${member.getId()}"
-                                           type="hidden">
-                                    <button th:if='${member.getId() != account.getName()}' class="btn btn-danger btn-sm">Mitglied entfernen
-                                    </button>
-                                </form>
+                                <div class="text-right btn-toolbar" style="float: right;" role="toolbar">
+                                    <form action="/gruppen2/details/members/changeRole" method="post">
+                                        <input th:name="group_id" th:value="${group.getId()}"
+                                               type="hidden">
+                                        <input th:name="user_id" th:value="${member.getId()}"
+                                               type="hidden">
+                                        <button class="btn btn-warning btn-sm" type="submit" style="margin: 5px">Rolle
+                                            ändern
+                                        </button><!-- th:if -->
+                                    </form>
+                                    <form action="/gruppen2/details/members/deleteUser" method="post">
+                                        <input th:name="group_id" th:value="${group.getId()}"
+                                               type="hidden">
+                                        <input th:name="user_id" th:value="${member.getId()}"
+                                               type="hidden">
+                                        <button class="btn btn-danger btn-sm" style="margin: 5px">Mitglied entfernen</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
