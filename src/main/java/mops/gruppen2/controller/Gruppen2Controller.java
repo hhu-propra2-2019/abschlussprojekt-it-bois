@@ -131,12 +131,13 @@ public class Gruppen2Controller {
     @PostMapping("/createGroup")
     public String pCreateGroup(KeycloakAuthenticationToken token,
                                @RequestParam("title") String title,
-                               @RequestParam("beschreibung") String beschreibung,
-                               @RequestParam(value = "visibility", required = false) Boolean visibility) throws EventException {
+                               @RequestParam("description") String description,
+                               @RequestParam(value = "visibility", required = false) Boolean visibility,
+                               @RequestParam("userMaximum") Long userMaximum) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         visibility = visibility == null;
-        controllerService.createGroup(account, title, beschreibung, visibility);
+        controllerService.createGroup(account, title, description, visibility, userMaximum);
 
         return "redirect:/gruppen2/";
     }

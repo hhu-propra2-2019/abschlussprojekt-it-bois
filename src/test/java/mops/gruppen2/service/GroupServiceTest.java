@@ -29,7 +29,7 @@ class GroupServiceTest {
     @Test
     void rightClassForSuccessfulGroup() throws Exception {
         List<Event> eventList = new ArrayList<>();
-        eventList.add(new CreateGroupEvent(1L, "Prof", null, GroupType.LECTURE, Visibility.PRIVATE));
+        eventList.add(new CreateGroupEvent(1L, "Prof", null, GroupType.LECTURE, Visibility.PRIVATE,null));
         eventList.add(new AddUserEvent(1L, "Ulli", "Ulli", "Honnis", "FC@B.de"));
 
         List<Group> groups = groupService.projectEventList(eventList);

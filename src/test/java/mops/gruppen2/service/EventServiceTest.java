@@ -56,7 +56,7 @@ class EventServiceTest {
 
     @Test
     void getDTOOffentlichTest() {
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "test", null, GroupType.LECTURE, Visibility.PUBLIC);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "test", null, GroupType.LECTURE, Visibility.PUBLIC, null);
         EventDTO eventDTO = eventService.getDTO(createGroupEvent);
         assertTrue(eventDTO.isVisibility());
     }

@@ -42,9 +42,14 @@
                                    type="text">
                         </div>
                         <div class="form-group">
-                            <label for="beschreibung">Beschreibung</label>
-                            <textarea class="form-control" id="beschreibung" required
-                                      rows="3" th:name="beschreibung"></textarea>
+                            <label for="description">Beschreibung</label>
+                            <textarea class="form-control" id="description" required
+                                      rows="3" th:name="description"></textarea>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="userMaximum">Teilnehmeranzahl</label>
+                            <input class="form-control" id="userMaximum" required th:name="userMaximum"
+                                   type="number" min="1">
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input class="custom-control-input" id="visibility" th:name="visibility"

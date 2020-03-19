@@ -20,6 +20,7 @@ public class Group {
     private Long id;
     private String title;
     private String description;
+    private Long userMaximum;
     private GroupType type;
     private Visibility visibility;
     private Long parent;
