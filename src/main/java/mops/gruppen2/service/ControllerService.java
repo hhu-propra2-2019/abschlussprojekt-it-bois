@@ -18,7 +18,10 @@ import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import static mops.gruppen2.domain.Role.ADMIN;
 
 
 @Service
@@ -104,10 +107,10 @@ public class ControllerService {
             throw new UserNotFoundException(this.getClass().toString());
         }
 
-        if (group.getRoles().get(user.getId()) == Role.ADMIN) {
+        if (group.getRoles().get(user.getId()) == ADMIN) {
             updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), Role.MEMBER);
         } else {
-            updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), Role.ADMIN);
+            updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), ADMIN);
         }
         eventService.saveEvent(updateRoleEvent);
     }
@@ -153,4 +156,37 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
         addUserList(users, groupId);
     }
+
+    public boolean passIfLastAdmin(Account account, Long groupId){
+        Group group = userService.getGroupById(groupId);
+        if (group.getMembers().size() <= 1){
+            return true;
+        }
+
+        if (isLastAdmin(account, group)){
+            String newAdminId = getVeteranMember(account, group);
+            updateRole(newAdminId, groupId);
+        }
+        return false;
+    }
+
+    private boolean isLastAdmin(Account account, Group group){
+        for (Map.Entry<String, Role> entry : group.getRoles().entrySet()){
+            if (entry.getValue().equals(ADMIN)){
+                if (!(entry.getKey().equals(account.getName()))){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private String getVeteranMember(Account account, Group group){
+        List<User> mitglieder = group.getMembers();
+        if (mitglieder.get(0).getId().equals(account.getName())){
+            return mitglieder.get(1).getId();
+        }
+        return mitglieder.get(0).getId();
+    }
+
 }
