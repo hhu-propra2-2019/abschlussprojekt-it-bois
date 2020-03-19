@@ -36,7 +36,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-9">
-                <div class="shadow p-2" style="border: 10px solid aliceblue; border-radius: 5px; background: aliceblue">
+                <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
                     <!-- absichern im controller nicht vergessen -->
                     <div class="form-group pt-4" th:if="${account.getRoles().contains('orga')}">
                         <form action="/gruppen2/details/members/addUsersFromCsv"
@@ -99,12 +99,9 @@
                         </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-primary" style="background: #52a1eb; border-style: none"
-                            type="button">
-                        <a th:href="@{/gruppen2/details(id=${group.getId()})}" style="color: white">Fertig</a>
-                    </button>
-                    <br>
-                    <br>
+                    <form method="get" th:action="@{/gruppen2/details/{id}(id=${group.getId()})}">
+                        <button class="btn btn-primary" style="background: #52a1eb; border-style: none" type="submit">Fertig</button>
+                    </form>
                 </div>
             </div>
         </div>

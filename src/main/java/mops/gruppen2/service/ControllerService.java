@@ -43,7 +43,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean visibility) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean visibility, Long userMaximum) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -54,7 +54,7 @@ public class ControllerService {
             createInviteLink(groupId);
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.SIMPLE, visibility1);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.SIMPLE, visibility1, userMaximum);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);
@@ -144,7 +144,7 @@ public class ControllerService {
             visibility1 = Visibility.PRIVATE;
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.LECTURE, visibility1);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.LECTURE, visibility1, 1000L); //this has to be changed also Usermaximum
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);

@@ -56,7 +56,8 @@ public class EventBuilder {
                 faker.random().hex(),
                 null,
                 GroupType.SIMPLE,
-                Visibility.PRIVATE
+                Visibility.PRIVATE,
+                null
         );
     }
 

@@ -7,6 +7,7 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.exception.EventException;
+import mops.gruppen2.domain.exception.GroupFullException;
 import mops.gruppen2.domain.exception.UserAlreadyExistsException;
 
 /**
@@ -34,6 +35,10 @@ public class AddUserEvent extends Event {
 
         if (group.getMembers().contains(user)) {
             throw new UserAlreadyExistsException(this.getClass().toString());
+        }
+        //andere exception
+        if (group.getMembers().size() == group.getUserMaximum()){
+            throw new GroupFullException(this.getClass().toString());
         }
 
         group.getMembers().add(user);
