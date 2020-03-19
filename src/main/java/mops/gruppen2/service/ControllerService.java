@@ -18,7 +18,10 @@ import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import static mops.gruppen2.domain.Role.ADMIN;
 
 
 @Service
@@ -43,7 +46,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean visibility) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean visibility, Long userMaximum) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -54,7 +57,7 @@ public class ControllerService {
             createInviteLink(groupId);
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.SIMPLE, visibility1);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.SIMPLE, visibility1, userMaximum);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);
@@ -130,10 +133,10 @@ public class ControllerService {
             throw new UserNotFoundException(this.getClass().toString());
         }
 
-        if (group.getRoles().get(user.getId()) == Role.ADMIN) {
+        if (group.getRoles().get(user.getId()) == ADMIN) {
             updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), Role.MEMBER);
         } else {
-            updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), Role.ADMIN);
+            updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), ADMIN);
         }
         eventService.saveEvent(updateRoleEvent);
     }
@@ -158,6 +161,58 @@ public class ControllerService {
     public void deleteGroupEvent(User user, Long groupId) {
         DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, user.getId());
         eventService.saveEvent(deleteGroupEvent);
+    }
+
+    public void createLecture(Account account, String title, String description, Boolean visibility, List<User> users) throws EventException {
+        Visibility visibility1;
+        Long groupId = eventService.checkGroup();
+
+        if (visibility) {
+            visibility1 = Visibility.PUBLIC;
+        } else {
+            visibility1 = Visibility.PRIVATE;
+        }
+
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.LECTURE, visibility1, 1000L); //this has to be changed also Usermaximum
+        eventService.saveEvent(createGroupEvent);
+
+        addUser(account, groupId);
+        updateTitle(account, groupId, title);
+        updateDescription(account, groupId, description);
+        updateRole(account.getName(), groupId);
+        addUserList(users, groupId);
+    }
+
+    public boolean passIfLastAdmin(Account account, Long groupId){
+        Group group = userService.getGroupById(groupId);
+        if (group.getMembers().size() <= 1){
+            return true;
+        }
+
+        if (isLastAdmin(account, group)){
+            String newAdminId = getVeteranMember(account, group);
+            updateRole(newAdminId, groupId);
+        }
+        return false;
+    }
+
+    private boolean isLastAdmin(Account account, Group group){
+        for (Map.Entry<String, Role> entry : group.getRoles().entrySet()){
+            if (entry.getValue().equals(ADMIN)){
+                if (!(entry.getKey().equals(account.getName()))){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private String getVeteranMember(Account account, Group group){
+        List<User> mitglieder = group.getMembers();
+        if (mitglieder.get(0).getId().equals(account.getName())){
+            return mitglieder.get(1).getId();
+        }
+        return mitglieder.get(0).getId();
     }
 
 }

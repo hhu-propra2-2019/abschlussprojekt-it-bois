@@ -31,8 +31,7 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-9 shadow-sm p-4"
-                 style="border: 10px solid aliceblue; background: aliceblue">
+            <div class="col-9 shadow-sm p-4" style="border: 10px solid aliceblue;  border-radius: 5px; background: aliceblue">
                 <h1 style="color: black; font-weight: bold" th:text="${group.getTitle()}"></h1>
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"
@@ -63,13 +62,18 @@
             <div class="col-3" style="white-space: nowrap">
                 <div style="display: inline-block; margin: 0">
                     <h2>Mitglieder</h2>
+                    <div>
+                        <h4>
+                            <a th:text="${group.getMembers().size()}"></a>
+                            <a>von maximal</a>
+                            <a th:text="${group.getUserMaximum()}"></a>
+                            <a>Benutzern.</a>
+                        </h4>
+                    </div>
                     <div th:if="${group.getRoles().get(user.getId()) == admin}">
                         <form method="get"
                               th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
-                            <button class="btn btn-secondary"
-                                    style="background: slategrey; float: right">
-                                Mitglieder bearbeiten
-                            </button>
+                            <button class="btn btn-secondary" style="background: slategrey; float: left">Mitglieder bearbeiten</button>
                         </form>
                     </div>
                     <br>

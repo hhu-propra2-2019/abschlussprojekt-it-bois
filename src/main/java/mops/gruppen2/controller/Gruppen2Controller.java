@@ -8,6 +8,7 @@ import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
+import mops.gruppen2.domain.exception.NoAdminAfterActionException;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.CsvService;
@@ -158,6 +159,21 @@ public class Gruppen2Controller {
         return "search";
     }
 
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @PostMapping("/createGroup")
+    public String pCreateGroup(KeycloakAuthenticationToken token,
+                               @RequestParam("title") String title,
+                               @RequestParam("description") String description,
+                               @RequestParam(value = "visibility", required = false) Boolean visibility,
+                               @RequestParam("userMaximum") Long userMaximum) throws EventException {
+
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        visibility = visibility == null;
+        controllerService.createGroup(account, title, description, visibility, userMaximum);
+
+        return "redirect:/gruppen2/";
+    }
+
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/details/{id}")
     public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @PathVariable("id") Long groupId) throws EventException {
@@ -180,12 +196,14 @@ public class Gruppen2Controller {
     @PostMapping("/detailsBeitreten")
     public String joinGroup(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(groupId);
         if (group.getMembers().contains(user)) {
             return "error"; //hier soll eigentlich auf die bereits beigetretene Gruppe weitergeleitet werden
         }
+        if (group.getUserMaximum() < group.getMembers().size()) return "error";
         controllerService.addUser(account, groupId);
         return "redirect:/gruppen2/";
     }
@@ -195,7 +213,7 @@ public class Gruppen2Controller {
     public String showGroupDetailsNoMember(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(groupId);
-        if (group != null) {
+        if (group != null && group.getUserMaximum() > group.getMembers().size()) {
             model.addAttribute("group", group);
             return "detailsNoMember";
         }
@@ -219,6 +237,7 @@ public class Gruppen2Controller {
     public String pLeaveGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        controllerService.passIfLastAdmin(account, groupId);
         controllerService.deleteUser(user.getId(), groupId);
         return "redirect:/gruppen2/";
     }
@@ -243,6 +262,16 @@ public class Gruppen2Controller {
     @PostMapping("/details/members/changeRole")
     public String changeRole(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId,
                              @RequestParam("user_id") String userId) throws EventException {
+
+
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        if (userId.equals(account.getName())) {
+            if (controllerService.passIfLastAdmin(account, groupId)){
+                throw new NoAdminAfterActionException("Du otto bist letzter Admin");
+            }
+            controllerService.updateRole(userId, groupId);
+            return "redirect:/gruppen2/details/" + groupId;
+        }
         controllerService.updateRole(userId, groupId);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
