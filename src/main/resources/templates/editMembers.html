@@ -35,7 +35,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-9">
-                <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
+                <div class="shadow p-2" style="border: 10px solid aliceblue; border-radius: 5px; background: aliceblue">
                     <!-- absichern im controller nicht vergessen -->
                     <div class="form-group pt-4" th:if="${account.getRoles().contains('orga')}">
                         <form method="post" action="/gruppen2/details/members/addUsersFromCsv" enctype="multipart/form-data">
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                                 <div class="col-3">
-                                    <button th:name="group_id" th:value="${group.getId()}" class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none">Mitglieder hinzufügen</button>
+                                    <button th:name="group_id" th:value="${group.getId()}" class="btn btn-primary" type="submit" style="background: #52a1eb; border-style: none; float: right" >Mitglieder hinzufügen</button>
                                 </div>
                             </div>
                         </form>
@@ -57,7 +57,7 @@
                         <tr>
                             <th scope="col">Mitglied</th>
                             <th scope="col" style="width: 180px">Rolle</th>
-                            <th scope="col" style="width: 270px">Optionen</th>
+                            <th scope="col" >Optionen</th>
                         </tr>
                         </thead>
                         <tbody class="table-striped">
@@ -69,23 +69,27 @@
                                     <span th:if='${group.getRoles().get(member.getUser_id()) == admin}'>Admin</span>
                                 </td>
                                 <td>
-                                    <form method="post" action="/gruppen2/details/members/changeRole">
-                                        <input type="hidden" th:name="group_id" th:value="${group.getId()}">
-                                        <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
-                                        <button type="submit"  class="btn btn-warning btn-sm">Rolle ändern</button><!-- th:if -->
-                                    </form>
-                                    <form method="post" action="/gruppen2/details/members/deleteUser">
-                                        <input type="hidden" th:name="group_id" th:value="${group.getId()}">
-                                        <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
-                                        <button class="btn btn-danger btn-sm">Mitglied entfernen</button>
-                                    </form>
+                                    <div class="text-right btn-toolbar" style="float: right" role="toolbar">
+                                        <form method="post" action="/gruppen2/details/members/changeRole">
+                                            <input type="hidden" th:name="group_id" th:value="${group.getId()}">
+                                            <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
+                                            <button type="submit"  class="btn btn-warning btn-sm" style="margin: 5px">Rolle ändern</button><!-- th:if -->
+                                        </form>
+                                        <form method="post" action="/gruppen2/details/members/deleteUser">
+                                            <input type="hidden" th:name="group_id" th:value="${group.getId()}">
+                                            <input type="hidden" th:name="user_id" th:value="${member.getUser_id()}">
+                                            <button class="btn btn-danger btn-sm" style="margin: 5px">Mitglied entfernen</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-primary" style="background: #52a1eb; border-style: none">
-                        <a th:href="@{/gruppen2/details(id=${group.getId()})}" style="color: white">Fertig</a>
+                    <button type="button" class="btn btn-primary" style="background: #52a1eb; float: right; border-style: none">
+                        <a th:href="@{/gruppen2/details(id=${group.getId()})}" style="color: white; margin: 5px">Fertig</a>
                     </button>
+                    <br>
+                    <br>
                 </div>
             </div>
         </div>
