@@ -144,7 +144,7 @@ public class ControllerService {
             visibility1 = Visibility.PRIVATE;
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.LECTURE, visibility1, null);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.LECTURE, visibility1, 1000L); //this has to be changed also Usermaximum
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);
