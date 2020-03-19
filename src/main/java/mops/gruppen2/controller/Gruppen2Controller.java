@@ -70,19 +70,20 @@ public class Gruppen2Controller {
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
-    @GetMapping("/createLecture")
-    public String createLecture(KeycloakAuthenticationToken token, Model model) {
+    @GetMapping("/createOrga")
+    public String createOrga(KeycloakAuthenticationToken token, Model model) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        return "createLecture";
+        return "createOrga";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
-    @PostMapping("/createLecture")
-    public String pCreateLecture(KeycloakAuthenticationToken token,
-                                 @RequestParam("title") String title,
-                                 @RequestParam("beschreibung") String beschreibung,
-                                 @RequestParam(value = "visibility", required = false) Boolean visibility,
-                                 @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
+    @PostMapping("/createOrga")
+    public String pCreateOrga(KeycloakAuthenticationToken token,
+                          @RequestParam("title") String title,
+                          @RequestParam("beschreibung") String beschreibung,
+                          @RequestParam(value = "visibility", required = false) Boolean visibility,
+                          @RequestParam(value = "lecture", required = false) Boolean lecture,
+                          @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
@@ -90,7 +91,30 @@ public class Gruppen2Controller {
             userList = CsvService.read(file.getInputStream());
         }
         visibility = visibility == null;
-        controllerService.createLecture(account, title, beschreibung, visibility, userList);
+        lecture = lecture == null;
+
+        controllerService.createOrga(account, title, beschreibung, visibility, lecture, userList);
+
+        return "redirect:/gruppen2/";
+    }
+
+    @RolesAllowed({"ROLE_studentin"})
+    @GetMapping("/createStudent")
+    public String createStudent(KeycloakAuthenticationToken token, Model model) {
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        return "createStudent";
+    }
+
+    @RolesAllowed({"ROLE_studentin"})
+    @PostMapping("/createStudent")
+    public String pCreateStudent(KeycloakAuthenticationToken token,
+                               @RequestParam("title") String title,
+                               @RequestParam("beschreibung") String beschreibung,
+                               @RequestParam(value = "visibility", required = false) Boolean visibility) throws EventException {
+
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        visibility = visibility == null;
+        controllerService.createGroup(account, title, beschreibung, visibility);
 
         return "redirect:/gruppen2/";
     }
@@ -107,13 +131,6 @@ public class Gruppen2Controller {
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
-    @GetMapping("/createGroup")
-    public String createGroup(KeycloakAuthenticationToken token, Model model) {
-        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        return "create";
-    }
-
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/findGroup")
     public String findGroup(KeycloakAuthenticationToken token, Model model, @RequestParam(value = "suchbegriff", required = false) String search) throws EventException {
@@ -125,20 +142,6 @@ public class Gruppen2Controller {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("gruppen", groupse);
         return "search";
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @PostMapping("/createGroup")
-    public String pCreateGroup(KeycloakAuthenticationToken token,
-                               @RequestParam("title") String title,
-                               @RequestParam("beschreibung") String beschreibung,
-                               @RequestParam(value = "visibility", required = false) Boolean visibility) throws EventException {
-
-        Account account = keyCloakService.createAccountFromPrincipal(token);
-        visibility = visibility == null;
-        controllerService.createGroup(account, title, beschreibung, visibility);
-
-        return "redirect:/gruppen2/";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})

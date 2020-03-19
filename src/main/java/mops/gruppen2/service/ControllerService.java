@@ -63,6 +63,32 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
+    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, List<User> users) throws EventException {
+        Visibility visibility1;
+        Long groupId = eventService.checkGroup();
+
+        if (visibility) {
+            visibility1 = Visibility.PUBLIC;
+        } else {
+            visibility1 = Visibility.PRIVATE;
+        }
+
+        GroupType groupType;
+        if (lecture) {
+            groupType = GroupType.SIMPLE;
+        } else {
+            groupType = GroupType.LECTURE;
+        }
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, groupType, visibility1);
+        eventService.saveEvent(createGroupEvent);
+
+        addUser(account, groupId);
+        updateTitle(account, groupId, title);
+        updateDescription(account, groupId, description);
+        updateRole(account.getName(), groupId);
+        addUserList(users, groupId);
+    }
+
     private void createInviteLink(Long groupId) {
         inviteLinkRepositoryService.saveInvite(groupId, UUID.randomUUID());
     }
@@ -134,23 +160,4 @@ public class ControllerService {
         eventService.saveEvent(deleteGroupEvent);
     }
 
-    public void createLecture(Account account, String title, String description, Boolean visibility, List<User> users) throws EventException {
-        Visibility visibility1;
-        Long groupId = eventService.checkGroup();
-
-        if (visibility) {
-            visibility1 = Visibility.PUBLIC;
-        } else {
-            visibility1 = Visibility.PRIVATE;
-        }
-
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.LECTURE, visibility1);
-        eventService.saveEvent(createGroupEvent);
-
-        addUser(account, groupId);
-        updateTitle(account, groupId, title);
-        updateDescription(account, groupId, description);
-        updateRole(account.getName(), groupId);
-        addUserList(users, groupId);
-    }
 }

@@ -11,19 +11,19 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li class="active">
                 <a href="/" th:href="@{/gruppen2}">Gruppen</a>
             </li>
-            <li>
-                <a href="/createGroup" th:href="@{/gruppen2/createGroup}">Erstellen</a>
+            <li th:case="${true}">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
             </li>
             <li>
                 <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
-            </li>
-            <li th:if="${account.getRoles().contains('orga')}">
-                <a href="/createLecture" th:href="@{/gruppen2/createLecture}">Veranstaltung</a>
             </li>
         </ul>
     </nav>

@@ -7,28 +7,23 @@
     <title>Gruppenerstellung</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-              rel="stylesheet">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     </th:block>
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li>
                 <a th:href="@{/gruppen2}" href="/">Gruppen</a>
             </li>
-            <li>
-                <a th:href="@{/gruppen2/createGroup}" href="/createGroup">Erstellen</a>
+            <li th:case="${true}" class="active">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}" class="active">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
             </li>
             <li>
                 <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
-            </li>
-            <li th:if="${account.getRoles().contains('orga')}" class="active">
-                <a th:href="@{/gruppen2/createLecture}" href="/createLecture">Veranstaltung</a>
             </li>
         </ul>
     </nav>
@@ -37,11 +32,10 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-10">
-                <h1>Veranstaltung erstellen</h1>
-                <div class="shadow p-2"
-                     style=" border: 10px solid aliceblue; background: aliceblue">
-                    <form action="/gruppen2/createLecture" enctype="multipart/form-data"
-                          method="post">
+                <h1>Gruppenerstellung</h1>
+                <form method="post" action="/gruppen2/createStudent">
+                    <div class="shadow p-2"
+                         style=" border: 10px solid aliceblue; background: aliceblue">
                         <div class="form-group">
                             <label for="titel">Titel</label>
                             <input class="form-control" id="titel" required th:name="title"
@@ -58,17 +52,16 @@
                             <label class="custom-control-label" for="visibility">Private
                                 Gruppe</label>
                         </div>
-                        <div class="form-group pt-4">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="custom-file">
-                                        <input class="custom-file-input" id="file" th:name="file"
-                                               type="file">
-                                        <label class="custom-file-label" for="file">CSV Datei von
-                                            Mitgliedern hochladen</label>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label for="sel1"></label>
+                            <select class="form-control" id="sel1">
+                                <option disabled selected="true">--Bitte Veranstaltung auswählen--
+                                </option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
                         </div>
                         <div class="form-group pt-4">
                             <button class="btn btn-primary"
@@ -76,18 +69,11 @@
                                     type="submit">Erstellen
                             </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <script>
-        // Add the following code if you want the name of the file appear on select
-        $(".custom-file-input").on("change", function () {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-        });
-    </script>
 </main>
 </body>
 </html>
