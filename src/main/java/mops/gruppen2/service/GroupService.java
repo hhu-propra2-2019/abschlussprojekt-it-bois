@@ -1,6 +1,7 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
@@ -94,6 +95,18 @@ public class GroupService {
             }
         }
         return removeUserGroups(visibleGroups, newGroups);
+    }
+
+    public List<Group> getAllLecturesWithVisibilityPublic() throws EventException {
+        List<Event> eventsVisible = eventService.translateEventDTOs(eventRepository.findAllEventsOfGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE)));
+        List<Group> visibleGroups = projectEventList(eventsVisible);
+        List<Group> visibleLectures = new ArrayList<>();
+        for (Group group : visibleGroups) {
+            if (group.getType().equals(GroupType.LECTURE)) {
+                visibleLectures.add(group);
+            }
+        }
+        return visibleLectures;
     }
 
 
