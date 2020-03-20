@@ -104,6 +104,13 @@
             var fileName = $(this).val().split("\\").pop();
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         });
+
+        // Collapsing lectureParent if lecture is checked
+        $(document).ready(function () {
+            $('#lecture').change(function () {
+                $('#lectureParent').fadeToggle();
+            });
+        });
     </script>
 </main>
 </body>
