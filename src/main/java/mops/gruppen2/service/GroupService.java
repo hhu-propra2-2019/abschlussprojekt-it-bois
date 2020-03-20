@@ -83,7 +83,7 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
-        User user = new User(userId,null, null, null);
+        User user = new User(userId, null, null, null);
         List<Event> eventsVisible = eventService.translateEventDTOs(eventRepository.findAllEventsOfGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE)));
         List<Group> visibleGroups = projectEventList(eventsVisible);
         List<Event> eventsUser = getGroupEvents(eventRepository.findGroup_idsWhereUser_id(userId));
@@ -102,7 +102,7 @@ public class GroupService {
         List<Group> visibleGroups = projectEventList(eventsVisible);
         List<Group> visibleLectures = new ArrayList<>();
         for (Group group : visibleGroups) {
-            if(group.getType() == null){
+            if (group.getType() == null) {
                 continue;
             }
             if (group.getType().equals(GroupType.LECTURE)) {
@@ -123,8 +123,10 @@ public class GroupService {
      */
     public List<Group> findGroupWith(String search, Account account) throws EventException {
         List<Group> groups = new ArrayList<>();
+
         for (Group group : getAllGroupWithVisibilityPublic(account.getName())) {
-            if(group.getType() == null){
+
+            if (group.getType() == null) {
                 continue;
             }
             if (group.getTitle().toLowerCase().contains(search.toLowerCase()) || group.getDescription().toLowerCase().contains(search.toLowerCase())) {
