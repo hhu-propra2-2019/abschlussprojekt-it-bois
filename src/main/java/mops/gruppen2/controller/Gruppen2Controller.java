@@ -97,6 +97,9 @@ public class Gruppen2Controller {
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
+                if(userList.size() > userMaximum){
+                    userMaximum =  Long.valueOf(userList.size()) + userMaximum;
+                }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
                 throw new WrongFileException(file.getOriginalFilename());
             }
