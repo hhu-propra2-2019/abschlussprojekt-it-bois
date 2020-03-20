@@ -21,6 +21,7 @@ import mops.gruppen2.domain.exception.GroupIdMismatchException;
                       @JsonSubTypes.Type(value = UpdateGroupDescriptionEvent.class, name = "UpdateGroupDescriptionEvent"),
                       @JsonSubTypes.Type(value = UpdateGroupTitleEvent.class, name = "UpdateGroupTitleEvent"),
                       @JsonSubTypes.Type(value = UpdateRoleEvent.class, name = "UpdateRoleEvent"),
+                      @JsonSubTypes.Type(value = DeleteGroupEvent.class, name = "DeleteGroupEvent")
               })
 @Getter
 @NoArgsConstructor
