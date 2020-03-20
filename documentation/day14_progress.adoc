@@ -1,0 +1,10 @@
+= Tag 14
+
+== Gruppen löschen
+
+Wir haben die Funktionalität Gruppen zu löschen für die Admins ermöglicht.
+Darüber hinaus werden Gruppen gelöscht wenn sie keine Mitglieder mehr haben
+
+== MaxUser anpassen
+
+Die Anzahl der Maximalen User wird immer angepasst wenn beim hinzufügen über CSV die Grenze überschritten wird.
