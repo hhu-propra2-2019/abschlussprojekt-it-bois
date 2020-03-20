@@ -88,7 +88,7 @@ public class GroupService {
         List<Event> eventsUser = getGroupEvents(eventRepository.findGroup_idsWhereUser_id(userId));
         List<Group> groups = projectEventList(eventsUser);
         List<Group> newGroups = new ArrayList<>();
-        for (Group group : groups) {
+        for (Group group : visibleGroups) {
             if (group.getMembers().contains(user)) {
                 newGroups.add(group);
             }
