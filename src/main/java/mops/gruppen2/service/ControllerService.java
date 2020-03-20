@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import static mops.gruppen2.domain.Role.ADMIN;
 
@@ -30,11 +31,13 @@ public class ControllerService {
     private final EventService eventService;
     private final UserService userService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
+    private final Logger logger;
 
     public ControllerService(EventService eventService, UserService userService, InviteLinkRepositoryService inviteLinkRepositoryService) {
         this.eventService = eventService;
         this.userService = userService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
+        this.logger = Logger.getLogger("controllerServiceLogger");
     }
 
     /**
@@ -105,8 +108,13 @@ public class ControllerService {
 
     public void addUserList(List<User> users, Long groupId) {
         for (User user : users) {
-            AddUserEvent addUserEvent = new AddUserEvent(groupId, user.getId(), user.getGivenname(), user.getFamilyname(), user.getEmail());
-            eventService.saveEvent(addUserEvent);
+            Group group = userService.getGroupById(groupId);
+            if (group.getMembers().contains(user)) {
+                logger.info("Benutzer " + user.getId() + " ist bereits in Gruppe");
+            } else {
+                AddUserEvent addUserEvent = new AddUserEvent(groupId, user.getId(), user.getGivenname(), user.getFamilyname(), user.getEmail());
+                eventService.saveEvent(addUserEvent);
+            }
         }
     }
 

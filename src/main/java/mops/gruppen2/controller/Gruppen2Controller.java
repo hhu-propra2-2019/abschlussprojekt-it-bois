@@ -32,6 +32,7 @@ import java.io.CharConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @SessionScope
@@ -43,6 +44,7 @@ public class Gruppen2Controller {
     private final UserService userService;
     private final ControllerService controllerService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
+    private final Logger logger;
     @Autowired
     Gruppen2Config gruppen2Config;
 
@@ -52,6 +54,7 @@ public class Gruppen2Controller {
         this.userService = userService;
         this.controllerService = controllerService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
+        logger = Logger.getLogger("Gruppen2ControllerLogger");
     }
 
     /**
@@ -98,6 +101,7 @@ public class Gruppen2Controller {
             try {
                 userList = CsvService.read(file.getInputStream());
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                logger.warning("File konnte nicht gelesen werden");
                 throw new WrongFileException(file.getOriginalFilename());
             }
         }
