@@ -174,6 +174,9 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Long parentId = group.getParent();
         Group parent = new Group();
+        if(group.getTitle() == null){
+            throw new GroupNotFoundException(this.getClass().toString());
+        }
         if (parentId != null) {
             parent = userService.getGroupById(parentId);
         }
@@ -244,6 +247,18 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         controllerService.passIfLastAdmin(account, groupId);
         controllerService.deleteUser(user.getId(), groupId);
+        if(userService.getGroupById(groupId).getMembers().size() == 0){
+            controllerService.deleteGroupEvent(user.getId(), groupId);
+        }
+        return "redirect:/gruppen2/";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @PostMapping("/deleteGroup")
+    public String pDeleteGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId){
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        controllerService.deleteGroupEvent(user.getId(), groupId);
         return "redirect:/gruppen2/";
     }
 
@@ -283,9 +298,12 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/deleteUser")
-    public String deleteUser(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId,
+    public String deleteUser(@RequestParam("group_id") Long groupId,
                              @RequestParam("user_id") String userId) throws EventException {
         controllerService.deleteUser(userId, groupId);
+        if(userService.getGroupById(groupId).getMembers().size() == 0){
+            controllerService.deleteGroupEvent(userId ,groupId);
+        }
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 }
