@@ -5,6 +5,7 @@ import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
@@ -187,6 +188,12 @@ public class Gruppen2Controller {
             model.addAttribute("roles", group.getRoles());
             model.addAttribute("user", user);
             model.addAttribute("admin", Role.ADMIN);
+
+            String link = inviteLinkRepositoryService.findlinkByGroupId(group.getId());
+            if (group.getVisibility() == Visibility.PRIVATE) {
+                model.addAttribute("Link", link);
+            }
+
             return "detailsMember";
         }
 
