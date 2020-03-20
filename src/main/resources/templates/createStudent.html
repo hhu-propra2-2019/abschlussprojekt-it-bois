@@ -57,15 +57,12 @@
                             <label class="custom-control-label" for="visibility">Private
                                 Gruppe</label>
                         </div>
-                        <div class="form-group">
-                            <label for="sel1"></label>
-                            <select class="form-control" id="sel1">
-                                <option disabled selected="true">--Bitte Veranstaltung auswählen--
+                        <div class="form-group" id="lectureParent">
+                            <label for="parent"></label>
+                            <select class="form-control" id="parent" name="parent">
+                                <option disabled selected="true">--Bitte Veranstaltung auswählen--</option>
+                                <option th:each="lecture : ${lectures}" th:name="parent" th:value="${lecture.getId()}" th:text="${lecture.getTitle()}">
                                 </option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
                             </select>
                         </div>
                         <div class="form-group pt-4">

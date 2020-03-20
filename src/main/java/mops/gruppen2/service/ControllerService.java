@@ -46,7 +46,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean visibility, Long userMaximum) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean visibility, Long userMaximum, Long parent) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -57,7 +57,7 @@ public class ControllerService {
             createInviteLink(groupId);
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, GroupType.SIMPLE, visibility1, userMaximum);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);
@@ -66,7 +66,7 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Long maximmum, List<User> users) throws EventException {
+    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Long userMaximum, Long parent, List<User> users) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -78,12 +78,12 @@ public class ControllerService {
 
         GroupType groupType;
         if (lecture) {
-            groupType = GroupType.SIMPLE;
-        } else {
             groupType = GroupType.LECTURE;
+        } else {
+            groupType = GroupType.SIMPLE;
         }
 
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), null, groupType, visibility1, maximmum);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, visibility1, userMaximum);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);

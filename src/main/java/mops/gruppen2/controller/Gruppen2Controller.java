@@ -75,7 +75,9 @@ public class Gruppen2Controller {
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @GetMapping("/createOrga")
     public String createOrga(KeycloakAuthenticationToken token, Model model) {
-        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        model.addAttribute("account", account);
+        model.addAttribute("lectures", groupService.getAllLecturesWithVisibilityPublic());
         return "createOrga";
     }
 
@@ -87,6 +89,7 @@ public class Gruppen2Controller {
                               @RequestParam(value = "visibility", required = false) Boolean visibility,
                               @RequestParam(value = "lecture", required = false) Boolean lecture,
                               @RequestParam("userMaximum") Long userMaximum,
+                              @RequestParam(value = "parent", required = false) Long parent,
                               @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
@@ -99,9 +102,11 @@ public class Gruppen2Controller {
             }
         }
         visibility = visibility == null;
-        lecture = lecture == null;
+        lecture = lecture != null;
 
-        controllerService.createOrga(account, title, description, visibility, lecture, userMaximum, userList);
+        if (lecture) parent = null;
+
+        controllerService.createOrga(account, title, description, visibility, lecture, userMaximum, parent, userList);
 
         return "redirect:/gruppen2/";
     }
@@ -109,7 +114,9 @@ public class Gruppen2Controller {
     @RolesAllowed({"ROLE_studentin"})
     @GetMapping("/createStudent")
     public String createStudent(KeycloakAuthenticationToken token, Model model) {
-        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        model.addAttribute("account", account);
+        model.addAttribute("lectures", groupService.getAllLecturesWithVisibilityPublic());
         return "createStudent";
     }
 
@@ -119,11 +126,12 @@ public class Gruppen2Controller {
                                  @RequestParam("title") String title,
                                  @RequestParam("description") String description,
                                  @RequestParam(value = "visibility", required = false) Boolean visibility,
-                                 @RequestParam("userMaximum") Long userMaximum) throws EventException {
+                                 @RequestParam("userMaximum") Long userMaximum,
+                                 @RequestParam(value = "parent", required = false) Long parent) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         visibility = visibility == null;
-        controllerService.createGroup(account, title, description, visibility, userMaximum);
+        controllerService.createGroup(account, title, description, visibility, userMaximum, parent);
 
         return "redirect:/gruppen2/";
     }
