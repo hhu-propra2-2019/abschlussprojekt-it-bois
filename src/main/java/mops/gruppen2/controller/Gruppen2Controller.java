@@ -5,6 +5,7 @@ import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
@@ -178,6 +179,18 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Long parentId = group.getParent();
         Group parent = new Group();
+        if (!group.getMembers().contains(user)){
+            if (group.getVisibility() == Visibility.PRIVATE){
+                return "privateGroupNoMember";
+            }
+            if (group != null) {
+                model.addAttribute("group", group);
+                model.addAttribute("parentId", parentId);
+                model.addAttribute("parent", parent);
+                return "detailsNoMember";
+            }
+            return "detailsNoMember";
+        }
         if (parentId != null) {
             parent = userService.getGroupById(parentId);
         }
@@ -256,14 +269,19 @@ public class Gruppen2Controller {
     public String editMembers(Model model, KeycloakAuthenticationToken token, @PathVariable("id") Long groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(groupId);
-        if (group.getRoles().get(account.getName()) == Role.ADMIN) {
-            model.addAttribute("account", account);
-            model.addAttribute("members", group.getMembers());
-            model.addAttribute("group", group);
-            model.addAttribute("admin", Role.ADMIN);
-            return "editMembers";
-        } else {
-            return "redirect:/details/";
+        User user = new User(account.getName(),"", "", "");
+        if (group.getMembers().contains(user)) {
+            if (group.getRoles().get(account.getName()) == Role.ADMIN) {
+                model.addAttribute("account", account);
+                model.addAttribute("members", group.getMembers());
+                model.addAttribute("group", group);
+                model.addAttribute("admin", Role.ADMIN);
+                return "editMembers";
+            } else {
+                return "redirect:/details/";
+            }
+        }else {
+            return "privateGroupNoMember";
         }
     }
 
