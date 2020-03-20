@@ -8,3 +8,12 @@ Darüber hinaus werden Gruppen gelöscht wenn sie keine Mitglieder mehr haben
 == MaxUser anpassen
 
 Die Anzahl der Maximalen User wird immer angepasst wenn beim hinzufügen über CSV die Grenze überschritten wird.
+
+== Suche optimiert
+Grundlegende überlegungen zur Suche gemacht und mit Grundgerüst angefangen
+
+== Links anzeigen
+Angefangen zu implementieren, dass die InviteLinks von privaten Gruppen auf der details Seite angezeigt werden.
+
+== API
+Schnittstelle zum erstellen von Gruppen angelegt. Wird jetzt wohl doch nicht mehr gebraucht ...
