@@ -141,12 +141,18 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/details/members/addUsersFromCsv")
-    public String addUsersFromCsv(@RequestParam("group_id") Long groupId,
+    public String addUsersFromCsv(KeycloakAuthenticationToken token,
+                                  @RequestParam("group_id") Long groupId,
                                   @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
+        Group group = userService.getGroupById(groupId);
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
+                if(userList.size()+group.getMembers().size()>group.getUserMaximum()){
+                    controllerService.updateMaxUser(account, groupId, Long.valueOf(userList.size()) + group.getMembers().size());
+                }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
                 throw new WrongFileException(file.getOriginalFilename());
             }

@@ -5,13 +5,7 @@ import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.event.AddUserEvent;
-import mops.gruppen2.domain.event.CreateGroupEvent;
-import mops.gruppen2.domain.event.DeleteGroupEvent;
-import mops.gruppen2.domain.event.DeleteUserEvent;
-import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
-import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
-import mops.gruppen2.domain.event.UpdateRoleEvent;
+import mops.gruppen2.domain.event.*;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.security.Account;
@@ -118,6 +112,11 @@ public class ControllerService {
     public void updateDescription(Account account, Long groupId, String description) {
         UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(groupId, account.getName(), description);
         eventService.saveEvent(updateGroupDescriptionEvent);
+    }
+
+    public void updateMaxUser(Account account, Long groupId, Long userMaximum) {
+        UpdateUserMaxEvent updateUserMaxEvent = new UpdateUserMaxEvent(groupId,account.getName(),userMaximum);
+        eventService.saveEvent(updateUserMaxEvent);
     }
 
     public void updateRole(String userId, Long groupId) throws EventException {
