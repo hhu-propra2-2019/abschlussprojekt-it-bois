@@ -8,8 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Gruppen2Config {
 
-    @Autowired
-    GroupService groupService;
-    @Autowired
-    EventService eventService;
+    final GroupService groupService;
+    final EventService eventService;
+
+    public Gruppen2Config(GroupService groupService, EventService eventService) {
+        this.groupService = groupService;
+        this.eventService = eventService;
+    }
 }
