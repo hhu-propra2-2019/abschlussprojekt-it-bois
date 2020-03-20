@@ -172,7 +172,14 @@ public class Gruppen2Controller {
         Group group = userService.getGroupById(groupId);
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        Long parentId = group.getParent();
+        Group parent = new Group();
+        if (parentId != null) {
+            parent = userService.getGroupById(parentId);
+        }
         if (group != null) {
+            model.addAttribute("parentId", parentId);
+            model.addAttribute("parent", parent);
             model.addAttribute("group", group);
             model.addAttribute("roles", group.getRoles());
             model.addAttribute("user", user);
@@ -204,8 +211,15 @@ public class Gruppen2Controller {
     public String showGroupDetailsNoMember(KeycloakAuthenticationToken token, Model model, @RequestParam("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(groupId);
+        Long parentId = group.getParent();
+        Group parent = new Group();
+        if (parentId != null) {
+            parent = userService.getGroupById(parentId);
+        }
         if (group != null && group.getUserMaximum() > group.getMembers().size()) {
             model.addAttribute("group", group);
+            model.addAttribute("parentId", parentId);
+            model.addAttribute("parent", parent);
             return "detailsNoMember";
         }
         throw new GroupNotFoundException(this.getClass().toString());
