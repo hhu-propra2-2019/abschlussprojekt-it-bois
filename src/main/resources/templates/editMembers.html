@@ -51,19 +51,16 @@
                         <form action="/gruppen2/details/members/addUsersFromCsv"
                               enctype="multipart/form-data"
                               method="post">
-                            <div class="row">
-                                <div class="col-10">
-                                    <div class="custom-file">
-                                        <input class="custom-file-input" id="file" th:name="file" type="file">
-                                        <label class="custom-file-label" for="file">CSV Datei von Mitgliedern hochladen</label>
-                                    </div>
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input class="custom-file-input" id="file" th:name="file" type="file">
+                                    <label class="custom-file-label" for="file">CSV Datei von Mitgliedern hochladen</label>
                                 </div>
-                                <div class="col-2">
-                                    <button class="btn btn-primary"
-                                            style="background: #52a1eb; border-style: none; float: right"
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" style="background: #52a1eb; border-style: none"
                                             th:name="group_id" th:value="${group.getId()}"
-                                            type="submit">
-                                        Mitglieder hinzufügen
+                                            type="button">
+                                        <a style="color: white">Hinzufügen</a>
                                     </button>
                                 </div>
                             </div>
@@ -71,22 +68,20 @@
                     </div>
                     <div class="form-group pt-4">
                         <form action="/gruppen2/details/members/changeMaximum" method="post">
-                            <div class="row">
-                                <div class="col-10">
-                                        <label for="maximum">maximale Teilnehmer ändern</label>
-                                        <input class="form-control" id="maximum" required th:name="maximum"
-                                            type="number" th:min="${group.getMembers().size()}" max="10000">
-                                </div>
-                                <div class="col-2">
-                                        <button class="btn btn-primary"
-                                                style="background: #52a1eb; border-style: none"
-                                                th:name="group_id" th:value="${group.getId()}"
-                                                type="submit">Erstellen
-                                        </button>
+                            <div class="input-group mb-3" id="userMaximum">
+                                <input class="form-control" placeholder="Maximale Teilnehmerzahl ändern..." th:name="userMaximum"
+                                       type="number" min="${group.getMembers().size()}" max="10000">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" style="background: #52a1eb; border-style: none"
+                                            th:name="group_id" th:value="${group.getId()}"
+                                            type="submit">
+                                        <a style="color: white">Speichern</a>
+                                    </button>
                                 </div>
                             </div>
                         </form>
                     </div>
+
                     <table class="table" style="table-layout: fixed">
                         <thead>
                         <tr>
