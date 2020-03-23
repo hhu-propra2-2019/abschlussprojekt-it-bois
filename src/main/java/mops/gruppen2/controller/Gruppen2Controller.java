@@ -5,7 +5,6 @@ import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
-import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
@@ -45,17 +44,19 @@ public class Gruppen2Controller {
     private final UserService userService;
     private final ControllerService controllerService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
+    private final Gruppen2Config gruppen2Config;
     private final Logger logger;
     @Autowired
     Gruppen2Config gruppen2Config;
 
-    public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService) {
+    public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
         this.groupService = groupService;
         this.userService = userService;
         this.controllerService = controllerService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
         logger = Logger.getLogger("Gruppen2ControllerLogger");
+        this.gruppen2Config = gruppen2Config;
     }
 
     /**
@@ -101,6 +102,9 @@ public class Gruppen2Controller {
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
+                if(userList.size() > userMaximum){
+                    userMaximum =  Long.valueOf(userList.size()) + userMaximum;
+                }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
                 logger.warning("File konnte nicht gelesen werden");
                 throw new WrongFileException(file.getOriginalFilename());
@@ -179,6 +183,9 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Long parentId = group.getParent();
         Group parent = new Group();
+        if(group.getTitle() == null){
+            throw new GroupNotFoundException(this.getClass().toString());
+        }
         if (!group.getMembers().contains(user)){
             if (group.getVisibility() == Visibility.PRIVATE){
                 return "privateGroupNoMember";
@@ -261,6 +268,22 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         controllerService.passIfLastAdmin(account, groupId);
         controllerService.deleteUser(user.getId(), groupId);
+        if(userService.getGroupById(groupId).getMembers().size() == 0){
+            controllerService.deleteGroupEvent(user.getId(), groupId);
+        }
+        return "redirect:/gruppen2/";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @PostMapping("/deleteGroup")
+    public String pDeleteGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId){
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        Group group = userService.getGroupById(groupId);
+        if(group.getRoles().get(user.getId()) != Role.ADMIN ){
+            return "error";
+        }
+        controllerService.deleteGroupEvent(user.getId(), groupId);
         return "redirect:/gruppen2/";
     }
 
@@ -305,9 +328,12 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/deleteUser")
-    public String deleteUser(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId,
+    public String deleteUser(@RequestParam("group_id") Long groupId,
                              @RequestParam("user_id") String userId) throws EventException {
         controllerService.deleteUser(userId, groupId);
+        if(userService.getGroupById(groupId).getMembers().size() == 0){
+            controllerService.deleteGroupEvent(userId ,groupId);
+        }
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 }

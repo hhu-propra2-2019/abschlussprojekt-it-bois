@@ -89,7 +89,7 @@ public class GroupService {
         List<Event> eventsUser = getGroupEvents(eventRepository.findGroup_idsWhereUser_id(userId));
         List<Group> groups = projectEventList(eventsUser);
         List<Group> newGroups = new ArrayList<>();
-        for (Group group : groups) {
+        for (Group group : visibleGroups) {
             if (group.getMembers().contains(user)) {
                 newGroups.add(group);
             }
@@ -102,6 +102,9 @@ public class GroupService {
         List<Group> visibleGroups = projectEventList(eventsVisible);
         List<Group> visibleLectures = new ArrayList<>();
         for (Group group : visibleGroups) {
+            if(group.getType() == null){
+                continue;
+            }
             if (group.getType().equals(GroupType.LECTURE)) {
                 visibleLectures.add(group);
             }
@@ -121,6 +124,9 @@ public class GroupService {
     public List<Group> findGroupWith(String search, Account account) throws EventException {
         List<Group> groups = new ArrayList<>();
         for (Group group : getAllGroupWithVisibilityPublic(account.getName())) {
+            if(group.getType() == null){
+                continue;
+            }
             if (group.getTitle().toLowerCase().contains(search.toLowerCase()) || group.getDescription().toLowerCase().contains(search.toLowerCase())) {
                 groups.add(group);
             }

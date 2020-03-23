@@ -167,8 +167,8 @@ public class ControllerService {
         eventService.saveEvent(deleteUserEvent);
     }
 
-    public void deleteGroupEvent(User user, Long groupId) {
-        DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, user.getId());
+    public void deleteGroupEvent(String user_id, Long groupId) {
+        DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, user_id);
         eventService.saveEvent(deleteGroupEvent);
     }
 
