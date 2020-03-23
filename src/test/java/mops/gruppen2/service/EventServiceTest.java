@@ -6,6 +6,7 @@ import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.AddUserEvent;
 import mops.gruppen2.domain.event.CreateGroupEvent;
+import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,8 @@ class EventServiceTest {
     @Test
     void checkGroupReturnOneIfDBIsEmpty() {
         //dafür muss data.sql weg
+        eventRepository.deleteAll();
+        assertEquals(1L, eventService.checkGroup());
     }
 
     @Test
