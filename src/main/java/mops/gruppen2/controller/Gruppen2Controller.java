@@ -5,6 +5,7 @@ import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
@@ -46,8 +47,6 @@ public class Gruppen2Controller {
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
     private final Gruppen2Config gruppen2Config;
     private final Logger logger;
-    @Autowired
-    Gruppen2Config gruppen2Config;
 
     public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
