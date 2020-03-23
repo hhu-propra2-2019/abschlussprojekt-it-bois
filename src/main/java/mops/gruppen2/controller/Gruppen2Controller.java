@@ -44,15 +44,15 @@ public class Gruppen2Controller {
     private final UserService userService;
     private final ControllerService controllerService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
-    @Autowired
-    Gruppen2Config gruppen2Config;
+    private final Gruppen2Config gruppen2Config;
 
-    public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService) {
+    public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
         this.groupService = groupService;
         this.userService = userService;
         this.controllerService = controllerService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
+        this.gruppen2Config = gruppen2Config;
     }
 
     /**
@@ -98,6 +98,9 @@ public class Gruppen2Controller {
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
+                if(userList.size() > userMaximum){
+                    userMaximum =  Long.valueOf(userList.size()) + userMaximum;
+                }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
                 throw new WrongFileException(file.getOriginalFilename());
             }
@@ -265,6 +268,10 @@ public class Gruppen2Controller {
     public String pDeleteGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId){
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        Group group = userService.getGroupById(groupId);
+        if(group.getRoles().get(user.getId()) != Role.ADMIN ){
+            return "error";
+        }
         controllerService.deleteGroupEvent(user.getId(), groupId);
         return "redirect:/gruppen2/";
     }
