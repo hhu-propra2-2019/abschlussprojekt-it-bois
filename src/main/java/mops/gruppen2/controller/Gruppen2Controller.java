@@ -99,6 +99,9 @@ public class Gruppen2Controller {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
+        if(userMaximum == null){
+            userMaximum = 100000L;
+        }
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
