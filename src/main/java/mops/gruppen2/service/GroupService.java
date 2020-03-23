@@ -86,6 +86,7 @@ public class GroupService {
         return visibleGroups.parallelStream()
                             .filter(group -> group.getType() != null)
                             .filter(group -> !userGroupIds.contains(group.getId()))
+                            .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
 
     }
