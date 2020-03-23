@@ -1,0 +1,10 @@
+= Tag 15
+
+== Event 
+
+Heute haben wir ein neues Event hinzugefügt. Dieses bewirkt das man die maximale Teilnehmer Zahl ändern kann.
+
+== Fehler
+
+Heute haben wir Fehler die mit dem neuen Event aufgetaucht sind behoben. Außerdem auch andere die uns jetzt erst aufgefallen sind.
+Wir haben heute angefangen unsere Tests zu refactorn.
