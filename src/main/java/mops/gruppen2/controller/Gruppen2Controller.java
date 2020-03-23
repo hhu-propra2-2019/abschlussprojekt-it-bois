@@ -100,7 +100,7 @@ public class Gruppen2Controller {
             try {
                 userList = CsvService.read(file.getInputStream());
                 if(userList.size() > userMaximum){
-                    userMaximum =  Long.valueOf(userList.size()) + userMaximum;
+                    userMaximum = Long.valueOf(userList.size()) + userMaximum;
                 }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
                 logger.warning("File konnte nicht gelesen werden");
@@ -110,7 +110,9 @@ public class Gruppen2Controller {
         visibility = visibility == null;
         lecture = lecture != null;
 
-        if (lecture) parent = null;
+        if (lecture || parent == null) {
+            parent = "00000000-0000-0000-0000-000000000000";
+        }
 
         controllerService.createOrga(account, title, description, visibility, lecture, userMaximum, UUID.fromString(parent), userList);
 
@@ -178,6 +180,7 @@ public class Gruppen2Controller {
         Group group = userService.getGroupById(UUID.fromString(groupId));
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+
         UUID parentId = group.getParent();
         Group parent = new Group();
         if (group.getTitle() == null) {
@@ -195,7 +198,7 @@ public class Gruppen2Controller {
             }
             return "detailsNoMember";
         }
-        if (parentId != null) {
+        if (parentId != null && !parentId.equals(UUID.fromString("00000000-0000-0000-0000-000000000000"))) {
             parent = userService.getGroupById(parentId);
         }
         if (group != null) {
@@ -250,13 +253,13 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/acceptinvite/{link}")
-    public String acceptInvite(KeycloakAuthenticationToken token, Model model, @PathVariable String link) throws EventException {
+    public String acceptInvite(KeycloakAuthenticationToken token, Model model, @PathVariable String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        /*Group group = userService.getGroupById(inviteLinkRepositoryService.findGroupIdByInvite(link));
+        Group group = userService.getGroupById(UUID.fromString(groupId));
         if (group != null) {
             model.addAttribute("group", group);
             return "redirect:/gruppen2/detailsSearch?id=" + group.getId();
-        }*/
+        }
         throw new GroupNotFoundException(this.getClass().toString());
     }
 
