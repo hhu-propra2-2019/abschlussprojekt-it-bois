@@ -1,9 +1,7 @@
 package mops.gruppen2.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.dto.EventDTO;
-import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.springframework.stereotype.Service;
@@ -40,11 +38,6 @@ public class EventService {
      * @return EventDTO Neues DTO
      */
     public EventDTO getDTO(Event event) {
-        boolean visibility = false;
-        if (event instanceof CreateGroupEvent) {
-            visibility = ((CreateGroupEvent) event).getGroupVisibility() == Visibility.PUBLIC;
-        }
-
         String payload = "";
         try {
             payload = jsonService.serializeEvent(event);
@@ -52,7 +45,13 @@ public class EventService {
             e.printStackTrace();
         }
 
-        return new EventDTO(null, event.getGroupId(), event.getUserId(), payload, visibility);
+        return new EventDTO(null, event.getGroupId(), event.getUserId(), getEventType(event), payload);
+    }
+
+    private String getEventType(Event event) {
+        int lastDot = event.getClass().getName().lastIndexOf('.');
+
+        return event.getClass().getName().substring(lastDot + 1);
     }
 
     /**

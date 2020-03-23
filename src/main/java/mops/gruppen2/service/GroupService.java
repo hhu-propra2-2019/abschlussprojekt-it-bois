@@ -1,8 +1,6 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.GroupType;
-import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
@@ -14,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class GroupService {
@@ -52,10 +51,8 @@ public class GroupService {
     public List<Group> projectEventList(List<Event> events) throws EventException {
         Map<Long, Group> groupMap = new HashMap<>();
 
-        for (Event event : events) {
-            Group group = getOrCreateGroup(groupMap, event.getGroupId());
-            event.apply(group);
-        }
+        events.parallelStream()
+              .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
 
         return new ArrayList<>(groupMap.values());
     }
@@ -68,13 +65,6 @@ public class GroupService {
         return groups.get(groupId);
     }
 
-    private List<Group> removeUserGroups(List<Group> visibleGroups, List<Group> userGroups) {
-        for (Group group : userGroups) {
-            visibleGroups.remove(group);
-        }
-        return visibleGroups;
-    }
-
     /**
      * Sucht alle Zeilen in der DB mit visibility=true.
      * Erstellt eine Liste aus öffentlichen Gruppen (ohen bereits beigetretenen Gruppen).
@@ -83,33 +73,30 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
-        User user = new User(userId,null, null, null);
-        List<Event> eventsVisible = eventService.translateEventDTOs(eventRepository.findAllEventsOfGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE)));
-        List<Group> visibleGroups = projectEventList(eventsVisible);
-        List<Event> eventsUser = getGroupEvents(eventRepository.findGroup_idsWhereUser_id(userId));
-        List<Group> groups = projectEventList(eventsUser);
-        List<Group> newGroups = new ArrayList<>();
-        for (Group group : visibleGroups) {
-            if (group.getMembers().contains(user)) {
-                newGroups.add(group);
-            }
-        }
-        return removeUserGroups(visibleGroups, newGroups);
+        List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        List<Group> visibleGroups = projectEventList(createEvents);
+
+        List<Long> userGroupIds = eventRepository.findGroup_idsWhereUser_id(userId);
+
+        return visibleGroups.parallelStream()
+                            .filter(group -> group.getType() != null)
+                            .filter(group -> !userGroupIds.contains(group.getId()))
+                            .collect(Collectors.toList());
+
     }
 
     public List<Group> getAllLecturesWithVisibilityPublic() throws EventException {
-        List<Event> eventsVisible = eventService.translateEventDTOs(eventRepository.findAllEventsOfGroups(eventRepository.findGroup_idsWhereVisibility(Boolean.TRUE)));
-        List<Group> visibleGroups = projectEventList(eventsVisible);
-        List<Group> visibleLectures = new ArrayList<>();
-        for (Group group : visibleGroups) {
-            if(group.getType() == null){
-                continue;
-            }
-            if (group.getType().equals(GroupType.LECTURE)) {
-                visibleLectures.add(group);
-            }
-        }
-        return visibleLectures;
+        List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+
+        List<Group> visibleGroups = projectEventList(createEvents);
+
+        return visibleGroups.parallelStream()
+                            .filter(group -> group.getType() != null)
+                            .collect(Collectors.toList());
     }
 
 
@@ -122,16 +109,12 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     public List<Group> findGroupWith(String search, Account account) throws EventException {
-        List<Group> groups = new ArrayList<>();
-        for (Group group : getAllGroupWithVisibilityPublic(account.getName())) {
-            if(group.getType() == null){
-                continue;
-            }
-            if (group.getTitle().toLowerCase().contains(search.toLowerCase()) || group.getDescription().toLowerCase().contains(search.toLowerCase())) {
-                groups.add(group);
-            }
-        }
-        return groups;
+        return getAllGroupWithVisibilityPublic(account.getName())
+                .parallelStream()
+                .filter(group ->
+                                group.getTitle().toLowerCase().contains(search.toLowerCase()) ||
+                                        group.getDescription().toLowerCase().contains(search.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
 }

@@ -9,8 +9,8 @@ CREATE TABLE event
     event_id INT PRIMARY KEY AUTO_INCREMENT,
     group_id INT NOT NULL,
     user_id VARCHAR(50),
-    event_payload VARCHAR(2500),
-    visibility BOOLEAN
+    event_type VARCHAR(50),
+    event_payload VARCHAR(2500)
 );
 
 DROP TABLE IF EXISTS invite;
