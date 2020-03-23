@@ -40,7 +40,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean visibility, Long userMaximum, Long parent) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, Long parent) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -49,6 +49,10 @@ public class ControllerService {
         } else {
             visibility1 = Visibility.PRIVATE;
             createInviteLink(groupId);
+        }
+
+        if(maxInfiniteUsers){
+            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
@@ -60,7 +64,7 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Long userMaximum, Long parent, List<User> users) throws EventException {
+    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, Long parent, List<User> users) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -75,6 +79,11 @@ public class ControllerService {
             groupType = GroupType.LECTURE;
         } else {
             groupType = GroupType.SIMPLE;
+        }
+
+
+        if(maxInfiniteUsers){
+            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, visibility1, userMaximum);

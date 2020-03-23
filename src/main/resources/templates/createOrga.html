@@ -51,9 +51,14 @@
                             <textarea class="form-control" id="description" required
                                       rows="3" th:name="description"></textarea>
                         </div>
-                        <div class="form-group mt-3">
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" id="maxInfiniteUsers" th:name="maxInfiniteUsers"
+                                   type="checkbox">
+                            <label class="custom-control-label" for="maxInfiniteUsers">Anzahl unbegrenzt</label>
+                        </div>
+                        <div class="form-group mt-3" id="userMaximum">
                             <label for="userMaximum">Teilnehmeranzahl</label>
-                            <input class="form-control" id="userMaximum" required th:name="userMaximum"
+                            <input class="form-control" th:name="userMaximum"
                                    type="number" min="1" max="10000">
                         </div>
                         <div class="custom-control custom-checkbox">
@@ -109,6 +114,12 @@
         $(document).ready(function () {
             $('#lecture').change(function () {
                 $('#lectureParent').fadeToggle();
+            });
+        });
+
+        $(document).ready(function () {
+            $('#maxInfiniteUsers').change(function () {
+                $('#userMaximum').fadeToggle();
             });
         });
     </script>
