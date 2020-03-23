@@ -1,6 +1,10 @@
 package mops.gruppen2.service;
 
+import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.dto.EventDTO;
+import mops.gruppen2.domain.event.AddUserEvent;
+import mops.gruppen2.domain.event.CreateGroupEvent;
 import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +54,7 @@ class EventServiceTest {
         assertEquals(eventService.checkGroup(), 1);
     }
 
-    /*@Test
+    @Test
     void getDTOOffentlichTest() {
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "test", null, GroupType.LECTURE, Visibility.PUBLIC, null);
         EventDTO eventDTO = eventService.getDTO(createGroupEvent);
@@ -60,6 +66,6 @@ class EventServiceTest {
         AddUserEvent addUserEvent = new AddUserEvent(eventService.checkGroup(), "test", "franz", "mueller", "a@a");
         EventDTO eventDTO = eventService.getDTO(addUserEvent);
         assertFalse(eventDTO.isVisibility());
-    }*/
+    }
 
 }
