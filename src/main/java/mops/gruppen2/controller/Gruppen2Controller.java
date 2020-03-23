@@ -19,6 +19,7 @@ import mops.gruppen2.service.KeyCloakService;
 import mops.gruppen2.service.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,13 +32,18 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.security.RolesAllowed;
 import java.io.CharConversionException;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @SessionScope
 @RequestMapping("/gruppen2")
 public class Gruppen2Controller {
+    @Autowired
+    Environment environment;
 
     private final KeyCloakService keyCloakService;
     private final GroupService groupService;
@@ -45,6 +51,7 @@ public class Gruppen2Controller {
     private final ControllerService controllerService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
     private final Gruppen2Config gruppen2Config;
+    private final Logger logger;
 
     public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
@@ -53,6 +60,7 @@ public class Gruppen2Controller {
         this.controllerService = controllerService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
         this.gruppen2Config = gruppen2Config;
+        this.logger = Logger.getLogger("gruppen2ControllerLogger");
     }
 
     /**
@@ -194,6 +202,24 @@ public class Gruppen2Controller {
 
             String link = inviteLinkRepositoryService.findlinkByGroupId(group.getId());
             model.addAttribute("link", link);
+
+            String port ="";
+            String serverAd="";
+            try {
+                port = environment.getProperty("server.port");
+                serverAd= InetAddress.getLoopbackAddress().getHostAddress();
+            } catch (Exception e) {
+                logger.warning("Could not find server-address");
+            }
+            if (port.isEmpty()){
+                logger.warning("Serverport missing in application.properties");
+            }
+
+            // hässlicher hardcode
+            serverAd = "localhost";
+
+            String serverAddresse = serverAd + ":" + port;
+            model.addAttribute("serverAddress", serverAddresse);
 
             return "detailsMember";
         }
