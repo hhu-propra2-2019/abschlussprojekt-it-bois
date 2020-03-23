@@ -36,12 +36,11 @@ class EventServiceTest {
 
     @Autowired
     private EventRepository eventRepository;
-    @Autowired
     private EventService eventService;
 
     @BeforeEach
     void setUp() {
-
+        eventService = new EventService(mock(JsonService.class), eventRepository);
     }
 
     @Test
