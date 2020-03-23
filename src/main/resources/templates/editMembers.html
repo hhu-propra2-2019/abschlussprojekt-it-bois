@@ -59,7 +59,7 @@
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" style="background: #52a1eb; border-style: none"
                                             th:name="group_id" th:value="${group.getId()}"
-                                            type="button">
+                                            type="submit">
                                         <a style="color: white">Hinzufügen</a>
                                     </button>
                                 </div>
@@ -70,7 +70,7 @@
                         <form action="/gruppen2/details/members/changeMaximum" method="post">
                             <div class="input-group mb-3" id="userMaximum">
                                 <input class="form-control" placeholder="Maximale Teilnehmerzahl ändern..." th:name="maximum"
-                                       type="number" min="${group.getMembers().size()}" max="10000">
+                                       type="number" th:min="${group.getMembers().size()}" max="10000">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" style="background: #52a1eb; border-style: none"
                                             th:name="group_id" th:value="${group.getId()}"
