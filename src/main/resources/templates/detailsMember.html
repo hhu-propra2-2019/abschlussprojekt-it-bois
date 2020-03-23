@@ -36,7 +36,7 @@
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"
                           th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
-                    <span class="badge badge-pill badge-primary"
+                    <span class="badge badge-pill badge-primary" style="background: #52a1eb"
                           th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
                     <span class="badge badge-pill badge-success" style="background: lightseagreen"
                           th:if='${group.getType() == group.getType().LECTURE}'>Veranstaltung</span>
@@ -50,7 +50,7 @@
                 <br>
                 <div class="text-right btn-toolbar" role="toolbar" style="float: right">
                     <button class="btn btn-primary"
-                            style="background: dodgerblue; border: none; margin: 5px">
+                            style="background: #52a1eb; border: none; margin: 5px">
                         <a style="color: white" th:href="@{/gruppen2}">Zurück</a>
                     </button>
                     <form action="/gruppen2/leaveGroup" method="post">
