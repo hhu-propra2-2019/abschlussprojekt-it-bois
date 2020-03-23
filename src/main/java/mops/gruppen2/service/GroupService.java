@@ -1,6 +1,8 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
@@ -95,7 +97,8 @@ public class GroupService {
         List<Group> visibleGroups = projectEventList(createEvents);
 
         return visibleGroups.parallelStream()
-                            .filter(group -> group.getType() != null)
+                            .filter(group -> group.getType() == GroupType.LECTURE)
+                            .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
     }
 
