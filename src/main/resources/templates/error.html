@@ -10,7 +10,7 @@
     <title>Seite nicht gefunden</title>
 </head>
 <body>
-<div class="mx-auto" style="vertical-align: border-radius: 5px; center; horiz-align: center; top: 50%; left: 50%;">
+<div class="mx-auto" style="vertical-align: center; border-radius: 5px; horiz-align: center; top: 50%; left: 50%;">
     <div class="jumbotron" style="background: aliceblue">
         <div class="container">
             <h1 class="display-3">UPSI</h1>
@@ -26,8 +26,10 @@
                 <p th:text="${message}"></p>
             </div>
         </div>
-        <p><a class="btn btn-primary btn-lg" href="#" onclick="window.history.back(-1);return false;" role="button">Zurück</a>
-        </p>
+
+        <button style="color: #52a1eb">
+            <a  style="color: white" class="btn btn-primary btn-lg" href="#" onclick="window.history.back(-1);return false;" role="button">Zurück</a>
+        </button>
     </div>
 </div>
 </body>
