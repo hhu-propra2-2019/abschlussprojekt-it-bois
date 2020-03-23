@@ -14,6 +14,6 @@ public class EventDTO {
     Long event_id;
     Long group_id;
     String user_id;
+    String event_type;
     String event_payload;
-    boolean visibility;
 }

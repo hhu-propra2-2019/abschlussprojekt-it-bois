@@ -20,9 +20,6 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
     //@Query("SELECT * FROM event WHERE event_id > ?#{[0]}")
     //Iterable<EventDTO> findNewEventSinceStatus(@Param("status") Long status);
 
-    @Query("select distinct group_id from event where visibility =:vis")
-    List<Long> findGroup_idsWhereVisibility(@Param("vis") Boolean visibility);
-
     @Query("SELECT DISTINCT group_id FROM event WHERE event_id > :status")
     List<Long> findNewEventSinceStatus(@Param("status") Long status);
 
@@ -34,4 +31,7 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
     @Query("SELECT MAX(group_id) FROM event")
     Long getMaxGroupID();
+
+    @Query("SELECT * FROM event WHERE event_type = :type")
+    List<EventDTO> findAllEventsByType(@Param("type") String type);
 }
