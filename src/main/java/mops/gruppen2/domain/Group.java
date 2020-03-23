@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Repräsentiert den aggregierten Zustand einer Gruppe.
@@ -17,13 +18,13 @@ public class Group {
 
     private final List<User> members;
     private final Map<String, Role> roles;
-    private Long id;
+    private UUID id;
     private String title;
     private String description;
     private Long userMaximum;
     private GroupType type;
     private Visibility visibility;
-    private Long parent;
+    private UUID parent;
 
     public Group() {
         this.members = new ArrayList<>();

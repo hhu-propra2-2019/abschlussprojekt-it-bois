@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Ein Beispiel für eine API mit Swagger.
@@ -45,14 +46,14 @@ public class APIController {
     @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
     @Secured("ROLE_api_user")
     @ApiOperation("Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
-    public List<Long> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) {
-        return eventService.getGroupsOfUser(teilnehmer);
+    public List<UUID> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) {
+        return eventService.findGroupIdsByUser(teilnehmer);
     }
 
     @GetMapping("/getGroup/{groupId}")
     @Secured("ROLE_api_user")
     @ApiOperation("Gibt die Gruppe mit der als Parameter mitgegebenden groupId zurück")
-    public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable Long groupId) throws EventException {
+    public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable UUID groupId) throws EventException {
         List<Event> eventList = eventService.getEventsOfGroup(groupId);
         List<Group> groups = groupService.projectEventList(eventList);
 

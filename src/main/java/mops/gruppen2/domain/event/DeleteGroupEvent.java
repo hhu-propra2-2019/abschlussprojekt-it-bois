@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.Group;
 
+import java.util.UUID;
+
 @Getter
 @NoArgsConstructor // For Jackson
 public class DeleteGroupEvent extends Event {
 
-    public DeleteGroupEvent(Long groupId, String userId) {
+    public DeleteGroupEvent(UUID groupId, String userId) {
         super(groupId, userId);
     }
 

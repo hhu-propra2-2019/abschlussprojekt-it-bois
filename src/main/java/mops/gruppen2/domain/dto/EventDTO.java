@@ -12,7 +12,7 @@ public class EventDTO {
 
     @Id
     Long event_id;
-    Long group_id;
+    String group_id;
     String user_id;
     String event_type;
     String event_payload;
