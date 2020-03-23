@@ -46,6 +46,8 @@ public class Gruppen2Controller {
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
     private final Gruppen2Config gruppen2Config;
 
+    private final String serverURL = "localhost:8080";
+
     public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
         this.groupService = groupService;
@@ -192,7 +194,7 @@ public class Gruppen2Controller {
             model.addAttribute("user", user);
             model.addAttribute("admin", Role.ADMIN);
 
-            String link = inviteLinkRepositoryService.findlinkByGroupId(group.getId());
+            String link = serverURL + "/gruppen2/acceptinvite/" + inviteLinkRepositoryService.findlinkByGroupId(group.getId());
             model.addAttribute("link", link);
 
             return "detailsMember";

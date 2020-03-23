@@ -11,7 +11,8 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li class="active">
                 <a href="/" th:href="@{/gruppen2}">Gruppen</a>
@@ -31,7 +32,8 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-9 shadow-sm p-4" style="border: 10px solid aliceblue;  border-radius: 5px; background: aliceblue">
+            <div class="col-9 shadow-sm p-4"
+                 style="border: 10px solid aliceblue;  border-radius: 5px; background: aliceblue">
                 <h1 style="color: black; font-weight: bold" th:text="${group.getTitle()}"></h1>
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"
@@ -42,14 +44,21 @@
                           th:if='${group.getType() == group.getType().LECTURE}'>Veranstaltung</span>
                     <span class="badge badge-pill badge-info" style="background: mediumorchid"
                           th:text="${parent.getTitle()}">Parent</span>
-                    <div class="input-group mb-3" style="margin-top: 10px" th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
+                    <div class="input-group mb-3" style="margin-top: 10px"
+                         th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="inputGroup-sizing-default" style="background: #52a1eb">Einladungslink:</span>
+                            <span class="input-group-text" id="inputGroup-sizing-default">Einladungslink:</span>
                         </div>
                         <input type="text" class="form-control" th:value="${link}"
-                               aria-label="Recipient's username" aria-describedby="basic-addon2" id="groupLink" style="background: white" readonly>
+                               aria-label="Recipient's username" aria-describedby="basic-addon2" id="groupLink"
+                               style="background: white" readonly>
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" onclick="copyLink()">Link kopieren</button>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyLink()"
+                                    style="background: #52a1eb; border: none">
+                                <a style="color: white">
+                                    Link kopieren
+                                </a>
+                            </button>
                         </div>
                     </div>
                 </h3>
@@ -71,7 +80,8 @@
                     </form>
                     <form action="/gruppen2/deleteGroup" method="post">
                         <button class="btn btn-danger" style="border-style: none; margin: 5px"
-                                th:name="group_id" th:value="${group.getId()}" th:if="${group.getRoles().get(user.getId()) == admin}"
+                                th:name="group_id" th:value="${group.getId()}"
+                                th:if="${group.getRoles().get(user.getId()) == admin}"
                                 type="submit">Gruppe löschen
                         </button>
                     </form>
@@ -91,7 +101,9 @@
                     <div th:if="${group.getRoles().get(user.getId()) == admin}">
                         <form method="get"
                               th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
-                            <button class="btn btn-secondary" style="background: slategrey; float: left">Mitglieder bearbeiten</button>
+                            <button class="btn btn-secondary" style="background: slategrey; float: left">Mitglieder
+                                bearbeiten
+                            </button>
                         </form>
                     </div>
                     <br>
