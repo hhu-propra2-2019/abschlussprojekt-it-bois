@@ -5,6 +5,7 @@ import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
@@ -32,6 +33,7 @@ import java.io.CharConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @SessionScope
@@ -44,6 +46,7 @@ public class Gruppen2Controller {
     private final ControllerService controllerService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
     private final Gruppen2Config gruppen2Config;
+    private final Logger logger;
 
     public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
@@ -51,6 +54,7 @@ public class Gruppen2Controller {
         this.userService = userService;
         this.controllerService = controllerService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
+        logger = Logger.getLogger("Gruppen2ControllerLogger");
         this.gruppen2Config = gruppen2Config;
     }
 
@@ -101,6 +105,7 @@ public class Gruppen2Controller {
                     userMaximum =  Long.valueOf(userList.size()) + userMaximum;
                 }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                logger.warning("File konnte nicht gelesen werden");
                 throw new WrongFileException(file.getOriginalFilename());
             }
         }
@@ -179,6 +184,18 @@ public class Gruppen2Controller {
         Group parent = new Group();
         if(group.getTitle() == null){
             throw new GroupNotFoundException(this.getClass().toString());
+        }
+        if (!group.getMembers().contains(user)){
+            if (group.getVisibility() == Visibility.PRIVATE){
+                return "privateGroupNoMember";
+            }
+            if (group != null) {
+                model.addAttribute("group", group);
+                model.addAttribute("parentId", parentId);
+                model.addAttribute("parent", parent);
+                return "detailsNoMember";
+            }
+            return "detailsNoMember";
         }
         if (parentId != null) {
             parent = userService.getGroupById(parentId);
@@ -274,14 +291,19 @@ public class Gruppen2Controller {
     public String editMembers(Model model, KeycloakAuthenticationToken token, @PathVariable("id") Long groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(groupId);
-        if (group.getRoles().get(account.getName()) == Role.ADMIN) {
-            model.addAttribute("account", account);
-            model.addAttribute("members", group.getMembers());
-            model.addAttribute("group", group);
-            model.addAttribute("admin", Role.ADMIN);
-            return "editMembers";
-        } else {
-            return "redirect:/details/";
+        User user = new User(account.getName(),"", "", "");
+        if (group.getMembers().contains(user)) {
+            if (group.getRoles().get(account.getName()) == Role.ADMIN) {
+                model.addAttribute("account", account);
+                model.addAttribute("members", group.getMembers());
+                model.addAttribute("group", group);
+                model.addAttribute("admin", Role.ADMIN);
+                return "editMembers";
+            } else {
+                return "redirect:/details/";
+            }
+        }else {
+            return "privateGroupNoMember";
         }
     }
 
