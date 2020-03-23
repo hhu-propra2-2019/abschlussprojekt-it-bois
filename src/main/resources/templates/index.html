@@ -33,7 +33,7 @@
             <div class="col-10">
                 <h1>Meine Gruppen</h1>
                 <form action="/" method="get">
-                    <h3 style="color: dodgerblue; font-weight: bold;">
+                    <h3 style="color: dodgerblue; font-weight: bold; font-optical-sizing: auto">
                         <small style="font-weight: normal; color: black">Mitglied in </small>
                         <small style="font-weight: bold; color: black"
                                th:text="${gruppen.size()}"></small>
@@ -45,12 +45,12 @@
                     <br>
                     <div th:each="gruppe: ${gruppen}">
                         <div class="shadow-sm p-4" style="border: none; border-radius: 5px; background: aliceblue">
-                            <h3 style="color: dodgerblue; font-weight: bold;">
+                            <h3 style="color: dodgerblue; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word">
                                 <a th:href="@{/gruppen2/details/{id}(id=${gruppe.getId()})}"
                                    th:text="${gruppe.getTitle()}"></a>
                             </h3>
                             <div class="shadow-sm p-4" style="background: white">
-                                <p style="overflow-wrap: break-word"
+                                <p style="overflow-wrap: break-word; font-optical-sizing: auto"
                                    th:text="${#strings.abbreviate(gruppe.getDescription(),300)}"></p>
                             </div>
                         </div>

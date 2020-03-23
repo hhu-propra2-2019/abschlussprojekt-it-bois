@@ -32,7 +32,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-9 shadow-sm p-4" style="border: 10px solid aliceblue;  border-radius: 5px; background: aliceblue">
-                <h1 style="color: black; font-weight: bold" th:text="${group.getTitle()}"></h1>
+                <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word" th:text="${group.getTitle()}"></h1>
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"
                           th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
@@ -45,7 +45,7 @@
                 </h3>
                 <br>
                 <div class="shadow-sm p-4" style="background: white">
-                    <p style="overflow-wrap: break-word" th:text="${group.getDescription()}"></p>
+                    <p style="overflow-wrap: break-word; font-optical-sizing: auto" th:text="${group.getDescription()}"></p>
                 </div>
                 <br>
                 <div class="text-right btn-toolbar" role="toolbar" style="float: right">
