@@ -61,7 +61,7 @@
                     </form>
                     <form action="/gruppen2/deleteGroup" method="post">
                         <button class="btn btn-danger" style="border-style: none; margin: 5px"
-                                th:name="group_id" th:value="${group.getId()}"
+                                th:name="group_id" th:value="${group.getId()}" th:if="${group.getRoles().get(user.getId()) == admin}"
                                 type="submit">Gruppe löschen
                         </button>
                     </form>
