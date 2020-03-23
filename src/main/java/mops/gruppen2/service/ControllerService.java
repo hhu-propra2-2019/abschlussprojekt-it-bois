@@ -74,6 +74,7 @@ public class ControllerService {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
+            createInviteLink(groupId);
         }
 
         GroupType groupType;

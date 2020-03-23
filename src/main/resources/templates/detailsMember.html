@@ -42,6 +42,8 @@
                           th:if='${group.getType() == group.getType().LECTURE}'>Veranstaltung</span>
                     <span class="badge badge-pill badge-info" style="background: mediumorchid"
                           th:text="${parent.getTitle()}">Parent</span>
+                    <span th:if="${group.getVisibility() == group.getVisibility().PRIVATE}" th:text="link">
+                    </span>
                 </h3>
                 <br>
                 <div class="shadow-sm p-4" style="background: white">

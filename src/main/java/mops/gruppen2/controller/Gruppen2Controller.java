@@ -193,9 +193,7 @@ public class Gruppen2Controller {
             model.addAttribute("admin", Role.ADMIN);
 
             String link = inviteLinkRepositoryService.findlinkByGroupId(group.getId());
-            if (group.getVisibility() == Visibility.PRIVATE) {
-                model.addAttribute("Link", link);
-            }
+            model.addAttribute("link", link);
 
             return "detailsMember";
         }
