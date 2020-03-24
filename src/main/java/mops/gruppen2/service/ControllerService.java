@@ -12,6 +12,7 @@ import mops.gruppen2.domain.event.DeleteUserEvent;
 import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
 import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
+import mops.gruppen2.domain.event.UpdateUserMaxEvent;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.security.Account;
@@ -130,8 +131,8 @@ public class ControllerService {
         eventService.saveEvent(updateGroupDescriptionEvent);
     }
 
-    public void updateMaxUser(Account account, Long groupId, Long userMaximum) {
-        UpdateUserMaxEvent updateUserMaxEvent = new UpdateUserMaxEvent(groupId,account.getName(),userMaximum);
+    public void updateMaxUser(Account account, UUID groupId, Long userMaximum) {
+        UpdateUserMaxEvent updateUserMaxEvent = new UpdateUserMaxEvent(groupId, account.getName(), userMaximum);
         eventService.saveEvent(updateUserMaxEvent);
     }
 

@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.security.RolesAllowed;
 import java.io.CharConversionException;
 import java.io.IOException;
@@ -97,13 +98,13 @@ public class Gruppen2Controller {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
-        if(userMaximum == null){
+        if (userMaximum == null) {
             userMaximum = 100000L;
         }
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
-                if(userList.size() > userMaximum){
+                if (userList.size() > userMaximum) {
                     userMaximum = (long) userList.size() + userMaximum;
                 }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
@@ -161,8 +162,8 @@ public class Gruppen2Controller {
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
-                if(userList.size()+group.getMembers().size()>group.getUserMaximum()){
-                    controllerService.updateMaxUser(account, groupId, Long.valueOf(userList.size()) + group.getMembers().size());
+                if (userList.size() + group.getMembers().size() > group.getUserMaximum()) {
+                    controllerService.updateMaxUser(account, UUID.fromString(groupId), (long) userList.size() + group.getMembers().size());
                 }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
                 throw new WrongFileException(file.getOriginalFilename());
@@ -334,7 +335,7 @@ public class Gruppen2Controller {
             } else {
                 return "redirect:/details/";
             }
-        }else {
+        } else {
             return "privateGroupNoMember";
         }
     }
@@ -361,10 +362,10 @@ public class Gruppen2Controller {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/changeMaximum")
     public String changeMaxSize(@RequestParam("maximum") Long maximum,
-                                @RequestParam("group_id") Long groupId,
-                                KeycloakAuthenticationToken token){
+                                @RequestParam("group_id") String groupId,
+                                KeycloakAuthenticationToken token) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        controllerService.updateMaxUser(account, groupId, maximum);
+        controllerService.updateMaxUser(account, UUID.fromString(groupId), maximum);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
