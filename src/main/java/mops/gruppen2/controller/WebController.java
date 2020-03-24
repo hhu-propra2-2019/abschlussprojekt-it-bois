@@ -39,7 +39,7 @@ import java.util.UUID;
 @Controller
 @SessionScope
 @RequestMapping("/gruppen2")
-public class Gruppen2Controller {
+public class WebController {
 
     private final KeyCloakService keyCloakService;
     private final GroupService groupService;
@@ -49,7 +49,7 @@ public class Gruppen2Controller {
     private final Logger logger = LoggerFactory.getLogger("Gruppen2ControllerLogger");
     ;
 
-    public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, Gruppen2Config gruppen2Config) {
+    public WebController(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
         this.groupService = groupService;
         this.userService = userService;
