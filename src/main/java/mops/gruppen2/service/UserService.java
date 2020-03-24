@@ -49,7 +49,7 @@ public class UserService {
             List<Event> events = groupService.getGroupEvents(groupIds);
             return groupService.projectEventList(events).get(0);
         } catch (IndexOutOfBoundsException e) {
-            throw new GroupNotFoundException(this.getClass().toString());
+            throw new GroupNotFoundException("@UserService");
         }
     }
 }
