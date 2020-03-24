@@ -47,7 +47,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean visibility, Long userMaximum, UUID parent) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean maxInfiniteUsers, Boolean visibility, Long userMaximum, UUID parent) throws EventException {
         Visibility visibility1;
         UUID groupId = eventService.checkGroup();
 
@@ -55,6 +55,10 @@ public class ControllerService {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
+        }
+
+        if(maxInfiniteUsers){
+            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
@@ -66,7 +70,7 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Long userMaximum, UUID parent, List<User> users) throws EventException {
+    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, List<User> users) throws EventException {
         Visibility visibility1;
         UUID groupId = eventService.checkGroup();
 
@@ -81,6 +85,11 @@ public class ControllerService {
             groupType = GroupType.LECTURE;
         } else {
             groupType = GroupType.SIMPLE;
+        }
+
+
+        if(maxInfiniteUsers){
+            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, visibility1, userMaximum);
@@ -119,6 +128,11 @@ public class ControllerService {
     public void updateDescription(Account account, UUID groupId, String description) {
         UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(groupId, account.getName(), description);
         eventService.saveEvent(updateGroupDescriptionEvent);
+    }
+
+    public void updateMaxUser(Account account, Long groupId, Long userMaximum) {
+        UpdateUserMaxEvent updateUserMaxEvent = new UpdateUserMaxEvent(groupId,account.getName(),userMaximum);
+        eventService.saveEvent(updateUserMaxEvent);
     }
 
     public void updateRole(String userId, UUID groupId) throws EventException {

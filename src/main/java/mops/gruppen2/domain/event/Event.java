@@ -23,7 +23,8 @@ import java.util.UUID;
                       @JsonSubTypes.Type(value = UpdateGroupDescriptionEvent.class, name = "UpdateGroupDescriptionEvent"),
                       @JsonSubTypes.Type(value = UpdateGroupTitleEvent.class, name = "UpdateGroupTitleEvent"),
                       @JsonSubTypes.Type(value = UpdateRoleEvent.class, name = "UpdateRoleEvent"),
-                      @JsonSubTypes.Type(value = DeleteGroupEvent.class, name = "DeleteGroupEvent")
+                      @JsonSubTypes.Type(value = DeleteGroupEvent.class, name = "DeleteGroupEvent"),
+                      @JsonSubTypes.Type(value = UpdateUserMaxEvent.class, name = "UpdateUserMaxEvent")
               })
 @Getter
 @NoArgsConstructor
