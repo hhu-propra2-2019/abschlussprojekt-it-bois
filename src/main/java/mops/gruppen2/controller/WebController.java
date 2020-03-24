@@ -143,7 +143,6 @@ public class WebController {
         }
 
         UUID groupUUID = controllerService.getUUID(groupId);
-
         controllerService.addUserList(userList, groupUUID);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
