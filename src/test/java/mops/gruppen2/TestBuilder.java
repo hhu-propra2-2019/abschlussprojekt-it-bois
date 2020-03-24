@@ -26,6 +26,19 @@ public class TestBuilder {
     private static final Faker faker = new Faker();
 
     /**
+     * Baut eine UUID.
+     *
+     * @param i Zahl von 0 bis 9
+     * @return UUID
+     */
+    public static UUID idFromNumber(int i) {
+        if (i > 9) {
+            return null;
+        }
+        return UUID.fromString("00000000-0000-0000-0000-00000000000" + i);
+    }
+
+    /**
      * Generiert ein EventLog mit mehreren Gruppen und Usern.
      *
      * @param count       Gruppenanzahl

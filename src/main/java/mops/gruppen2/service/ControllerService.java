@@ -50,7 +50,7 @@ public class ControllerService {
      */
     public void createGroup(Account account, String title, String description, Boolean maxInfiniteUsers, Boolean visibility, Long userMaximum, UUID parent) throws EventException {
         Visibility visibility1;
-        UUID groupId = eventService.checkGroup();
+        UUID groupId = UUID.randomUUID();
 
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
@@ -73,7 +73,7 @@ public class ControllerService {
 
     public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, List<User> users) throws EventException {
         Visibility visibility1;
-        UUID groupId = eventService.checkGroup();
+        UUID groupId = UUID.randomUUID();
 
         if (visibility) {
             visibility1 = Visibility.PUBLIC;

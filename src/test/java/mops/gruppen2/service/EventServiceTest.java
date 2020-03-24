@@ -11,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -21,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = Gruppen2Application.class)
 @Rollback
 @Transactional
-@RunWith(MockitoJUnitRunner.class)
 class EventServiceTest {
 
     @Autowired
@@ -55,16 +53,16 @@ class EventServiceTest {
     @Test
     void checkGroupReturnNextValue() {
         eventRepository.deleteAll();
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "lol", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(UUID.fromString("A"), "lol", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L);
         eventService.saveEvent(createGroupEvent);
-        assertEquals(2L, eventService.checkGroup());    // weil in DataSQL eine Gruppe erstellt wird
+        assertEquals(2L, UUID.fromString("A"));    // weil in DataSQL eine Gruppe erstellt wird
     }
 
     @Test
     void checkGroupReturnOneIfDBIsEmpty() {
         //dafür muss data.sql weg
         eventRepository.deleteAll();
-        assertEquals(1L, eventService.checkGroup());
+        assertEquals(1L, UUID.fromString("A"));
     }
 
     @Test

@@ -57,24 +57,6 @@ public class EventService {
     }
 
     /**
-     * Gibt die nächst höhere groupID zurück die belegt werden kann.
-     * Gibt 1 zurück, falls keine Gruppe vorhanden ist.
-     *
-     * @return Long GruppenId
-     */
-    public UUID checkGroup() {
-        return UUID.randomUUID();
-
-        /*Long maxGroupID = eventStore.getMaxGroupID();
-
-        if (maxGroupID == null) {
-            return 1L;
-        }
-
-        return maxGroupID + 1;*/
-    }
-
-    /**
      * Findet alle Events welche ab dem neuen Status hinzugekommen sind.
      *
      * @param status Die Id des zuletzt gespeicherten Events
