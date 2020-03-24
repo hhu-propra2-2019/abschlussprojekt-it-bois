@@ -16,12 +16,10 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    private final EventRepository eventRepository;
     private final GroupService groupService;
     private final EventService eventService;
 
-    public UserService(EventRepository eventRepository, GroupService groupService, EventService eventService) {
-        this.eventRepository = eventRepository;
+    public UserService(GroupService groupService, EventService eventService) {
         this.groupService = groupService;
         this.eventService = eventService;
     }
