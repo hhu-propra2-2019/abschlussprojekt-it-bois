@@ -2,3 +2,6 @@
 
 == Documentation
 Heute haben wir an der arc42-Dokumentation weitergearbeitet und die ersten Abschnitte fertiggestellt.
+== Tests
+
+Heute haben wir damit weiter gemacht unsere Tests zu Refactorn.
