@@ -1,7 +1,6 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.Gruppen2Application;
-import mops.gruppen2.TestBuilder;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -21,20 +20,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static mops.gruppen2.TestBuilder.idFromNumber;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Gruppen2Application.class)
-@Rollback
-@Transactional
 class GroupServiceTest {
 
     @Autowired
@@ -48,6 +44,7 @@ class GroupServiceTest {
     @BeforeEach
     void setUp() {
         groupService = new GroupService(eventService, eventRepository);
+        eventRepository.deleteAll();
     }
 
     @Test
@@ -62,73 +59,78 @@ class GroupServiceTest {
 
     @Test
     void getGroupEventsTest() {
-        CreateGroupEvent test1 = new CreateGroupEvent(TestBuilder.idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L);
-        CreateGroupEvent test2 = new CreateGroupEvent(TestBuilder.idFromNumber(1), "test2", null, GroupType.SIMPLE, Visibility.PUBLIC, 10L);
+        CreateGroupEvent test1 = new CreateGroupEvent(idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L);
+        CreateGroupEvent test2 = new CreateGroupEvent(idFromNumber(1), "test2", null, GroupType.SIMPLE, Visibility.PUBLIC, 10L);
         eventService.saveEvent(test1);
         eventService.saveEvent(test2);
         List<UUID> longs = new ArrayList<>();
-        longs.add(TestBuilder.idFromNumber(0));
-        longs.add(TestBuilder.idFromNumber(1));
+        longs.add(idFromNumber(0));
+        longs.add(idFromNumber(1));
         assertThat(groupService.getGroupEvents(longs).get(0).getUserId()).isEqualTo("test1");
     }
 
     @Test
     void getAllGroupWithVisibilityPublicTestCreateAndDeleteSameGroup() {
-        CreateGroupEvent test1 = new CreateGroupEvent(TestBuilder.idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L);
-        DeleteGroupEvent test2 = new DeleteGroupEvent(TestBuilder.idFromNumber(0), "test1");
-        eventService.saveEvent(test1);
-        eventService.saveEvent(test2);
+        CreateGroupEvent test1 = new CreateGroupEvent(idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L);
+        DeleteGroupEvent test2 = new DeleteGroupEvent(idFromNumber(0), "test1");
+
+        Group group = new Group();
+        test1.apply(group);
+        test2.apply(group);
+
+        //assertThat(group.getType()).isEqualTo(null);
+
         assertThat(groupService.getAllGroupWithVisibilityPublic("test1").size()).isEqualTo(0);
     }
 
     @Test
     void getAllGroupWithVisibilityPublicTestGroupPublic() {
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        eventService.saveEvent(new DeleteGroupEvent(TestBuilder.idFromNumber(0), "test1"));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        eventService.saveEvent(new UpdateRoleEvent(TestBuilder.idFromNumber(1), "test2", Role.MEMBER));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
+        eventService.saveEvent(new DeleteGroupEvent(idFromNumber(0), "test1"));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new UpdateRoleEvent(idFromNumber(1), "test2", Role.MEMBER));
         assertThat(groupService.getAllGroupWithVisibilityPublic("test1").size()).isEqualTo(1);
     }
 
     @Test
     void getAllGroupWithVisibilityPublicTestAddSomeEvents() {
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        eventService.saveEvent(new DeleteGroupEvent(TestBuilder.idFromNumber(0), "test1"));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        eventService.saveEvent(new UpdateRoleEvent(TestBuilder.idFromNumber(1), "test2", Role.MEMBER));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(2), "test3", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(3), "test4", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(4), "test5", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
+        eventService.saveEvent(new DeleteGroupEvent(idFromNumber(0), "test1"));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new UpdateRoleEvent(idFromNumber(1), "test2", Role.MEMBER));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(2), "test3", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(3), "test4", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(4), "test5", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
         assertThat(groupService.getAllGroupWithVisibilityPublic("test1").size()).isEqualTo(4);
     }
 
     @Disabled
     @Test
     void getAllGroupWithVisibilityPublicTestIsUserInGroup() {
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        eventService.saveEvent(new AddUserEvent(TestBuilder.idFromNumber(0), "test1", "test", "test", "test@test"));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
+        eventService.saveEvent(new AddUserEvent(idFromNumber(0), "test1", "test", "test", "test@test"));
         assertThat(groupService.getAllGroupWithVisibilityPublic("test2").get(0).getMembers().size()).isEqualTo(1);
     }
 
     @Test
     void getAllLecturesWithVisibilityPublicTest() {
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        eventService.saveEvent(new UpdateRoleEvent(TestBuilder.idFromNumber(1), "test2", Role.MEMBER));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(2), "test3", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(3), "test4", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(4), "test5", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new UpdateRoleEvent(idFromNumber(1), "test2", Role.MEMBER));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(2), "test3", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(3), "test4", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(4), "test5", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
         assertThat(groupService.getAllLecturesWithVisibilityPublic().size()).isEqualTo(4);
     }
 
     @Disabled
     @Test
     void findGroupWithTest() {
-        eventService.saveEvent(new CreateGroupEvent(TestBuilder.idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        eventService.saveEvent(new AddUserEvent(TestBuilder.idFromNumber(0), "test1", "test", "test", "test@test"));
-        eventService.saveEvent(new UpdateGroupTitleEvent(TestBuilder.idFromNumber(0), "test1", "TestGroup"));
-        eventService.saveEvent(new UpdateGroupDescriptionEvent(TestBuilder.idFromNumber(0), "test1", "TestDescription"));
-        eventService.saveEvent(new UpdateRoleEvent(TestBuilder.idFromNumber(0), "test1", Role.MEMBER));
+        eventService.saveEvent(new CreateGroupEvent(idFromNumber(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
+        eventService.saveEvent(new AddUserEvent(idFromNumber(0), "test1", "test", "test", "test@test"));
+        eventService.saveEvent(new UpdateGroupTitleEvent(idFromNumber(0), "test1", "TestGroup"));
+        eventService.saveEvent(new UpdateGroupDescriptionEvent(idFromNumber(0), "test1", "TestDescription"));
+        eventService.saveEvent(new UpdateRoleEvent(idFromNumber(0), "test1", Role.MEMBER));
         assertThat(groupService.findGroupWith("T", new Account("jens", "a@A", "test", "peter", "mueller", null)).size()).isEqualTo(1);
     }
 

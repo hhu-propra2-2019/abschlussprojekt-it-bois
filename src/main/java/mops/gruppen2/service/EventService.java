@@ -101,8 +101,6 @@ public class EventService {
     public List<UUID> findGroupIdsByUser(String userId) {
         List<String> groupIDs = eventStore.findGroup_idsWhereUser_id(userId);
 
-        System.out.println(groupIDs);
-
         return groupIDs.stream()
                        .map(UUID::fromString)
                        .collect(Collectors.toList());

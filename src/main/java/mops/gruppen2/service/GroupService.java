@@ -54,6 +54,8 @@ public class GroupService {
     public List<Group> projectEventList(List<Event> events) throws EventException {
         Map<UUID, Group> groupMap = new HashMap<>();
 
+        events.forEach(System.out::println);
+
         events.parallelStream()
               .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
 
@@ -80,6 +82,7 @@ public class GroupService {
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+
         List<Group> visibleGroups = projectEventList(createEvents);
 
         List<UUID> userGroupIds = eventService.findGroupIdsByUser(userId);
@@ -95,6 +98,7 @@ public class GroupService {
     public List<Group> getAllLecturesWithVisibilityPublic() throws EventException {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
 
         List<Group> visibleGroups = projectEventList(createEvents);
 
