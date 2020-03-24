@@ -56,8 +56,8 @@
                         <th scope="col">Mitgliederanzahl</th>
                     </tr>
                     </thead>
-                    <tbody th:each="gruppe : ${gruppen}">
-                    <tr>
+                    <tbody>
+                    <tr th:each="gruppe : ${gruppen}">
                         <th scope="row">
                             <a th:href="@{/gruppen2/detailsSearch(id=${gruppe.getId()})}"
                                th:text="${gruppe.title}">Gruppenname</a>
