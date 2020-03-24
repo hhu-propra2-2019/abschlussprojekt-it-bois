@@ -3,9 +3,19 @@
 
 
 
-=== _<Konzept 1>_
+=== Benutzeroberfläche
 
-_<Erklärung>_
+Für die Benutzeroberfläche wurd Wert auf Einheitlichkeit und stimmige Farbgebung geachtet. Dies sieht man beispielsweise an der Darstellung der Details einer Gruppe:
+
+image::frontend_1.png[]
+
+Außerdem wird darauf geachtet, dass sich die Oberfläche selbst erklärt und dementsprechend intuitiv funktioniert, ohne, dass Erklärungen notwendig sind.
+
+Ein Beispiel hierfür ist das Erstellen einer Gruppe:
+
+image::frontend_2.png[]
+
+Hier ist das Ausfüllen der Felder des Formulars selbsterklärend und eindeutig.
 
 === _<Konzept 2>_
 

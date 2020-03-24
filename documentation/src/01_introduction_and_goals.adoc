@@ -30,6 +30,7 @@
 |Attraktivität |Da die Software ein Teil des MOPS-Moduls ist, das von Studenten täglich verwendet werden soll, wird Wert auf ein attraktives und intuitives Interface gelegt.
 |Wartbarkeit und Analysierbarkeit |Da die Software nach dem Praktikum in fremde Hände gegeben wird, sollte sie für außenstehende gut wartbar sein, ohne viel Zeit aufwenden zu müssen, bis man den Code verstanden hat. Dementsprechend sollte der Code sinnvoll auskommentiert sein. Außerdem soll die Benennung der Variablen, Klassen und Methoden gut verständlich sein.
 |Änderbarkeit |Da die Software Teil eines Praktikums ist und ggf. am Endprodukt Änderungen vorgenommen werden müssen, sollte der Code zugänglich für Änderungen sein. Dies schließt direkt an die Verständlichkeit des Codes an (s.o.).
+|Einfache Anbindung an andere Komponenten des MOPS-Moduls |Da die Komponente Gruppenbildung in Zusammenarbeit mit anderen Komponenten des MOPS-Moduls funktionieren soll, wird eine Schnittstelle für die anderen Komponenten gestellt.
 |===
 
 

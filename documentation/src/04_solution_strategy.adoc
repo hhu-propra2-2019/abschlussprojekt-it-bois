@@ -1,4 +1,35 @@
 [[section-solution-strategy]]
 == Lösungsstrategie
 
+=== 4.1 Einstieg in die Lösungsstrategie
 
+[cols="1,2" options="header"]
+|===
+|Qualitätsziel |Ansätze in der Architektur
+|Effizienz und Zuverlässigkeit |Speichern der Daten in einer MySQL-Datenbank, selten verwendete Daten werden in Payload gelagert (als String in der Datenbank gespeichert, also keine eigene Tabellenspalte), kurze Methoden mit einfacher Funktionalität, Verwendung von Polymorphie, damit Objekte die Operationen selber regeln, Suche Daten begrenzt auf geringe Spaltenzahl
+|Attraktivität |Einheitliches Design mithilfe von Bootstrap 4 und einheitlicher Farbwahl, Achten auf Ähnlichkeiten oder Gleichheiten bei ähnlichen Teilen der Anwendung
+|Wartbarkeit und Analysierbarkeit |Achten auf Kommentieren des Codes und sinnvoller Benennung der Klassen, Methoden, Variablen
+|Änderbarkeit |Kurze und einfache Methoden, relativ einfache Struktur der Methoden und der Funktionalität der Software
+|Einfache Anbindung an andere Komponenten des MOPS-Moduls |Als Schnittstelle zu anderen Komponenten des MOPS-Moduls werden JSON-Files mit fertigen Gruppenobjekten herausgegeben.
+|===
+
+=== 4.2 Aufbau der Komponente "Gruppenbildung"
+
+Die Komponente Gruppenbildung wird als Teil des MOPS-Moduls der Heinrich-Heine-Universität Düsseldorf implementiert.
+Die Komponente selbst besteht aus folgenden Teilen:
+
+* Erstellen von Veranstaltungen durch Organisatoren
+* Erstellen von Gruppen jeder Art durch Organisatoren oder Studenten
+* Darstellung der Gruppen, in denen ein User Mitglied ist
+* Suche von Gruppen, in denen der User kein Mitglied ist
+* Darstellung der detaillierten Informationen einer Gruppe in Abhängigkeit der Mitgliedschaft des Users
+* Verwalten der Mitglieder einer Gruppe durch die Administratoren dieser
+* Persistentes Speichern der Daten in einer MySQL-Datenbank
+
+Alle oben genannten Teile der Software können während der Entwicklung ausgetauscht oder verändert werden, ohne, dass schwerwiegende Änderungen im Code notwendig sind.
+Die Interaktion zwischen den Teilen funktioniert über das Übergeben von User- oder Gruppen-IDs durch Links und die IDs waren von Anfang an fester Bestandteil und Notwendigkeit der Klassen, weshalb dieser Teil während der Entwicklung bestehen bleibt.
+Aus diesem Grund ist die Veränderung der einzelnen Bestandteile der Software ohne Schwierigkeiten möglich.
+
+Die oben genannten Teile können weitgehend unabhängig voneinander entwickelt werden. Nachdem eine Funktion fertiggestellt ist, kann sich das Frontend-Team um die visuelle Umsetzung kümmern.
+
+Ein zentrales Element der Entwicklung ist das Speichern der Daten in persistenter Form, ohne überflüssige oder veraltete Daten zu speichern. Die Daten sollen zuverlässig in einer Datenbank abgelegt werden, aber nicht dort bleiben, wenn sie nicht länger benötigt werden.
