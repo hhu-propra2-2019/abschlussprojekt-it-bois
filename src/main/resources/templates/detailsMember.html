@@ -43,12 +43,11 @@
                     <span class="badge badge-pill badge-info" style="background: mediumorchid"
                           th:text="${parent.getTitle()}">Parent</span>
 
-                    Click <a th:href="@{'/gruppen2/acceptinvite/' + ${link}}">view</a> to go to yahoo.
                     <div class="input-group mb-3" style="margin-top: 10px" th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-default" style="background: #52a1eb">Einladungslink:</span>
                         </div>
-                        <input type="text" class="form-control" th:value="|${serverAddress}/gruppen2/acceptinvite/${link}|"
+                        <input type="text" class="form-control" th:value="${link}"
                                aria-label="Recipient's username" aria-describedby="basic-addon2" id="groupLink" style="background: white" readonly>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button" onclick="copyLink()">Link kopieren</button>

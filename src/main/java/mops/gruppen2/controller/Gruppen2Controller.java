@@ -29,7 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import java.io.CharConversionException;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -52,9 +54,6 @@ public class Gruppen2Controller {
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
     private final Gruppen2Config gruppen2Config;
     private final Logger logger;
-    private final Logger logger;
-
-    private final String serverURL = "localhost:8080";
 
     public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
@@ -62,7 +61,6 @@ public class Gruppen2Controller {
         this.userService = userService;
         this.controllerService = controllerService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
-        logger = Logger.getLogger("Gruppen2ControllerLogger");
         this.gruppen2Config = gruppen2Config;
         this.logger = Logger.getLogger("gruppen2ControllerLogger");
     }
@@ -114,8 +112,8 @@ public class Gruppen2Controller {
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
-                if(userList.size() > userMaximum){
-                    userMaximum =  Long.valueOf(userList.size()) + userMaximum;
+                if (userList.size() > userMaximum) {
+                    userMaximum = Long.valueOf(userList.size()) + userMaximum;
                 }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
                 logger.warning("File konnte nicht gelesen werden");
@@ -197,14 +195,14 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @GetMapping("/details/{id}")
-    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, @PathVariable("id") Long groupId) throws EventException {
+    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, HttpServletRequest request, @PathVariable("id") Long groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(groupId);
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Long parentId = group.getParent();
         Group parent = new Group();
-        if(group.getTitle() == null){
+        if (group.getTitle() == null) {
             throw new GroupNotFoundException(this.getClass().toString());
         }
         if (!group.getMembers().contains(user)){
@@ -230,26 +228,11 @@ public class Gruppen2Controller {
             model.addAttribute("user", user);
             model.addAttribute("admin", Role.ADMIN);
 
-            String link = serverURL + "/gruppen2/acceptinvite/" + inviteLinkRepositoryService.findlinkByGroupId(group.getId());
-            model.addAttribute("link", link);
+            String link = inviteLinkRepositoryService.findlinkByGroupId(group.getId());
+            String URL = request.getRequestURL().toString();
+            String serverURL = URL.substring(0, URL.indexOf("gruppen2/"));
 
-            String port ="";
-            String serverAd="";
-            try {
-                port = environment.getProperty("server.port");
-                serverAd= InetAddress.getLoopbackAddress().getHostAddress();
-            } catch (Exception e) {
-                logger.warning("Could not find server-address");
-            }
-            if (port.isEmpty()){
-                logger.warning("Serverport missing in application.properties");
-            }
-
-            // hässlicher hardcode
-            serverAd = "localhost";
-
-            String serverAddresse = serverAd + ":" + port;
-            model.addAttribute("serverAddress", serverAddresse);
+            model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + link);
 
             return "detailsMember";
         }
@@ -311,7 +294,7 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         controllerService.passIfLastAdmin(account, groupId);
         controllerService.deleteUser(user.getId(), groupId);
-        if(userService.getGroupById(groupId).getMembers().size() == 0){
+        if (userService.getGroupById(groupId).getMembers().size() == 0) {
             controllerService.deleteGroupEvent(user.getId(), groupId);
         }
         return "redirect:/gruppen2/";
@@ -319,11 +302,11 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/deleteGroup")
-    public String pDeleteGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId){
+    public String pDeleteGroup(KeycloakAuthenticationToken token, @RequestParam("group_id") Long groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(groupId);
-        if(group.getRoles().get(user.getId()) != Role.ADMIN ){
+        if (group.getRoles().get(user.getId()) != Role.ADMIN) {
             return "error";
         }
         controllerService.deleteGroupEvent(user.getId(), groupId);
@@ -359,7 +342,7 @@ public class Gruppen2Controller {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         if (userId.equals(account.getName())) {
-            if (controllerService.passIfLastAdmin(account, groupId)){
+            if (controllerService.passIfLastAdmin(account, groupId)) {
                 throw new NoAdminAfterActionException("Du otto bist letzter Admin");
             }
             controllerService.updateRole(userId, groupId);
@@ -384,8 +367,8 @@ public class Gruppen2Controller {
     public String deleteUser(@RequestParam("group_id") Long groupId,
                              @RequestParam("user_id") String userId) throws EventException {
         controllerService.deleteUser(userId, groupId);
-        if(userService.getGroupById(groupId).getMembers().size() == 0){
-            controllerService.deleteGroupEvent(userId ,groupId);
+        if (userService.getGroupById(groupId).getMembers().size() == 0) {
+            controllerService.deleteGroupEvent(userId, groupId);
         }
         return "redirect:/gruppen2/details/members/" + groupId;
     }
