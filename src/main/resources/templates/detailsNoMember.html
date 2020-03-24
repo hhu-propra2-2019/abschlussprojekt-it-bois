@@ -36,7 +36,7 @@
                     <h3>
                         <span class="badge badge-pill badge-dark" style="background: darkslategray"
                               th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
-                        <span class="badge badge-pill badge-primary"
+                        <span class="badge badge-pill badge-primary" style="background: #52a1eb"
                               th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
                         <span class="badge badge-pill badge-success"
                               style="background: lightseagreen"
@@ -52,13 +52,27 @@
                         <div class="text-right">
                             <form method="post" action="/gruppen2/detailsBeitreten">
                                 <button class="btn btn-primary"
-                                        style="border-style: none;"
+                                        style="background: #52a1eb; border-style: none;"
                                         th:href="@{/gruppen2/detailsBeitreten(id=${group.getId()})}"
                                         th:name="id" th:value="${group.id}"
                                         type="submit">Gruppe beitreten
                                 </button>
                             </form>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3" style="white-space: nowrap">
+                <div style="display: inline-block; margin: 0">
+                    <h2>Mitglieder</h2>
+                    <div th:switch="${group.getUserMaximum() != 100000}">
+                        <h4 th:case="${true}">
+                            <a th:text="${group.getMembers().size()}"></a>
+                            <a>von maximal</a>
+                            <a th:text="${group.getUserMaximum()}"></a>
+                            <a>Benutzern.</a>
+                        </h4>
+                        <h4 th:case="false">unbegrenzte Teilnehmeranzahl</h4>
                     </div>
                 </div>
             </div>

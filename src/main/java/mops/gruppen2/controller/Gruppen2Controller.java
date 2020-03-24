@@ -5,6 +5,7 @@ import mops.gruppen2.config.Gruppen2Config;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
@@ -32,6 +33,7 @@ import java.io.CharConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @SessionScope
@@ -44,6 +46,7 @@ public class Gruppen2Controller {
     private final ControllerService controllerService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
     private final Gruppen2Config gruppen2Config;
+    private final Logger logger;
 
     public Gruppen2Controller(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, InviteLinkRepositoryService inviteLinkRepositoryService, Gruppen2Config gruppen2Config) {
         this.keyCloakService = keyCloakService;
@@ -51,6 +54,7 @@ public class Gruppen2Controller {
         this.userService = userService;
         this.controllerService = controllerService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
+        logger = Logger.getLogger("Gruppen2ControllerLogger");
         this.gruppen2Config = gruppen2Config;
     }
 
@@ -88,12 +92,16 @@ public class Gruppen2Controller {
                               @RequestParam("description") String description,
                               @RequestParam(value = "visibility", required = false) Boolean visibility,
                               @RequestParam(value = "lecture", required = false) Boolean lecture,
-                              @RequestParam("userMaximum") Long userMaximum,
+                              @RequestParam(value = "userMaximum", required = false) Long userMaximum,
+                              @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
                               @RequestParam(value = "parent", required = false) Long parent,
                               @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
+        if(userMaximum == null){
+            userMaximum = 100000L;
+        }
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
@@ -101,15 +109,17 @@ public class Gruppen2Controller {
                     userMaximum =  Long.valueOf(userList.size()) + userMaximum;
                 }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                logger.warning("File konnte nicht gelesen werden");
                 throw new WrongFileException(file.getOriginalFilename());
             }
         }
         visibility = visibility == null;
         lecture = lecture != null;
+        maxInfiniteUsers = maxInfiniteUsers != null;
 
         if (lecture) parent = null;
 
-        controllerService.createOrga(account, title, description, visibility, lecture, userMaximum, parent, userList);
+        controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parent, userList);
 
         return "redirect:/gruppen2/";
     }
@@ -129,24 +139,32 @@ public class Gruppen2Controller {
                                  @RequestParam("title") String title,
                                  @RequestParam("description") String description,
                                  @RequestParam(value = "visibility", required = false) Boolean visibility,
-                                 @RequestParam("userMaximum") Long userMaximum,
+                                 @RequestParam(value = "userMaximum", required = false) Long userMaximum,
+                                 @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
                                  @RequestParam(value = "parent", required = false) Long parent) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         visibility = visibility == null;
-        controllerService.createGroup(account, title, description, visibility, userMaximum, parent);
+        maxInfiniteUsers = maxInfiniteUsers != null;
+        controllerService.createGroup(account, title, description, visibility, maxInfiniteUsers, userMaximum, parent);
 
         return "redirect:/gruppen2/";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/details/members/addUsersFromCsv")
-    public String addUsersFromCsv(@RequestParam("group_id") Long groupId,
+    public String addUsersFromCsv(KeycloakAuthenticationToken token,
+                                  @RequestParam("group_id") Long groupId,
                                   @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
+        Group group = userService.getGroupById(groupId);
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
+                if(userList.size()+group.getMembers().size()>group.getUserMaximum()){
+                    controllerService.updateMaxUser(account, groupId, Long.valueOf(userList.size()) + group.getMembers().size());
+                }
             } catch (UnrecognizedPropertyException | CharConversionException ex) {
                 throw new WrongFileException(file.getOriginalFilename());
             }
@@ -179,6 +197,18 @@ public class Gruppen2Controller {
         Group parent = new Group();
         if(group.getTitle() == null){
             throw new GroupNotFoundException(this.getClass().toString());
+        }
+        if (!group.getMembers().contains(user)){
+            if (group.getVisibility() == Visibility.PRIVATE){
+                return "privateGroupNoMember";
+            }
+            if (group != null) {
+                model.addAttribute("group", group);
+                model.addAttribute("parentId", parentId);
+                model.addAttribute("parent", parent);
+                return "detailsNoMember";
+            }
+            return "detailsNoMember";
         }
         if (parentId != null) {
             parent = userService.getGroupById(parentId);
@@ -274,14 +304,19 @@ public class Gruppen2Controller {
     public String editMembers(Model model, KeycloakAuthenticationToken token, @PathVariable("id") Long groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(groupId);
-        if (group.getRoles().get(account.getName()) == Role.ADMIN) {
-            model.addAttribute("account", account);
-            model.addAttribute("members", group.getMembers());
-            model.addAttribute("group", group);
-            model.addAttribute("admin", Role.ADMIN);
-            return "editMembers";
-        } else {
-            return "redirect:/details/";
+        User user = new User(account.getName(),"", "", "");
+        if (group.getMembers().contains(user)) {
+            if (group.getRoles().get(account.getName()) == Role.ADMIN) {
+                model.addAttribute("account", account);
+                model.addAttribute("members", group.getMembers());
+                model.addAttribute("group", group);
+                model.addAttribute("admin", Role.ADMIN);
+                return "editMembers";
+            } else {
+                return "redirect:/details/";
+            }
+        }else {
+            return "privateGroupNoMember";
         }
     }
 
@@ -300,6 +335,16 @@ public class Gruppen2Controller {
             return "redirect:/gruppen2/details/" + groupId;
         }
         controllerService.updateRole(userId, groupId);
+        return "redirect:/gruppen2/details/members/" + groupId;
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @PostMapping("/details/members/changeMaximum")
+    public String changeMaxSize(@RequestParam("maximum") Long maximum,
+                                @RequestParam("group_id") Long groupId,
+                                KeycloakAuthenticationToken token){
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        controllerService.updateMaxUser(account, groupId, maximum);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 

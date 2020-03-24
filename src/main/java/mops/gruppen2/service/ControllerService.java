@@ -5,13 +5,7 @@ import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.event.AddUserEvent;
-import mops.gruppen2.domain.event.CreateGroupEvent;
-import mops.gruppen2.domain.event.DeleteGroupEvent;
-import mops.gruppen2.domain.event.DeleteUserEvent;
-import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
-import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
-import mops.gruppen2.domain.event.UpdateRoleEvent;
+import mops.gruppen2.domain.event.*;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.security.Account;
@@ -20,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import static mops.gruppen2.domain.Role.ADMIN;
 
@@ -30,11 +25,13 @@ public class ControllerService {
     private final EventService eventService;
     private final UserService userService;
     private final InviteLinkRepositoryService inviteLinkRepositoryService;
+    private final Logger logger;
 
     public ControllerService(EventService eventService, UserService userService, InviteLinkRepositoryService inviteLinkRepositoryService) {
         this.eventService = eventService;
         this.userService = userService;
         this.inviteLinkRepositoryService = inviteLinkRepositoryService;
+        this.logger = Logger.getLogger("controllerServiceLogger");
     }
 
     /**
@@ -46,7 +43,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean visibility, Long userMaximum, Long parent) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, Long parent) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -55,6 +52,10 @@ public class ControllerService {
         } else {
             visibility1 = Visibility.PRIVATE;
             createInviteLink(groupId);
+        }
+
+        if(maxInfiniteUsers){
+            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
@@ -66,7 +67,7 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Long userMaximum, Long parent, List<User> users) throws EventException {
+    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, Long parent, List<User> users) throws EventException {
         Visibility visibility1;
         Long groupId = eventService.checkGroup();
 
@@ -81,6 +82,11 @@ public class ControllerService {
             groupType = GroupType.LECTURE;
         } else {
             groupType = GroupType.SIMPLE;
+        }
+
+
+        if(maxInfiniteUsers){
+            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, visibility1, userMaximum);
@@ -105,8 +111,13 @@ public class ControllerService {
 
     public void addUserList(List<User> users, Long groupId) {
         for (User user : users) {
-            AddUserEvent addUserEvent = new AddUserEvent(groupId, user.getId(), user.getGivenname(), user.getFamilyname(), user.getEmail());
-            eventService.saveEvent(addUserEvent);
+            Group group = userService.getGroupById(groupId);
+            if (group.getMembers().contains(user)) {
+                logger.info("Benutzer " + user.getId() + " ist bereits in Gruppe");
+            } else {
+                AddUserEvent addUserEvent = new AddUserEvent(groupId, user.getId(), user.getGivenname(), user.getFamilyname(), user.getEmail());
+                eventService.saveEvent(addUserEvent);
+            }
         }
     }
 
@@ -118,6 +129,11 @@ public class ControllerService {
     public void updateDescription(Account account, Long groupId, String description) {
         UpdateGroupDescriptionEvent updateGroupDescriptionEvent = new UpdateGroupDescriptionEvent(groupId, account.getName(), description);
         eventService.saveEvent(updateGroupDescriptionEvent);
+    }
+
+    public void updateMaxUser(Account account, Long groupId, Long userMaximum) {
+        UpdateUserMaxEvent updateUserMaxEvent = new UpdateUserMaxEvent(groupId,account.getName(),userMaximum);
+        eventService.saveEvent(updateUserMaxEvent);
     }
 
     public void updateRole(String userId, Long groupId) throws EventException {
