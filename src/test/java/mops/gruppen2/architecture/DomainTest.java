@@ -4,6 +4,7 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import mops.gruppen2.domain.exception.EventException;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
@@ -44,6 +45,16 @@ public class DomainTest {
     @ArchTest
     public static final ArchRule classesThatHaveExceptionInNameShouldBeAssignableToExceptionClass = classes()
             .that().haveSimpleNameEndingWith("Exception")
-            .should().beAssignableTo(Exception.class);
+            .should().beAssignableTo(EventException.class);
+
+    @ArchTest
+    public static final ArchRule classesInDtoPackageShouldHaveDtoInName = classes()
+            .that().resideInAPackage("..domain.dto..")
+            .should().haveSimpleNameEndingWith("DTO");
+
+    @ArchTest
+    public static final ArchRule dtoClassesShouldBeInDtoPackage = classes()
+            .that().haveSimpleNameEndingWith("DTO")
+            .should().resideInAPackage("..domain.dto..");
 
 }
