@@ -6,6 +6,7 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.NoAdminAfterActionException;
@@ -174,6 +175,47 @@ public class Gruppen2Controller {
 
         controllerService.addUserList(userList, groupUUID);
         return "redirect:/gruppen2/details/members/" + groupId;
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @GetMapping("/details/changeMetadata/{id}")
+    public String changeMetadata(KeycloakAuthenticationToken token, Model model, @PathVariable("id") String groupId) {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+        model.addAttribute("account", account);
+        UUID parentId = group.getParent();
+        Group parent = new Group();
+        if (!group.getMembers().contains(user)) {
+            if (group.getVisibility() == Visibility.PRIVATE) {
+                return "privateGroupNoMember";
+            }
+            model.addAttribute("group", group);
+            model.addAttribute("parentId", parentId);
+            model.addAttribute("parent", parent);
+            return "detailsNoMember";
+        }
+        model.addAttribute("title", group.getTitle());
+        model.addAttribute("description", group.getDescription());
+        model.addAttribute("admin", Role.ADMIN);
+        model.addAttribute("roles", group.getRoles());
+        model.addAttribute("groupId", group.getId());
+        model.addAttribute("user", user);
+        return "changeMetadata";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @PostMapping("/details/changeMetadata")
+    public String pChangeMetadata(KeycloakAuthenticationToken token,
+                                  @RequestParam("title") String title,
+                                  @RequestParam("description") String description,
+                                  @RequestParam("groupId") String groupId) throws EventException {
+
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        controllerService.updateTitle(account, UUID.fromString(groupId), title);
+        controllerService.updateDescription(account, UUID.fromString(groupId), description);
+
+        return "redirect:/gruppen2/details/" + groupId;
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
