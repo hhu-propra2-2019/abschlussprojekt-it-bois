@@ -1,17 +1,8 @@
 package mops.gruppen2.domain.event;
 
-import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.User;
-import mops.gruppen2.domain.exception.EventException;
-import mops.gruppen2.domain.exception.UserAlreadyExistsException;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 class AddUserEventTest {
 
-    @Test
+    /*@Test
     void userAlreadyExistExeption() throws EventException {
         Group group = new Group();
         User user = new User("user1", "Stein", "Speck", "@sdasd");
@@ -26,7 +17,7 @@ class AddUserEventTest {
                 event2.apply(group)
         );
         assertThat(group.getMembers().size()).isEqualTo(2);
-    }
+    }*/
 
 
 }

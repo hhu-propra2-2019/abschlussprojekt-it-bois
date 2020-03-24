@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,10 +35,10 @@ public class GroupService {
      * @param groupIds Liste an IDs
      * @return Liste an Events
      */
-    public List<Event> getGroupEvents(List<Long> groupIds) {
+    public List<Event> getGroupEvents(List<UUID> groupIds) {
         List<EventDTO> eventDTOS = new ArrayList<>();
-        for (Long groupId : groupIds) {
-            eventDTOS.addAll(eventRepository.findEventDTOByGroup_id(groupId));
+        for (UUID groupId : groupIds) {
+            eventDTOS.addAll(eventRepository.findEventDTOByGroup_id(groupId.toString()));
         }
         return eventService.translateEventDTOs(eventDTOS);
     }
@@ -51,7 +52,7 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     public List<Group> projectEventList(List<Event> events) throws EventException {
-        Map<Long, Group> groupMap = new HashMap<>();
+        Map<UUID, Group> groupMap = new HashMap<>();
 
         events.parallelStream()
               .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
@@ -59,7 +60,7 @@ public class GroupService {
         return new ArrayList<>(groupMap.values());
     }
 
-    private Group getOrCreateGroup(Map<Long, Group> groups, long groupId) {
+    private Group getOrCreateGroup(Map<UUID, Group> groups, UUID groupId) {
         if (!groups.containsKey(groupId)) {
             groups.put(groupId, new Group());
         }
@@ -81,7 +82,7 @@ public class GroupService {
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
         List<Group> visibleGroups = projectEventList(createEvents);
 
-        List<Long> userGroupIds = eventRepository.findGroup_idsWhereUser_id(userId);
+        List<UUID> userGroupIds = eventService.findGroupIdsByUser(userId);
 
         return visibleGroups.parallelStream()
                             .filter(group -> group.getType() != null)
@@ -98,6 +99,7 @@ public class GroupService {
         List<Group> visibleGroups = projectEventList(createEvents);
 
         return visibleGroups.parallelStream()
+                            .filter(group -> group.getType() != null)
                             .filter(group -> group.getType() == GroupType.LECTURE)
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
@@ -120,5 +122,4 @@ public class GroupService {
                                         group.getDescription().toLowerCase().contains(search.toLowerCase()))
                 .collect(Collectors.toList());
     }
-
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 //Hallo
 @Service
@@ -17,16 +18,18 @@ public class UserService {
 
     private final EventRepository eventRepository;
     private final GroupService groupService;
+    private final EventService eventService;
 
-    public UserService(EventRepository eventRepository, GroupService groupService) {
+    public UserService(EventRepository eventRepository, GroupService groupService, EventService eventService) {
         this.eventRepository = eventRepository;
         this.groupService = groupService;
+        this.eventService = eventService;
     }
 
     //Test nötig??
 
     public List<Group> getUserGroups(User user) throws EventException {
-        List<Long> groupIds = eventRepository.findGroup_idsWhereUser_id(user.getId());
+        List<UUID> groupIds = eventService.findGroupIdsByUser(user.getId());
         List<Event> events = groupService.getGroupEvents(groupIds);
         List<Group> groups = groupService.projectEventList(events);
         List<Group> newGroups = new ArrayList<>();
@@ -38,8 +41,8 @@ public class UserService {
         return newGroups;
     }
 
-    public Group getGroupById(Long groupId) throws EventException {
-        List<Long> groupIds = new ArrayList<>();
+    public Group getGroupById(UUID groupId) throws EventException {
+        List<UUID> groupIds = new ArrayList<>();
         groupIds.add(groupId);
 
         try {

@@ -10,13 +10,14 @@ import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.service.APIFormatterService;
 import mops.gruppen2.service.EventService;
 import mops.gruppen2.service.GroupService;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Ein Beispiel für eine API mit Swagger.
@@ -34,7 +35,7 @@ public class APIController {
     }
 
     @GetMapping("/updateGroups/{status}")
-    @Secured("ROLE_api_user")
+    //@Secured("ROLE_api_user")
     @ApiOperation("Gibt alle Gruppen zurück in denen sich etwas geändert hat")
     public GroupRequestWrapper updateGroup(@ApiParam("Letzter Status des Anfragestellers") @PathVariable Long status) throws EventException {
         List<Event> events = eventService.getNewEvents(status);
@@ -43,17 +44,19 @@ public class APIController {
     }
 
     @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
-    @Secured("ROLE_api_user")
+    //@Secured("ROLE_api_user")
     @ApiOperation("Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
-    public List<Long> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) {
-        return eventService.getGroupsOfUser(teilnehmer);
+    public List<String> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) {
+        return eventService.findGroupIdsByUser(teilnehmer).stream()
+                           .map(UUID::toString)
+                           .collect(Collectors.toList());
     }
 
     @GetMapping("/getGroup/{groupId}")
-    @Secured("ROLE_api_user")
+    //@Secured("ROLE_api_user")
     @ApiOperation("Gibt die Gruppe mit der als Parameter mitgegebenden groupId zurück")
-    public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable Long groupId) throws EventException {
-        List<Event> eventList = eventService.getEventsOfGroup(groupId);
+    public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable String groupId) throws EventException {
+        List<Event> eventList = eventService.getEventsOfGroup(UUID.fromString(groupId));
         List<Group> groups = groupService.projectEventList(eventList);
 
         return groups.get(0);

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -45,7 +47,7 @@ public class EventService {
             e.printStackTrace();
         }
 
-        return new EventDTO(null, event.getGroupId(), event.getUserId(), getEventType(event), payload);
+        return new EventDTO(null, event.getGroupId().toString(), event.getUserId(), getEventType(event), payload);
     }
 
     private String getEventType(Event event) {
@@ -60,14 +62,16 @@ public class EventService {
      *
      * @return Long GruppenId
      */
-    public Long checkGroup() {
-        Long maxGroupID = eventStore.getMaxGroupID();
+    public UUID checkGroup() {
+        return UUID.randomUUID();
+
+        /*Long maxGroupID = eventStore.getMaxGroupID();
 
         if (maxGroupID == null) {
             return 1L;
         }
 
-        return maxGroupID + 1;
+        return maxGroupID + 1;*/
     }
 
     /**
@@ -77,7 +81,7 @@ public class EventService {
      * @return Liste von neueren Events
      */
     public List<Event> getNewEvents(Long status) {
-        List<Long> groupIdsThatChanged = eventStore.findNewEventSinceStatus(status);
+        List<String> groupIdsThatChanged = eventStore.findNewEventSinceStatus(status);
 
         List<EventDTO> groupEventDTOS = eventStore.findAllEventsOfGroups(groupIdsThatChanged);
         return translateEventDTOs(groupEventDTOS);
@@ -117,13 +121,19 @@ public class EventService {
         return eventStore.getHighesEvent_ID();
     }
 
-    public List<Long> getGroupsOfUser(String userID) {
-        return eventStore.findGroup_idsWhereUser_id(userID);
+    public List<Event> getEventsOfGroup(UUID groupId) {
+        List<EventDTO> eventDTOList = eventStore.findEventDTOByGroup_id(groupId.toString());
+        return translateEventDTOs(eventDTOList);
     }
 
-    public List<Event> getEventsOfGroup(Long groupId) {
-        List<EventDTO> eventDTOList = eventStore.findEventDTOByGroup_id(groupId);
-        return translateEventDTOs(eventDTOList);
+    public List<UUID> findGroupIdsByUser(String userId) {
+        List<String> groupIDs = eventStore.findGroup_idsWhereUser_id(userId);
+
+        System.out.println(groupIDs);
+
+        return groupIDs.stream()
+                       .map(UUID::fromString)
+                       .collect(Collectors.toList());
     }
 
 }
