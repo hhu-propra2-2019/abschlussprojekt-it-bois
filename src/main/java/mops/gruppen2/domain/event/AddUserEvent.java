@@ -10,6 +10,8 @@ import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupFullException;
 import mops.gruppen2.domain.exception.UserAlreadyExistsException;
 
+import java.util.UUID;
+
 /**
  * Fügt einen einzelnen Nutzer einer Gruppe hinzu.
  */
@@ -22,7 +24,7 @@ public class AddUserEvent extends Event {
     private String familyname;
     private String email;
 
-    public AddUserEvent(Long groupId, String userId, String givenname, String familyname, String email) {
+    public AddUserEvent(UUID groupId, String userId, String givenname, String familyname, String email) {
         super(groupId, userId);
         this.givenname = givenname;
         this.familyname = familyname;
@@ -30,14 +32,14 @@ public class AddUserEvent extends Event {
     }
 
     @Override
-    public void applyEvent(Group group) throws EventException {
+    protected void applyEvent(Group group) throws EventException {
         User user = new User(this.userId, this.givenname, this.familyname, this.email);
 
         if (group.getMembers().contains(user)) {
             throw new UserAlreadyExistsException(this.getClass().toString());
         }
 
-        if (group.getMembers().size() == group.getUserMaximum()){
+        if (group.getMembers().size() == group.getUserMaximum()) {
             throw new GroupFullException(this.getClass().toString());
         }
 

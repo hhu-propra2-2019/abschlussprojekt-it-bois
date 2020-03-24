@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.exception.NoValueException;
 
+import java.util.UUID;
+
 /**
  * Ändert nur die Gruppenbeschreibung.
  */
@@ -16,13 +18,13 @@ public class UpdateGroupDescriptionEvent extends Event {
 
     private String newGroupDescription;
 
-    public UpdateGroupDescriptionEvent(Long groupId, String userId, String newGroupDescription) {
+    public UpdateGroupDescriptionEvent(UUID groupId, String userId, String newGroupDescription) {
         super(groupId, userId);
         this.newGroupDescription = newGroupDescription;
     }
 
     @Override
-    public void applyEvent(Group group) {
+    protected void applyEvent(Group group) {
         if (this.newGroupDescription.isEmpty()) {
             throw new NoValueException(this.getClass().toString());
         }
