@@ -1,7 +1,7 @@
 [[section-solution-strategy]]
 == Lösungsstrategie
 
-=== 4.1 Einstieg in die Lösungsstrategie
+=== Einstieg in die Lösungsstrategie
 
 [cols="1,2" options="header"]
 |===
@@ -13,7 +13,7 @@
 |Einfache Anbindung an andere Komponenten des MOPS-Moduls |Als Schnittstelle zu anderen Komponenten des MOPS-Moduls werden JSON-Files mit fertigen Gruppenobjekten herausgegeben.
 |===
 
-=== 4.2 Aufbau der Komponente "Gruppenbildung"
+=== Aufbau der Komponente "Gruppenbildung"
 
 Die Komponente Gruppenbildung wird als Teil des MOPS-Moduls der Heinrich-Heine-Universität Düsseldorf implementiert.
 Die Komponente selbst besteht aus folgenden Teilen:
