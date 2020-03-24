@@ -13,3 +13,7 @@ Wir haben heute angefangen unsere Tests zu refactorn.
 Der Einladungslink von privaten Gruppen wird nun auf der Details Seite angezeigt und kann per Button
 kopiert werden. Die Server URL ist bei Verbindung über localhost aber noch fehlerhaft. Um dies zu beheben
 wurde localhost gehardcoded, was unbedingt am Ende entfernt werden sollte.
+
+== Frontend
+Heute haben wir einen Scrollbar für die Mitgliederliste eingefügt und das Styling bei "EditMembers.html" angepasst.
+
