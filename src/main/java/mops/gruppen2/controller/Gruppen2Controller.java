@@ -302,11 +302,9 @@ public class Gruppen2Controller {
         UUID parentId = group.getParent();
         Group parent = new Group();
 
-        /**
-         * Fix this please!!!
-        if (parentId != null) {
+        if (!controllerService.idIsEmpty(parentId)) {
             parent = userService.getGroupById(parentId);
-        }*/
+        }
 
         model.addAttribute("group", group);
         model.addAttribute("parentId", parentId);
