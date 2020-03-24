@@ -35,6 +35,7 @@ public class GroupService {
      * @param groupIds Liste an IDs
      * @return Liste an Events
      */
+    //TODO Das vielleicht in den EventRepoService?
     public List<Event> getGroupEvents(List<UUID> groupIds) {
         List<EventDTO> eventDTOS = new ArrayList<>();
         for (UUID groupId : groupIds) {
@@ -53,8 +54,6 @@ public class GroupService {
      */
     public List<Group> projectEventList(List<Event> events) throws EventException {
         Map<UUID, Group> groupMap = new HashMap<>();
-
-        events.forEach(System.out::println);
 
         events.parallelStream()
               .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
@@ -77,6 +76,7 @@ public class GroupService {
      * @return Liste von projizierten Gruppen
      * @throws EventException Projektionsfehler
      */
+    //TODO Rename
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
@@ -95,6 +95,7 @@ public class GroupService {
 
     }
 
+    //TODO Rename
     public List<Group> getAllLecturesWithVisibilityPublic() throws EventException {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
@@ -103,7 +104,6 @@ public class GroupService {
         List<Group> visibleGroups = projectEventList(createEvents);
 
         return visibleGroups.parallelStream()
-                            .filter(group -> group.getType() != null)
                             .filter(group -> group.getType() == GroupType.LECTURE)
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
@@ -118,12 +118,16 @@ public class GroupService {
      * @return Liste von projizierten Gruppen
      * @throws EventException Projektionsfehler
      */
+    //Todo Rename
     public List<Group> findGroupWith(String search, Account account) throws EventException {
+        if (search.isEmpty()) {
+            return getAllGroupWithVisibilityPublic(account.getName());
+        }
+
         return getAllGroupWithVisibilityPublic(account.getName())
                 .parallelStream()
-                .filter(group ->
-                                group.getTitle().toLowerCase().contains(search.toLowerCase()) ||
-                                        group.getDescription().toLowerCase().contains(search.toLowerCase()))
+                .filter(group -> group.getTitle().toLowerCase().contains(search.toLowerCase())
+                        || group.getDescription().toLowerCase().contains(search.toLowerCase()))
                 .collect(Collectors.toList());
     }
 }

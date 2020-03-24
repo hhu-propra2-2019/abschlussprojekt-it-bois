@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+//TODO: Evtl aufsplitten in EventRepoService und EventService?
 public class EventService {
 
     private final JsonService jsonService;
@@ -28,8 +29,22 @@ public class EventService {
      * @param event Event, welches gespeichert wird
      */
     public void saveEvent(Event event) {
-        EventDTO eventDTO = getDTO(event);
-        eventStore.save(eventDTO);
+        eventStore.save(getDTO(event));
+    }
+
+    public void saveAll(Event... events) {
+        for (Event event : events) {
+            eventStore.save(getDTO(event));
+        }
+    }
+
+    @SafeVarargs
+    public final void saveAll(List<Event>... events) {
+        for (List<Event> eventlist : events) {
+            for (Event event : eventlist) {
+                eventStore.save(getDTO(event));
+            }
+        }
     }
 
     /**
@@ -39,6 +54,7 @@ public class EventService {
      * @param event Event, welches in DTO übersetzt wird
      * @return EventDTO Neues DTO
      */
+    //TODO Rename: getDTOFromEvent?
     public EventDTO getDTO(Event event) {
         String payload = "";
         try {
@@ -58,6 +74,7 @@ public class EventService {
 
     /**
      * Findet alle Events welche ab dem neuen Status hinzugekommen sind.
+     * Sucht alle Events mit event_id > status
      *
      * @param status Die Id des zuletzt gespeicherten Events
      * @return Liste von neueren Events
@@ -75,6 +92,7 @@ public class EventService {
      * @param eventDTOS Liste von DTOs
      * @return Liste von Events
      */
+    //TODO Rename: getEventsFromDTO?
     public List<Event> translateEventDTOs(Iterable<EventDTO> eventDTOS) {
         List<Event> events = new ArrayList<>();
 
@@ -88,7 +106,6 @@ public class EventService {
         return events;
     }
 
-
     public Long getMaxEvent_id() {
         return eventStore.getHighesEvent_ID();
     }
@@ -98,6 +115,7 @@ public class EventService {
         return translateEventDTOs(eventDTOList);
     }
 
+    //TODO: Nur AddUserEvents betrachten
     public List<UUID> findGroupIdsByUser(String userId) {
         List<String> groupIDs = eventStore.findGroup_idsWhereUser_id(userId);
 
