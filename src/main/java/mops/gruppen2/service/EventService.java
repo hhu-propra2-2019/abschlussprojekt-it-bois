@@ -103,16 +103,6 @@ public class EventService {
         return events;
     }
 
-    /**
-     * Sichert eine Liste von Event Objekten mithilfe der Methode saveEvent(Event event).
-     *
-     * @param eventList Liste von Event Objekten
-     */
-    public void saveEventList(List<Event> eventList) {
-        for (Event event : eventList) {
-            saveEvent(event);
-        }
-    }
 
     public Long getMaxEvent_id() {
         return eventStore.getHighesEvent_ID();
