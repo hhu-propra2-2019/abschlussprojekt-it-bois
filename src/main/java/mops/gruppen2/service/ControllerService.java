@@ -189,12 +189,28 @@ public class ControllerService {
         return true;
     }
 
-    private String getVeteranMember(Account account, Group group){
+    private String getVeteranMember(Account account, Group group) {
         List<User> mitglieder = group.getMembers();
-        if (mitglieder.get(0).getId().equals(account.getName())){
+        if (mitglieder.get(0).getId().equals(account.getName())) {
             return mitglieder.get(1).getId();
         }
         return mitglieder.get(0).getId();
+    }
+
+    public UUID getUUID(String id) {
+        if (id == null) {
+            return UUID.fromString("00000000-0000-0000-0000-000000000000");
+        } else {
+            return UUID.fromString(id);
+        }
+    }
+
+    public boolean idIsEmpty(UUID id) {
+        if (id == null) {
+            return true;
+        }
+
+        return id.toString().equals("00000000-0000-0000-0000-000000000000");
     }
 
 }
