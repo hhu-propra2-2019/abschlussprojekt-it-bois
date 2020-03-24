@@ -224,12 +224,12 @@ public class Gruppen2Controller {
                             Model model,
                             @RequestParam(value = "suchbegriff", required = false) String search) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        List<Group> groupse = new ArrayList<>();
+        List<Group> groups = new ArrayList<>();
         if (search != null) {
-            groupse = groupService.findGroupWith(search, account);
+            groups = groupService.findGroupWith(search, account);
         }
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        model.addAttribute("gruppen", groupse);
+        model.addAttribute("gruppen", groups);
         return "search";
     }
 
@@ -302,18 +302,17 @@ public class Gruppen2Controller {
         UUID parentId = group.getParent();
         Group parent = new Group();
 
+        /**
+         * Fix this please!!!
         if (parentId != null) {
             parent = userService.getGroupById(parentId);
-        }
+        }*/
 
-        if (group.getUserMaximum() > group.getMembers().size()) {
-            model.addAttribute("group", group);
-            model.addAttribute("parentId", parentId);
-            model.addAttribute("parent", parent);
+        model.addAttribute("group", group);
+        model.addAttribute("parentId", parentId);
+        model.addAttribute("parent", parent);
 
-            return "detailsNoMember";
-        }
-        throw new GroupNotFoundException(this.getClass().toString());
+        return "detailsNoMember";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})

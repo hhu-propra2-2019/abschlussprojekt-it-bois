@@ -2,6 +2,7 @@ package mops.gruppen2.service;
 
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
@@ -80,9 +81,21 @@ public class GroupService {
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("AddUserEvent")));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteUserEvent")));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
         List<Group> visibleGroups = projectEventList(createEvents);
 
-        List<UUID> userGroupIds = eventService.findGroupIdsByUser(userId);
+        User user = new User(userId, null, null, null);
+        List<UUID> groupIds = eventService.findGroupIdsByUser(user.getId());
+        List<Event> events = getGroupEvents(groupIds);
+        List<Group> groups = projectEventList(events);
+        List<UUID> userGroupIds = new ArrayList<>();
+        for (Group group : groups) {
+            if (group.getMembers().contains(user)) {
+                userGroupIds.add(group.getId());
+            }
+        }
 
         return visibleGroups.parallelStream()
                             .filter(group -> group.getType() != null)
@@ -118,8 +131,8 @@ public class GroupService {
         return getAllGroupWithVisibilityPublic(account.getName())
                 .parallelStream()
                 .filter(group ->
-                                group.getTitle().toLowerCase().contains(search.toLowerCase()) ||
-                                        group.getDescription().toLowerCase().contains(search.toLowerCase()))
+                        group.getTitle().toLowerCase().contains(search.toLowerCase()) ||
+                                group.getDescription().toLowerCase().contains(search.toLowerCase()))
                 .collect(Collectors.toList());
     }
 }
