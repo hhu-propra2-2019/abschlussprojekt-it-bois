@@ -47,6 +47,17 @@
                           th:if='${group.getType() == group.getType().LECTURE}'>Veranstaltung</span>
                     <span class="badge badge-pill badge-info" style="background: mediumorchid"
                           th:text="${parent.getTitle()}">Parent</span>
+
+                    <div class="input-group mb-3" style="margin-top: 10px" th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default" style="background: #52a1eb">Einladungslink:</span>
+                        </div>
+                        <input type="text" class="form-control" th:value="${link}"
+                               aria-label="Recipient's username" aria-describedby="basic-addon2" id="groupLink" style="background: white" readonly>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyLink()">Link kopieren</button>
+                        </div>
+                    </div>
                 </h3>
                 <br>
                 <div class="shadow-sm p-4" style="background: white">
@@ -105,6 +116,16 @@
             </div>
         </div>
     </div>
+    <script>
+        function copyLink() {
+            var copyText = document.getElementById("groupLink");
+
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+
+            document.execCommand("copy");
+        }
+    </script>
 </main>
 </body>
 </html>
