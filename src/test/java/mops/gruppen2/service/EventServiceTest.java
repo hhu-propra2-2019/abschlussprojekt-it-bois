@@ -63,29 +63,15 @@ class EventServiceTest {
     }
 
     @Test
-    void getDTOPublicTest() {
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(eventService.checkGroup(), "test", null, GroupType.LECTURE, Visibility.PUBLIC, null);
-        EventDTO eventDTO = eventService.getDTO(createGroupEvent);
-        assertTrue(eventDTO.isVisibility());
-    }
-
-    @Test
-    void getDTOPrivateTest() {
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(10L, "hi",null, GroupType.SIMPLE, Visibility.PRIVATE, 20L);
-        EventDTO eventDTO = eventService.getDTO(createGroupEvent);
-        assertFalse(eventDTO.isVisibility());
-    }
-
-    @Test
     void translateEventDTOsTest() {
-        EventDTO eventDTO1 = new EventDTO(1L,1L, "killerbert", "test1JSON", true);
-        EventDTO eventDTO2 = new EventDTO(2L,2L,"jens","test2JSON",false);
+        EventDTO eventDTO1 = new EventDTO(1L,1L, "killerbert", "CreateGroupEvent", "{\"type\":\"CreateGroupEvent\",\"groupId\":1,\"userId\":\"orga\",\"groupVisibility\":\"PUBLIC\",\"groupParent\":null,\"groupType\":\"SIMPLE\",\"groupUserMaximum\":2}");
+        EventDTO eventDTO2 = new EventDTO(2L,2L,"jens","AddUserEvent","{\"type\":\"AddUserEvent\",\"groupId\":1,\"userId\":\"orga\",\"givenname\":\"orga\",\"familyname\":\"orga\",\"email\":\"blorga@orga.org\"}");
         List<EventDTO> eventDTOS1 = new ArrayList<>();
         eventDTOS1.add(eventDTO1);
         eventDTOS1.add(eventDTO2);
         Iterable<EventDTO> eventDTOS2 = eventDTOS1;
         List<Event> events = eventService.translateEventDTOs(eventDTOS2);
-      //  assertEquals(events.get(1),);
+        assertTrue(events.get(0).getClass().isInstance(CreateGroupEvent.class));
     }
 
 }
