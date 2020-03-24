@@ -24,7 +24,7 @@ public class UpdateGroupDescriptionEvent extends Event {
     }
 
     @Override
-    public void applyEvent(Group group) {
+    protected void applyEvent(Group group) {
         if (this.newGroupDescription.isEmpty()) {
             throw new NoValueException(this.getClass().toString());
         }
