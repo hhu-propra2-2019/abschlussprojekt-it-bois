@@ -97,29 +97,8 @@ public class WebController {
                               @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        List<User> userList = new ArrayList<>();
-        if (userMaximum == null) {
-            userMaximum = 100000L;
-        }
-        if (!file.isEmpty()) {
-            try {
-                userList = CsvService.read(file.getInputStream());
-                if (userList.size() > userMaximum) {
-                    userMaximum = (long) userList.size() + userMaximum;
-                }
-            } catch (UnrecognizedPropertyException | CharConversionException ex) {
-                logger.warn("File konnte nicht gelesen werden");
-                throw new WrongFileException(file.getOriginalFilename());
-            }
-        }
-        visibility = visibility == null;
-        lecture = lecture != null;
-        maxInfiniteUsers = maxInfiniteUsers != null;
-
         UUID parentUUID = controllerService.getUUID(parent);
-
-        controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID, userList);
-
+        controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID, file);
         return "redirect:/gruppen2/";
     }
 
