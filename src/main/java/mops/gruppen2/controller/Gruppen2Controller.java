@@ -6,10 +6,7 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.exception.EventException;
-import mops.gruppen2.domain.exception.GroupNotFoundException;
-import mops.gruppen2.domain.exception.WrongFileException;
-import mops.gruppen2.domain.exception.NoAdminAfterActionException;
+import mops.gruppen2.domain.exception.*;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.CsvService;
@@ -34,8 +31,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import java.io.CharConversionException;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -249,9 +244,11 @@ public class Gruppen2Controller {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(groupId);
         if (group.getMembers().contains(user)) {
-            return "error"; //hier soll eigentlich auf die bereits beigetretene Gruppe weitergeleitet werden
+            throw new UserAlreadyExistsException("Du bist bereits in dieser Gruppe.");
         }
-        if (group.getUserMaximum() < group.getMembers().size()) return "error";
+        if (group.getUserMaximum() < group.getMembers().size()) {
+            throw new GroupFullException("Du kannst der Gruppe daher leider nicht beitreten.");
+        }
         controllerService.addUser(account, groupId);
         return "redirect:/gruppen2/";
     }
