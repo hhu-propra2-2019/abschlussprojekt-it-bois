@@ -25,3 +25,4 @@
 |Konfigurations- und Versionsverwaltung |Verwendung von Github während des gesamten Praktikums.
 |Testwerkzeuge und -prozesse |JUnit 5 für automatisiertes Testing, Checkstyle und Spotbugs für das Prüfen des Quellcodes. Alle Tests, Checkstyle und Spotbugs und die Continuous Integration (lässt Tests der Anwendung laufen) prüfen den Code vor dem Merge in den Master-Branch.
 |Veröffentlichung als Werkzeug der Universität |Die Quelltexte werden nach Abgabe der Lösung der Universität übergeben.
+|===
