@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Gruppendetails</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
+        <ul>
+            <li class="active">
+                <a href="/" th:href="@{/gruppen2}">Gruppen</a>
+            </li>
+            <li th:case="${true}">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
+            </li>
+            <li>
+                <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-9 shadow-sm p-4" style="border: 10px solid aliceblue;  border-radius: 5px; background: aliceblue">
+                <h1 style="color: black; font-weight: bold" th:text="${group.getTitle()}"></h1>
+                <h3>
+                    <span class="badge badge-pill badge-dark" style="background: darkslategray"
+                          th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
+                    <span class="badge badge-pill badge-primary"
+                          th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
+                    <span class="badge badge-pill badge-success" style="background: lightseagreen"
+                          th:if='${group.getType() == group.getType().LECTURE}'>Veranstaltung</span>
+                    <span class="badge badge-pill badge-info" style="background: mediumorchid"
+                          th:text="${parent.getTitle()}">Parent</span>
+                    <div class="input-group mb-3" style="margin-top: 10px" th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default" style="background: #52a1eb">Einladungslink:</span>
+                        </div>
+                        <input type="text" class="form-control" th:value="${link}"
+                               aria-label="Recipient's username" aria-describedby="basic-addon2" id="groupLink" style="background: white" readonly>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyLink()">Link kopieren</button>
+                        </div>
+                    </div>
+                </h3>
+                <br>
+                <div class="shadow-sm p-4" style="background: white">
+                    <p style="overflow-wrap: break-word" th:text="${group.getDescription()}"></p>
+                </div>
+                <br>
+                <div class="text-right btn-toolbar" role="toolbar" style="float: right">
+                    <button class="btn btn-primary"
+                            style="background: dodgerblue; border: none; margin: 5px">
+                        <a style="color: white" th:href="@{/gruppen2}">Zurück</a>
+                    </button>
+                    <form action="/gruppen2/leaveGroup" method="post">
+                        <button class="btn btn-danger" style="border-style: none; margin: 5px"
+                                th:name="group_id" th:value="${group.getId()}"
+                                type="submit">Gruppe verlassen
+                        </button>
+                    </form>
+                    <form action="/gruppen2/deleteGroup" method="post">
+                        <button class="btn btn-danger" style="border-style: none; margin: 5px"
+                                th:name="group_id" th:value="${group.getId()}" th:if="${group.getRoles().get(user.getId()) == admin}"
+                                type="submit">Gruppe löschen
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-3" style="white-space: nowrap">
+                <div style="display: inline-block; margin: 0">
+                    <h2>Mitglieder</h2>
+                    <div>
+                        <h4>
+                            <a th:text="${group.getMembers().size()}"></a>
+                            <a>von maximal</a>
+                            <a th:text="${group.getUserMaximum()}"></a>
+                            <a>Benutzern.</a>
+                        </h4>
+                    </div>
+                    <div th:if="${group.getRoles().get(user.getId()) == admin}">
+                        <form method="get"
+                              th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
+                            <button class="btn btn-secondary" style="background: slategrey; float: left">Mitglieder bearbeiten</button>
+                        </form>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                <div>
+                    <ul class="list-group-flush" style="background: slategrey"
+                        th:each="member : ${group.getMembers()}">
+                        <li class="list-group-item" style="background: aliceblue">
+                            <span th:text="${member.getId()}"></span>
+                            <span class="badge badge-success"
+                                  th:if='${group.getRoles().get(member.getId()) == admin}'>admin</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function copyLink() {
+            var copyText = document.getElementById("groupLink");
+
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+
+            document.execCommand("copy");
+        }
+    </script>
+</main>
+</body>
+</html>
