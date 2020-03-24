@@ -17,8 +17,6 @@ import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.KeyCloakService;
 import mops.gruppen2.service.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.security.RolesAllowed;
 import java.io.CharConversionException;
 import java.io.IOException;
@@ -45,16 +42,12 @@ public class WebController {
     private final GroupService groupService;
     private final UserService userService;
     private final ControllerService controllerService;
-    private final Gruppen2Config gruppen2Config;
-    private final Logger logger = LoggerFactory.getLogger("Gruppen2ControllerLogger");
-    ;
 
-    public WebController(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, Gruppen2Config gruppen2Config) {
+    public WebController(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService) {
         this.keyCloakService = keyCloakService;
         this.groupService = groupService;
         this.userService = userService;
         this.controllerService = controllerService;
-        this.gruppen2Config = gruppen2Config;
     }
 
     /**
