@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <title>Gruppendetails</title>
     <th:block th:fragment="headcontent">
-        <!-- Links, Skripts, Styles hier einfügen! -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </th:block>
 </head>
 <body>
@@ -35,8 +35,7 @@
                 <div class="row">
                     <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word" th:text="${group.getTitle()}"></h1>
                     <a th:href="@{/gruppen2/details/changeMetadata/{id}(id=${group.getId()})}"
-                       class="btn btn-info btn-lg" th:if="${roles.get(user.getId()) == admin}">Ändern
-                    </a>
+                       class="fa fa-pencil" style="font-size:30px" th:if="${roles.get(user.getId()) == admin}"></a>
                 </div>
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"
