@@ -179,12 +179,12 @@ public class Gruppen2Controller {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/details/changeMetadata/{id}")
-    public String changeMetadata(KeycloakAuthenticationToken token, Model model, @PathVariable("id") Long groupId) {
+    public String changeMetadata(KeycloakAuthenticationToken token, Model model, @PathVariable("id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        Group group = userService.getGroupById(groupId);
+        Group group = userService.getGroupById(UUID.fromString(groupId));
         model.addAttribute("account", account);
-        Long parentId = group.getParent();
+        UUID parentId = group.getParent();
         Group parent = new Group();
         if (!group.getMembers().contains(user)) {
             if (group.getVisibility() == Visibility.PRIVATE) {
@@ -209,11 +209,11 @@ public class Gruppen2Controller {
     public String pChangeMetadata(KeycloakAuthenticationToken token,
                                   @RequestParam("title") String title,
                                   @RequestParam("description") String description,
-                                  @RequestParam("groupId") Long groupId) throws EventException {
+                                  @RequestParam("groupId") String groupId) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        controllerService.updateTitle(account, groupId, title);
-        controllerService.updateDescription(account, groupId, description);
+        controllerService.updateTitle(account, UUID.fromString(groupId), title);
+        controllerService.updateDescription(account, UUID.fromString(groupId), description);
 
         return "redirect:/gruppen2/details/" + groupId;
     }
