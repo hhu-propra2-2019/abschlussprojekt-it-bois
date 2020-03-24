@@ -21,7 +21,7 @@ public class DeleteUserEvent extends Event {
     }
 
     @Override
-    public void applyEvent(Group group) throws EventException {
+    protected void applyEvent(Group group) throws EventException {
         for (User user : group.getMembers()) {
             if (user.getId().equals(this.userId)) {
                 group.getMembers().remove(user);
