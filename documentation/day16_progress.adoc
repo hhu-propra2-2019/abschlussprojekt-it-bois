@@ -1,0 +1,4 @@
+= Tag 16
+
+== Documentation
+Heute haben wir an der arc42-Dokumentation weitergearbeitet und die ersten Abschnitte fertiggestellt.
