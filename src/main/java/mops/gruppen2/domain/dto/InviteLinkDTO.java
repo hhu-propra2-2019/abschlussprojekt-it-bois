@@ -12,6 +12,6 @@ public class InviteLinkDTO {
 
     @Id
     Long link_id;
-    Long group_id;
+    String group_id;
     String invite_link;
 }

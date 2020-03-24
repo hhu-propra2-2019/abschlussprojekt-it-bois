@@ -7,6 +7,8 @@ import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 
+import java.util.UUID;
+
 /**
  * Entfernt ein einzelnes Mitglied einer Gruppe.
  */
@@ -14,7 +16,7 @@ import mops.gruppen2.domain.exception.UserNotFoundException;
 @NoArgsConstructor // For Jackson
 public class DeleteUserEvent extends Event {
 
-    public DeleteUserEvent(Long groupId, String userId) {
+    public DeleteUserEvent(UUID groupId, String userId) {
         super(groupId, userId);
     }
 
