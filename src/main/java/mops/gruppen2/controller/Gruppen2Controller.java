@@ -427,4 +427,9 @@ public class Gruppen2Controller {
         }
         return "redirect:/gruppen2/details/members/" + groupId;
     }
+
+    @GetMapping("*")
+    public String defaultLink() throws EventException {
+        throw new PageNotFoundException("\uD83D\uDE41");
+    }
 }
