@@ -9,6 +9,8 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupIdMismatchException;
 
+import java.util.UUID;
+
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -29,7 +31,7 @@ import mops.gruppen2.domain.exception.GroupIdMismatchException;
 @AllArgsConstructor
 public abstract class Event {
 
-    protected Long groupId;
+    protected UUID groupId;
     protected String userId;
 
     public void apply(Group group) throws EventException {
@@ -39,7 +41,7 @@ public abstract class Event {
 
     protected abstract void applyEvent(Group group) throws EventException;
 
-    private void checkGroupIdMatch(Long groupId) {
+    private void checkGroupIdMatch(UUID groupId) {
         if (groupId == null || this.groupId.equals(groupId)) {
             return;
         }

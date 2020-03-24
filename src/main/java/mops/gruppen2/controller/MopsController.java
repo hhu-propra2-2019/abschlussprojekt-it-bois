@@ -17,10 +17,10 @@ public class MopsController {
     public String logout(HttpServletRequest request) throws Exception {
         request.logout();
         return "redirect:/gruppen2/";
-    }
+    }/*
 
     @GetMapping("*")
     public String defaultLink() {
         return "error";
-    }
+    }*/
 }

@@ -12,25 +12,22 @@ import java.util.List;
 public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
     @Query("select distinct group_id from event where user_id =:id")
-    List<Long> findGroup_idsWhereUser_id(@Param("id") String userId);
+    List<String> findGroup_idsWhereUser_id(@Param("id") String userId);
 
     @Query("select * from event where group_id =:id")
-    List<EventDTO> findEventDTOByGroup_id(@Param("id") Long groupId);
+    List<EventDTO> findEventDTOByGroup_id(@Param("id") String groupId);
 
     //@Query("SELECT * FROM event WHERE event_id > ?#{[0]}")
     //Iterable<EventDTO> findNewEventSinceStatus(@Param("status") Long status);
 
     @Query("SELECT DISTINCT group_id FROM event WHERE event_id > :status")
-    List<Long> findNewEventSinceStatus(@Param("status") Long status);
+    List<String> findNewEventSinceStatus(@Param("status") Long status);
 
     @Query("SELECT * FROM event WHERE group_id IN (:groupIds) ")
-    List<EventDTO> findAllEventsOfGroups(@Param("groupIds") List<Long> groupIds);
+    List<EventDTO> findAllEventsOfGroups(@Param("groupIds") List<String> groupIds);
 
     @Query("SELECT MAX(event_id) FROM event")
     Long getHighesEvent_ID();
-
-    @Query("SELECT MAX(group_id) FROM event")
-    Long getMaxGroupID();
 
     @Query("SELECT * FROM event WHERE event_type = :type")
     List<EventDTO> findAllEventsByType(@Param("type") String type);
