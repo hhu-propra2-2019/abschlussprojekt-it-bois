@@ -30,8 +30,8 @@
 </header>
 <main th:fragment="bodycontent">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-9 shadow-sm p-4" style="border: 10px solid aliceblue;  border-radius: 5px; background: aliceblue">
+        <div>
+            <div class="shadow-sm p-4 col-8" style="border: 10px solid aliceblue; display: inline-block; border-radius: 5px; background: aliceblue">
                 <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word" th:text="${group.getTitle()}"></h1>
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"
@@ -67,28 +67,27 @@
                     </form>
                 </div>
             </div>
-            <div class="col-3" style="white-space: nowrap">
-                <div style="display: inline-block; margin: 0">
-                    <h2>Mitglieder</h2>
-                    <div th:switch="${group.getUserMaximum() != 100000}">
-                        <h4 th:case="${true}">
-                            <a th:text="${group.getMembers().size()}"></a>
-                            <a>von maximal</a>
-                            <a th:text="${group.getUserMaximum()}"></a>
-                            <a>Benutzern.</a>
-                        </h4>
-                        <h4 th:case="${false}"> unbegrenzte Teilnehmeranzahl</h4>
-                    </div>
-                    <div th:if="${group.getRoles().get(user.getId()) == admin}">
-                        <form method="get"
-                              th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
-                            <button class="btn btn-secondary" style="background: slategrey; float: left">Mitglieder bearbeiten</button>
-                        </form>
-                    </div>
+            <div class="col-4" style="white-space: nowrap; float: right; background: white; display: inline-block; margin-bottom: 100px; margin-top: -8px">
+                <h2>Mitglieder</h2>
+                <div th:switch="${group.getUserMaximum() != 100000}">
+                    <h4 th:case="${true}">
+                        <a th:text="${group.getMembers().size()}"></a>
+                        <a>von maximal</a>
+                        <a th:text="${group.getUserMaximum()}"></a>
+                        <a>Benutzern.</a>
+                    </h4>
+                    <h4 th:case="${false}"> unbegrenzte Teilnehmeranzahl</h4>
+                </div>
+                <div th:if="${group.getRoles().get(user.getId()) == admin}">
+                    <form method="get"
+                          th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
+                        <button class="btn btn-secondary" style="background: slategrey; float: left">Mitglieder bearbeiten</button>
+                    </form>
                     <br>
                     <br>
                 </div>
-                <div>
+                <div style="overflow-y: scroll;
+                     height:60vh">
                     <ul class="list-group-flush" style="background: slategrey"
                         th:each="member : ${group.getMembers()}">
                         <li class="list-group-item" style="background: aliceblue">
