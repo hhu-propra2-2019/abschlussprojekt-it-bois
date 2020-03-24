@@ -13,3 +13,9 @@ Außerdem haben wir einige Changes am Styling gemacht, damit alles konsistenter 
 Heute haben wir uns darum gekümmert eine Veranstaltung mit einer csv Datei zu erstellen.
 Außerdem kann jetzt ein orga auch in der gruppenübersicht -> mitgliedglider bearbeiten über eine csv-datei mitglieder hinzufügen.
 Wenn man die CSV-Datei auswählt wird nun ihr Name auf der website angezeigt.
+
+== Eventservice
+Checkgroup Methode auf Query umgestellt(performence)
+
+== ErrorHandling
+Errorpage angepasst und als default gesetzt. Außerdem die Exceptions überarbeitet, deren Message wird nun auch auf der Errorpage angezeigt.
