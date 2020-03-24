@@ -1,15 +1,45 @@
+
 [[section-introduction-and-goals]]
 ==	Einführung und Ziele
 
 === Aufgabenstellung
 
+
+==== Was ist das Modul "Gruppenbildung"?
+
+* Die Gruppenbildung dient dem Erstellen und Verwalten von Gruppen im Kontext zu Vorlesungen und sonstigen Veranstaltungen im Rahmen der Heinrich-Heine-Universität.
+* Die Gruppenbildung kann entweder zur Bildung von Gruppen in Verbindung mit einer Vorlesung, einem Kurs, oder einer Lerngruppe oder unabhängig von Vorlesungen zur Bildung einer anderen Zusammenkunft von Studenten außerhalb von Veranstaltungen der Universität verwendet werden.
+* Das Modul kann sowohl von Studenten zur Verwaltung der Teilnehmer einer Vorlesung o.ä., als auch von Studenten zum Bilden von Lerngruppen verwendet werden.
+
+
+==== Wesentliche Features
+
+* Funktionsfähige Software zur Gruppenbildung im Zusammenhang mit oder unabhängig von einer Vorlesung
+* Implementierung verschiedener Rollen mit verschiedenen Funktionen zur Separation von Studenten und Organisatoren
+* Eignung für den täglichen Gebrauch durch viele Benutzer
+* Gute Performance und intuitives Interface
+* Einfache und zuverlässige Verwaltung der Daten über einen langen Zeitraum
+
+
 === Qualitätsziele
+
+[cols="1,2" options="header"]
+|===
+|Qualitätsziel |Motivation und Erläuterung
+|Effizienz und Zuverlässigkeit |Die Softwware wird in Zukunft von vielen Usern gleichzeitig verwendet werden. Dementsprechend spielt Effizienz und Zuverlässigkeit eine große Rolle.
+|Attraktivität |Da die Software ein Teil des MOPS-Moduls ist, das von Studenten täglich verwendet werden soll, wird Wert auf ein attraktives und intuitives Interface gelegt.
+|Wartbarkeit und Analysierbarkeit |Da die Software nach dem Praktikum in fremde Hände gegeben wird, sollte sie für außenstehende gut wartbar sein, ohne viel Zeit aufwenden zu müssen, bis man den Code verstanden hat. Dementsprechend sollte der Code sinnvoll auskommentiert sein. Außerdem soll die Benennung der Variablen, Klassen und Methoden gut verständlich sein.
+|Änderbarkeit |Da die Software Teil eines Praktikums ist und ggf. am Endprodukt Änderungen vorgenommen werden müssen, sollte der Code zugänglich für Änderungen sein. Dies schließt direkt an die Verständlichkeit des Codes an (s.o.).
+|===
+
 
 === Stakeholder
 
 [cols="1,1,2" options="header"]
 |===
 |Rolle |Kontakt |Erwartungshaltung
-| _<Rolle-1>_ | _<Kontakt-1>_ | _<Erwartung-1>_
-| _<Rolle-2>_ | _<Kontakt-2>_ | _<Erwartung-2>_ 
+|Entwicklerteam IT-Bois |Entwickler der Software |Möchte Einsicht in Softwareentwicklung im Team und in der Praxis erhalten, Fähigkeiten im Bezug auf Entwicklung einer Software weiterentwickeln, ein gutes Endprodukt für eine gute Benotung im Praktikum abliefern.
+|Jens Bendisposto, Christian Meter, ... |Veranstalter des Praktikums, Bewerter der Software |Möchten ein gutes Gesamtprodukt aus allen Komponenten des MOPS-Moduls erhalten und erwarten demnach eine gute Software als Endprodukt.
+|Studenten |Verwender der Software nach der Fertigstellung |Möchten eine zuverlässige und schnelle Software im Universitätsalltag verwenden, ohne vor Schwierigkeiten in der Bedienung gestellt zu werden.
+|IT-Abteilung der HHU |Möchte nach Übernahme des MOPS-Moduls einen verständlichen, wartbaren Code erhalten, um diesen nach Ende des Praktikums verwalten zu können.
 |===
