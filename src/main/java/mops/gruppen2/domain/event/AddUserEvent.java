@@ -32,14 +32,14 @@ public class AddUserEvent extends Event {
     }
 
     @Override
-    public void applyEvent(Group group) throws EventException {
+    protected void applyEvent(Group group) throws EventException {
         User user = new User(this.userId, this.givenname, this.familyname, this.email);
 
         if (group.getMembers().contains(user)) {
             throw new UserAlreadyExistsException(this.getClass().toString());
         }
 
-        if (group.getMembers().size() == group.getUserMaximum()){
+        if (group.getMembers().size() == group.getUserMaximum()) {
             throw new GroupFullException(this.getClass().toString());
         }
 
