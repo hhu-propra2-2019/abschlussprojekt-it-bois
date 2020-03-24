@@ -165,7 +165,7 @@ public class WebController {
         if (search != null) {
             groupse = groupService.findGroupWith(search, account);
         }
-        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        model.addAttribute("account", account);
         model.addAttribute("gruppen", groupse);
         return "search";
     }
@@ -176,6 +176,7 @@ public class WebController {
                                    Model model,
                                    @PathVariable("id") String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+
         Group group = userService.getGroupById(UUID.fromString(groupId));
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
@@ -215,12 +216,11 @@ public class WebController {
     public String joinGroup(KeycloakAuthenticationToken token,
                             Model model, @RequestParam("id") String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(UUID.fromString(groupId));
         if (group.getMembers().contains(user)) {
-            return "error"; //TODO: hier soll eigentlich auf die bereits beigetretene Gruppe weitergeleitet werden
+            return "redirect:/gruppen2/details/" + groupId; //TODO: hier soll eigentlich auf die bereits beigetretene Gruppe weitergeleitet werden
         }
         if (group.getUserMaximum() < group.getMembers().size()) {
             return "error";
@@ -238,11 +238,9 @@ public class WebController {
         Group group = userService.getGroupById(UUID.fromString(groupId));
         UUID parentId = group.getParent();
         Group parent = new Group();
-
         if (parentId != null) {
             parent = userService.getGroupById(parentId);
         }
-
         if (group.getUserMaximum() > group.getMembers().size()) {
             model.addAttribute("group", group);
             model.addAttribute("parentId", parentId);
@@ -324,8 +322,6 @@ public class WebController {
     public String changeRole(KeycloakAuthenticationToken token,
                              @RequestParam("group_id") String groupId,
                              @RequestParam("user_id") String userId) throws EventException {
-
-
         Account account = keyCloakService.createAccountFromPrincipal(token);
         if (userId.equals(account.getName())) {
             if (controllerService.passIfLastAdmin(account, UUID.fromString(groupId))) {
