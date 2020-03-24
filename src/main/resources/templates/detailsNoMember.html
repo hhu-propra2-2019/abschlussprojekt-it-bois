@@ -12,7 +12,7 @@
 <header>
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
         <ul>
-            <li class="active">
+            <li>
                 <a th:href="@{/gruppen2}" href="/">Gruppen</a>
             </li>
             <li th:case="${true}">
@@ -21,7 +21,7 @@
             <li th:case="${false}">
                 <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
             </li>
-            <li>
+            <li class="active">
                 <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
             </li>
         </ul>
