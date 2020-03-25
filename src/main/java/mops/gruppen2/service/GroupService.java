@@ -11,7 +11,6 @@ import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +86,7 @@ public class GroupService {
 
         sortByGroupType(visibleGroups);
 
-        return visibleGroups.parallelStream()
+        return visibleGroups.stream()
                             .filter(group -> group.getType() != null)
                             .filter(group -> !eventService.userInGroup(group.getId(), userId))
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
@@ -107,7 +106,7 @@ public class GroupService {
 
         List<Group> visibleGroups = projectEventList(createEvents);
 
-        return visibleGroups.parallelStream()
+        return visibleGroups.stream()
                             .filter(group -> group.getType() != null)
                             .filter(group -> group.getType() == GroupType.LECTURE)
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
@@ -130,25 +129,21 @@ public class GroupService {
 
         return getAllGroupWithVisibilityPublic(account.getName())
                 .parallelStream()
-                .filter(group ->
-                                group.getTitle().toLowerCase().contains(search.toLowerCase()) ||
-                                        group.getDescription().toLowerCase().contains(search.toLowerCase()))
+                .filter(group -> group.getTitle().toLowerCase().contains(search.toLowerCase())
+                        || group.getDescription().toLowerCase().contains(search.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
     public void sortByGroupType(List<Group> groups) {
-        groups.sort(new Comparator<Group>() {
-            @Override
-            public int compare(Group g1, Group g2) {
-                if (g1.getType() == GroupType.LECTURE) {
-                    return -1;
-                }
-                if (g2.getType() == GroupType.LECTURE) {
-                    return 0;
-                }
-
-                return 1;
+        groups.sort((g1, g2) -> {
+            if (g1.getType() == GroupType.LECTURE) {
+                return -1;
             }
+            if (g2.getType() == GroupType.LECTURE) {
+                return 0;
+            }
+
+            return 1;
         });
     }
 }
