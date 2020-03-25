@@ -14,11 +14,7 @@ import mops.gruppen2.domain.exception.PageNotFoundException;
 import mops.gruppen2.domain.exception.UserAlreadyExistsException;
 import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
-import mops.gruppen2.service.ControllerService;
-import mops.gruppen2.service.CsvService;
-import mops.gruppen2.service.GroupService;
-import mops.gruppen2.service.KeyCloakService;
-import mops.gruppen2.service.UserService;
+import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,12 +43,14 @@ public class WebController {
     private final GroupService groupService;
     private final UserService userService;
     private final ControllerService controllerService;
+    private final ValidationService validationService;
 
-    public WebController(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService) {
+    public WebController(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, ValidationService validationService) {
         this.keyCloakService = keyCloakService;
         this.groupService = groupService;
         this.userService = userService;
         this.controllerService = controllerService;
+        this.validationService = validationService;
     }
 
     /**
@@ -187,9 +185,10 @@ public class WebController {
                                   @RequestParam("groupId") String groupId) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        controllerService.updateTitle(account, UUID.fromString(groupId), title);
-        controllerService.updateDescription(account, UUID.fromString(groupId), description);
-
+        if(validationService.checkTitleAndDescription(title, description)) {
+            controllerService.updateTitle(account, UUID.fromString(groupId), title);
+            controllerService.updateDescription(account, UUID.fromString(groupId), description);
+        }
         return "redirect:/gruppen2/details/" + groupId;
     }
 
@@ -200,7 +199,7 @@ public class WebController {
                             @RequestParam(value = "suchbegriff", required = false) String search) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<Group> groupse = new ArrayList<>();
-        if (search != null) {
+        if (!validationService.checkSearch(search)) {
             groupse = groupService.findGroupWith(search, account);
         }
         model.addAttribute("account", account);
@@ -216,26 +215,18 @@ public class WebController {
         Group group = userService.getGroupById(UUID.fromString(groupId));
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-
         UUID parentId = group.getParent();
-        Group parent = new Group();
+        String URL = request.getRequestURL().toString();
+        String serverURL = URL.substring(0, URL.indexOf("gruppen2/"));
 
-        if (group.getTitle() == null) {
-            throw new GroupNotFoundException("@details");
-        }
+        validationService.checkGroup(group.getTitle());
+        Group parent = validationService.checkParent(parentId);
 
-        if (!group.getMembers().contains(user)) {
-            if (group.getVisibility() == Visibility.PRIVATE) {
-                return "privateGroupNoMember";
-            }
+        if (!validationService.checkIfUserInGroup(Group group, User user)) {
             model.addAttribute("group", group);
             model.addAttribute("parentId", parentId);
             model.addAttribute("parent", parent);
             return "detailsNoMember";
-        }
-
-        if (!controllerService.idIsEmpty(parentId)) {
-            parent = userService.getGroupById(parentId);
         }
 
         model.addAttribute("parentId", parentId);
@@ -244,10 +235,6 @@ public class WebController {
         model.addAttribute("roles", group.getRoles());
         model.addAttribute("user", user);
         model.addAttribute("admin", Role.ADMIN);
-
-        String URL = request.getRequestURL().toString();
-        String serverURL = URL.substring(0, URL.indexOf("gruppen2/"));
-
         model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + groupId);
 
         return "detailsMember";
@@ -261,14 +248,11 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        if (group.getMembers().contains(user)) {
-            throw new UserAlreadyExistsException("Du bist bereits in dieser Gruppe.");
-        }
-        controllerService.addUser(account, UUID.fromString(groupId));
-        if (group.getUserMaximum() < group.getMembers().size()) {
+        validationService.checkIfUserInGroupJoin(group, user);
+        if (group.getUserMaximum() < group.getMembers().size()+1) {
             throw new GroupFullException("Du kannst der Gruppe daher leider nicht beitreten.");
         }
-        //controllerService.addUser(account, groupId);
+        controllerService.addUser(account, UUID.fromString(groupId));
         return "redirect:/gruppen2/";
     }
 
@@ -280,11 +264,7 @@ public class WebController {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(UUID.fromString(groupId));
         UUID parentId = group.getParent();
-        Group parent = new Group();
-
-        if (!controllerService.idIsEmpty(parentId)) {
-            parent = userService.getGroupById(parentId);
-        }
+        Group parent = validationService.checkParent(parentId);
 
         if (group.getUserMaximum() > group.getMembers().size()) {
             model.addAttribute("group", group);
