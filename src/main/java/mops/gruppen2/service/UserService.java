@@ -5,7 +5,6 @@ import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
-import mops.gruppen2.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,12 +15,10 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    private final EventRepository eventRepository;
     private final GroupService groupService;
     private final EventService eventService;
 
-    public UserService(EventRepository eventRepository, GroupService groupService, EventService eventService) {
-        this.eventRepository = eventRepository;
+    public UserService(GroupService groupService, EventService eventService) {
         this.groupService = groupService;
         this.eventService = eventService;
     }
@@ -49,7 +46,7 @@ public class UserService {
             List<Event> events = groupService.getGroupEvents(groupIds);
             return groupService.projectEventList(events).get(0);
         } catch (IndexOutOfBoundsException e) {
-            throw new GroupNotFoundException(this.getClass().toString());
+            throw new GroupNotFoundException("@UserService");
         }
     }
 }

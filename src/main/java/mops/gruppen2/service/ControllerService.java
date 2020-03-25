@@ -1,5 +1,6 @@
 package mops.gruppen2.service;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -15,9 +16,13 @@ import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.event.UpdateUserMaxEvent;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
+import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.CharConversionException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -71,10 +76,27 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, List<User> users) throws EventException {
+    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
+        List<User> userList = new ArrayList<>();
+        if (userMaximum == null) {
+            userMaximum = 100000L;
+        }
+        if (!file.isEmpty()) {
+            try {
+                userList = CsvService.read(file.getInputStream());
+                if (userList.size() > userMaximum) {
+                    userMaximum = (long) userList.size() + userMaximum;
+                }
+            } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                logger.warning("File konnte nicht gelesen werden");
+                throw new WrongFileException(file.getOriginalFilename());
+            }
+        }
+        visibility = visibility == null;
+        lecture = lecture != null;
+        maxInfiniteUsers = maxInfiniteUsers != null;
         Visibility visibility1;
         UUID groupId = eventService.checkGroup();
-
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
@@ -100,7 +122,7 @@ public class ControllerService {
         updateTitle(account, groupId, title);
         updateDescription(account, groupId, description);
         updateRole(account.getName(), groupId);
-        addUserList(users, groupId);
+        addUserList(userList, groupId);
     }
 
 
