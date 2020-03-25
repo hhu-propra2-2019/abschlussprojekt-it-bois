@@ -86,14 +86,21 @@ public class GroupService {
 
         List<Group> visibleGroups = projectEventList(groupEvents);
 
-        return visibleGroups.parallelStream()
+        sortByGroupType(visibleGroups);
+
+        return visibleGroups.stream()
                             .filter(group -> group.getType() != null)
                             .filter(group -> !eventService.userInGroup(group.getId(), userId))
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
     }
 
-
+    /**
+     * Wird verwendet beim Gruppe erstellen bei der Parent-Auswahl: nur Titel benötigt.
+     *
+     * @return
+     * @throws EventException
+     */
     public List<Group> getAllLecturesWithVisibilityPublic() throws EventException {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
@@ -102,7 +109,7 @@ public class GroupService {
 
         List<Group> visibleGroups = projectEventList(createEvents);
 
-        return visibleGroups.parallelStream()
+        return visibleGroups.stream()
                             .filter(group -> group.getType() == GroupType.LECTURE)
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
@@ -128,5 +135,18 @@ public class GroupService {
                 .filter(group -> group.getTitle().toLowerCase().contains(search.toLowerCase())
                         || group.getDescription().toLowerCase().contains(search.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+    public void sortByGroupType(List<Group> groups) {
+        groups.sort((g1, g2) -> {
+            if (g1.getType() == GroupType.LECTURE) {
+                return -1;
+            }
+            if (g2.getType() == GroupType.LECTURE) {
+                return 0;
+            }
+
+            return 1;
+        });
     }
 }
