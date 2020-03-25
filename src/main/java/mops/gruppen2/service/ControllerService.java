@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static mops.gruppen2.domain.Role.ADMIN;
 
@@ -92,23 +93,16 @@ public class ControllerService {
     }
 
     public void createOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
-        List<User> userList = new ArrayList<>();
-
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
         checkFields(description, title, userMaximum);
 
-        if (!file.isEmpty()) {
-            try {
-                userList = CsvService.read(file.getInputStream());
-                if (userList.size() > userMaximum) {
-                    userMaximum = (long) userList.size() + userMaximum;
-                }
-            } catch (UnrecognizedPropertyException | CharConversionException ex) {
-                logger.warning("File konnte nicht gelesen werden");
-                throw new WrongFileException(file.getOriginalFilename());
-            }
+        List<User> userList = readCsvFile(file);
+
+        if (userList.size() > userMaximum) {
+            userMaximum = (long) userList.size() + 1;
         }
+
         UUID groupId = eventService.checkGroup();
         Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
         GroupType groupType = setGroupType(isLecture);
@@ -150,6 +144,19 @@ public class ControllerService {
         } else {
             return GroupType.SIMPLE;
         }
+    }
+
+    public List<User> readCsvFile(MultipartFile file) throws EventException, IOException {
+        if (!file.isEmpty()) {
+            try {
+                List<User> userList = CsvService.read(file.getInputStream());
+                return userList.stream().distinct().collect(Collectors.toList()); //filters duplicates from list
+            } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                logger.warning("File konnte nicht gelesen werden");
+                throw new WrongFileException(file.getOriginalFilename());
+            }
+        }
+        return new ArrayList<>();
     }
 
     public void addUser(Account account, UUID groupId) {
