@@ -22,4 +22,4 @@ image::quality_tree.png[]
 |7, 8 |Ein Student hat einen Bug in der Software gefunden und diesen der IT-Abteilung gemeldet. Da sich der neue Mitarbeiter der Abteilung schnell in den Code eingefunden hat, kann er den Fehler beheben, ohne viel Zeit zu investieren.
 |7, 8 |Die Leitung der Universität möchte ein neues Feature in das Modul "Gruppenbildung" einfügen, und zwar sollen die Mitglieder nicht mehr über eine CSV-Datei, sondern über ein anderes tabellarisches Datenformat eingefügt werden. Weil es nur wenige Abhängigkeiten im Code gibt, kann das  Feature problemlos eingefügt werden.
 |9 |Eine neue Komponente soll ins MOPS-Modul eingefügt werden. Es soll Gruppen annehmen und die Abgabe von Übungsblättern in diesen Gruppen verwalten. Die Schnittstelle der "Gruppenbildung" ist einfach gehalten, weshalb die Anbindung eines neuen Moduls problemlos funktioniert.
-
+|===
