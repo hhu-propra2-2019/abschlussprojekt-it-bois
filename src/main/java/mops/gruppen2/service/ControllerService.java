@@ -15,6 +15,7 @@ import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.event.UpdateUserMaxEvent;
 import mops.gruppen2.domain.exception.EventException;
+import mops.gruppen2.domain.exception.NoMaximumMemberException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
@@ -78,8 +79,12 @@ public class ControllerService {
 
     public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
         List<User> userList = new ArrayList<>();
-        if (userMaximum == null) {
+        maxInfiniteUsers = maxInfiniteUsers != null;
+        if(maxInfiniteUsers){
             userMaximum = 100000L;
+        }
+        if (userMaximum == null) {
+            throw new NoMaximumMemberException(this.getClass().toString());
         }
         if (!file.isEmpty()) {
             try {
@@ -94,7 +99,6 @@ public class ControllerService {
         }
         visibility = visibility == null;
         lecture = lecture != null;
-        maxInfiniteUsers = maxInfiniteUsers != null;
         Visibility visibility1;
         UUID groupId = eventService.checkGroup();
         if (visibility) {
@@ -108,11 +112,6 @@ public class ControllerService {
             groupType = GroupType.LECTURE;
         } else {
             groupType = GroupType.SIMPLE;
-        }
-
-
-        if(maxInfiniteUsers){
-            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, visibility1, userMaximum);
