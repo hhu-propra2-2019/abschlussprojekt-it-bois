@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <title>Gruppendetails</title>
     <th:block th:fragment="headcontent">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+              rel="stylesheet">
     </th:block>
 </head>
 <body>
@@ -31,11 +32,14 @@
 <main th:fragment="bodycontent">
     <div class="container-fluid">
         <div>
-            <div class="shadow-sm p-4 col-8" style="border: 10px solid aliceblue; display: inline-block; border-radius: 5px; background: aliceblue">
+            <div class="shadow-sm p-4 col-8"
+                 style="border: 10px solid aliceblue; display: inline-block; border-radius: 5px; background: aliceblue">
                 <div class="row">
-                    <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word; width: 95%" th:text="${group.getTitle()}"></h1>
-                    <a th:href="@{/gruppen2/details/changeMetadata/{id}(id=${group.getId()})}"
-                       class="fa fa-pencil" style="font-size:30px; width: 5%"
+                    <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word; width: 95%"
+                        th:text="${group.getTitle()}"></h1>
+                    <a class="fa fa-pencil"
+                       style="font-size:30px; width: 5%"
+                       th:href="@{/gruppen2/details/changeMetadata/{id}(id=${group.getId()})}"
                        th:if="${roles.get(user.getId()) == admin}"></a>
                 </div>
                 <h3>
@@ -48,14 +52,20 @@
                     <span class="badge badge-pill badge-info" style="background: mediumorchid"
                           th:text="${parent.getTitle()}">Parent</span>
 
-                    <div class="input-group mb-3" style="margin-top: 10px" th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
+                    <div class="input-group mb-3" style="margin-top: 10px"
+                         th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="inputGroup-sizing-default" style="background: #52a1eb">Einladungslink:</span>
+                            <span class="input-group-text" id="inputGroup-sizing-default"
+                                  style="background: #52a1eb">Einladungslink:</span>
                         </div>
-                        <input type="text" class="form-control" th:value="${link}"
-                               aria-label="Recipient's username" aria-describedby="basic-addon2" id="groupLink" style="background: white" readonly>
+                        <input aria-describedby="basic-addon2" aria-label="Recipient's username"
+                               class="form-control"
+                               id="groupLink" readonly style="background: white" th:value="${link}"
+                               type="text">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" onclick="copyLink()">Link kopieren</button>
+                            <button class="btn btn-outline-secondary" onclick="copyLink()"
+                                    type="button">Link kopieren
+                            </button>
                         </div>
                     </div>
                 </h3>

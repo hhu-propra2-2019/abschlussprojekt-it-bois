@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="en"
       th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
-      xmlns="http://www.w3.org/1999/html">
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>Gruppenerstellung</title>
@@ -16,10 +17,11 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li class="active">
-                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+                <a href="/" th:href="@{/gruppen2}">Gruppen</a>
             </li>
             <li th:case="${true}">
                 <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
@@ -28,7 +30,7 @@
                 <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
             </li>
             <li>
-                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+                <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
             </li>
         </ul>
     </nav>
@@ -38,13 +40,13 @@
         <div class="row">
             <div class="col-10">
                 <h1>Metadaten ändern</h1>
-                <form method="post" action="/gruppen2/details/changeMetadata">
+                <form action="/gruppen2/details/changeMetadata" method="post">
                     <div class="shadow-sm p-2"
                          style=" border: 10px solid aliceblue; background: aliceblue">
                         <div class="form-group">
                             <label for="title">Titel</label>
                             <input class="form-control" id="title" required
-                                   type="text" th:name="title" th:value="${title}">
+                                   th:name="title" th:value="${title}" type="text">
                         </div>
                         <div class="form-group">
                             <label for="description">Beschreibung</label>
@@ -55,9 +57,9 @@
                         <div class="form-group pt-4">
                             <button class="btn btn-primary"
                                     style="background: #52a1eb; border-style: none"
+                                    th:if="${roles.get(user.getId()) == admin}"
                                     th:name="groupId"
                                     th:value="${groupId}"
-                                    th:if="${roles.get(user.getId()) == admin}"
                                     type="submit">Speichern
                             </button>
                         </div>
