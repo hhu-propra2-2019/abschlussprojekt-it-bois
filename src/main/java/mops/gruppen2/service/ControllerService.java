@@ -76,7 +76,7 @@ public class ControllerService {
      */
     public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException {
         Visibility visibility1;
-        UUID groupId = eventService.checkGroup();
+        UUID groupId = UUID.randomUUID();
 
         maxInfiniteUsers = maxInfiniteUsers != null;
 
@@ -127,7 +127,7 @@ public class ControllerService {
         visibility = visibility == null;
         lecture = lecture != null;
         Visibility visibility1;
-        UUID groupId = eventService.checkGroup();
+        UUID groupId = UUID.randomUUID();
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {

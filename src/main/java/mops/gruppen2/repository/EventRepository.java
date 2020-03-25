@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+//TODO Rename Queries + Formatting
 public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
     @Query("select distinct group_id from event where user_id =:id")
