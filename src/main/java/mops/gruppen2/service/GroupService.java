@@ -56,7 +56,7 @@ public class GroupService {
         Map<UUID, Group> groupMap = new HashMap<>();
 
         events.parallelStream()
-              .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
+                .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
 
         return new ArrayList<>(groupMap.values());
     }
@@ -89,19 +89,18 @@ public class GroupService {
         sortByGroupType(visibleGroups);
 
         return visibleGroups.stream()
-                            .filter(group -> group.getType() != null)
-                            .filter(group -> !eventService.userInGroup(group.getId(), userId))
-                            .filter(group -> group.getVisibility() == Visibility.PUBLIC)
-                            .collect(Collectors.toList());
+                .filter(group -> group.getType() != null)
+                .filter(group -> !eventService.userInGroup(group.getId(), userId))
+                .filter(group -> group.getVisibility() == Visibility.PUBLIC)
+                .collect(Collectors.toList());
     }
 
     /**
      * Wird verwendet beim Gruppe erstellen bei der Parent-Auswahl: nur Titel benötigt.
      *
-     * @return
-     * @throws EventException
+     * @return List of groups
      */
-    public List<Group> getAllLecturesWithVisibilityPublic() throws EventException {
+    public List<Group> getAllLecturesWithVisibilityPublic() {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
@@ -110,9 +109,9 @@ public class GroupService {
         List<Group> visibleGroups = projectEventList(createEvents);
 
         return visibleGroups.stream()
-                            .filter(group -> group.getType() == GroupType.LECTURE)
-                            .filter(group -> group.getVisibility() == Visibility.PUBLIC)
-                            .collect(Collectors.toList());
+                .filter(group -> group.getType() == GroupType.LECTURE)
+                .filter(group -> group.getVisibility() == Visibility.PUBLIC)
+                .collect(Collectors.toList());
     }
 
 
