@@ -28,7 +28,7 @@ public class CreateGroupEvent extends Event {
     }
 
     @Override
-    public void applyEvent(Group group) {
+    protected void applyEvent(Group group) {
         group.setId(this.groupId);
         group.setParent(this.groupParent);
         group.setType(this.groupType);

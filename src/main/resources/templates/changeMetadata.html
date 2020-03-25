@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Gruppenerstellung</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+              rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         th:switch="${account.getRoles().contains('orga')}">
+        <ul>
+            <li class="active">
+                <a href="/" th:href="@{/gruppen2}">Gruppen</a>
+            </li>
+            <li th:case="${true}">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
+            </li>
+            <li>
+                <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10">
+                <h1>Metadaten ändern</h1>
+                <form action="/gruppen2/details/changeMetadata" method="post">
+                    <div class="shadow-sm p-2"
+                         style=" border: 10px solid aliceblue; background: aliceblue">
+                        <div class="form-group">
+                            <label for="title">Titel</label>
+                            <input class="form-control" id="title" required
+                                   th:name="title" th:value="${title}" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Beschreibung</label>
+                            <textarea class="form-control" id="description" required rows="3"
+                                      th:name="description"
+                                      th:text="${description}"></textarea>
+                        </div>
+                        <div class="form-group pt-4">
+                            <button class="btn btn-primary"
+                                    style="background: #52a1eb; border-style: none"
+                                    th:if="${roles.get(user.getId()) == admin}"
+                                    th:name="groupId"
+                                    th:value="${groupId}"
+                                    type="submit">Speichern
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
