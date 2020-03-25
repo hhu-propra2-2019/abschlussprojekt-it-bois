@@ -120,11 +120,8 @@ public class WebController {
                                  @RequestParam(value = "parent", required = false) String parent) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        visibility = visibility == null;
-        maxInfiniteUsers = maxInfiniteUsers != null;
         UUID parentUUID = controllerService.getUUID(parent);
         controllerService.createGroup(account, title, description, visibility, maxInfiniteUsers, userMaximum, parentUUID);
-
         return "redirect:/gruppen2/";
     }
 
