@@ -10,7 +10,8 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li class="active">
                 <a href="/" th:href="@{/gruppen2}">Gruppen</a>
@@ -44,8 +45,12 @@
                     </h3>
                     <br>
                     <div th:each="gruppe: ${gruppen}">
-                        <div class="shadow-sm p-4" style="border: none; border-radius: 5px; background: aliceblue">
+                        <div class="shadow-sm p-4"
+                             style="border: none; border-radius: 5px; background: aliceblue">
                             <h3 style="color: dodgerblue; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word">
+                                <span class="badge badge-pill badge-success"
+                                      style="background: lightseagreen; margin-right: 25px;"
+                                      th:if='${gruppe.getType() == gruppe.getType().LECTURE}'>Veranstaltung</span>
                                 <a th:href="@{/gruppen2/details/{id}(id=${gruppe.getId()})}"
                                    th:text="${gruppe.getTitle()}"></a>
                             </h3>

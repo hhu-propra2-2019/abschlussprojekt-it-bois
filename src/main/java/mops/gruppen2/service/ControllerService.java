@@ -47,26 +47,6 @@ public class ControllerService {
     }
 
     /**
-     * Überprüft ob alle Felder richtig gesetzt sind.
-     * @param description
-     * @param title
-     * @param userMaximum
-     */
-    private void checkFields(String description, String title, Long userMaximum ) {
-        if(description == null) {
-            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
-        }
-
-        if(title == null) {
-            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
-        }
-
-        if (userMaximum == null) {
-            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
-        }
-    }
-
-    /**
      * Erzeugt eine neue Gruppe, fügt den User, der die Gruppe erstellt hat, hinzu und setzt seine Rolle als Admin fest.
      * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
      * Aus diesen Event Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
@@ -77,11 +57,9 @@ public class ControllerService {
      */
     public void createGroup(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isMaximumInfinite, Long userMaximum, UUID parent) throws EventException {
         Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
-        UUID groupId = eventService.checkGroup();
+        UUID groupId = UUID.randomUUID();
 
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
-
-        checkFields(description, title, userMaximum);
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, groupVisibility, userMaximum);
         eventService.saveEvent(createGroupEvent);
@@ -92,10 +70,8 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
+    public UUID createOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
-
-        checkFields(description, title, userMaximum);
 
         List<User> userList = readCsvFile(file);
 
@@ -103,7 +79,7 @@ public class ControllerService {
             userMaximum = (long) userList.size() + 1;
         }
 
-        UUID groupId = eventService.checkGroup();
+        UUID groupId = UUID.randomUUID();
         Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
         GroupType groupType = setGroupType(isLecture);
 
@@ -114,7 +90,8 @@ public class ControllerService {
         updateTitle(account, groupId, title);
         updateDescription(account, groupId, description);
         updateRole(account.getName(), groupId);
-        addUserList(userList, groupId);
+
+        return groupId;
     }
 
     private Long checkInfiniteUsers(Boolean isMaximumInfinite, Long userMaximum) {

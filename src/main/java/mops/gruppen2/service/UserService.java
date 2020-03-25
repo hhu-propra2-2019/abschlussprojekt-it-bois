@@ -35,6 +35,9 @@ public class UserService {
                 newGroups.add(group);
             }
         }
+
+        groupService.sortByGroupType(newGroups);
+
         return newGroups;
     }
 
