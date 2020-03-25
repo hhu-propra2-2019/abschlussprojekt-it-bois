@@ -2,6 +2,12 @@
 
 == Documentation
 Heute haben wir an der arc42-Dokumentation weitergearbeitet und die ersten Abschnitte fertiggestellt.
-== Tests
 
+== Tests
 Heute haben wir damit weiter gemacht unsere Tests zu Refactorn.
+
+== changeMetaData
+Der Titel und die Beschreibung sind nun bearbeitbar über die Detailseite der Gruppe.
+
+== InviteLink
+Der Einladungs Link wird nun richtig zusammengebaut und angezeigt.
