@@ -132,4 +132,8 @@ public class EventService {
                          .collect(Collectors.toList());
     }
 
+    public boolean userInGroup(UUID groupId, String userId) {
+        return eventStore.countEventsByGroupIdAndUserIdAndEventType(groupId.toString(), userId, "AddUserEvent")
+                > eventStore.countEventsByGroupIdAndUserIdAndEventType(groupId.toString(), userId, "DeleteUserEvent");
+    }
 }

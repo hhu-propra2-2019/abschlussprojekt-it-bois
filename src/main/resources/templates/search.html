@@ -53,7 +53,7 @@
                     <tr>
                         <th scope="col">Gruppenname</th>
                         <th scope="col">Beschreibung</th>
-                        <th scope="col">Mitgliederanzahl</th>
+                        <th scope="col">Max. Mitgliederanzahl</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -66,8 +66,6 @@
                             Beschreibung
                         </td>
                         <td th:case="${true}">
-                            <a th:text="${gruppe.getMembers().size()}"></a>
-                            <a>/</a>
                             <a th:text="${gruppe.getUserMaximum()}"></a>
                         </td>
                         <td th:case="${false}">unbegrenzt</td>
