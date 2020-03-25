@@ -29,7 +29,7 @@ class ControllerServiceTest {
         eventRepository = mock(EventRepository.class);
         eventService = new EventService(jsonService, eventRepository);
         groupService = new GroupService(eventService, eventRepository);
-        userService = new UserService(eventRepository, groupService, eventService);
+        userService = new UserService(groupService, eventService);
         controllerService = new ControllerService(eventService, userService);
         Set<String> roles = new HashSet<>();
         roles.add("l");
