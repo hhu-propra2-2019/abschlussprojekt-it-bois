@@ -12,3 +12,6 @@ Die Gruppen werden nun sowohl auf der Startseite als auch bei der Suche sortiert
 
 == Checkstyle und Spotbugs
 Alle Fehler wurden behoben auf dem aktuellem Stand des masters.
+
+== Tests und Refactorn
+Wir haben heute unsere Tests für GroupService Refactort. Außerdem haben wir damit angefangen unsere Klasse ControllerService und unsere Tests dazu zu Refactorn.
