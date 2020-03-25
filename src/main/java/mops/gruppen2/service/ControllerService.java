@@ -46,26 +46,6 @@ public class ControllerService {
     }
 
     /**
-     * Überprüft ob alle Felder richtig gesetzt sind.
-     * @param description
-     * @param title
-     * @param userMaximum
-     */
-    private void checkFields(String description, String title, Long userMaximum ) {
-        if(description == null) {
-            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
-        }
-
-        if(title == null) {
-            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
-        }
-
-        if (userMaximum == null) {
-            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
-        }
-    }
-
-    /**
      * Erzeugt eine neue Gruppe, fügt den User, der die Gruppe erstellt hat, hinzu und setzt seine Rolle als Admin fest.
      * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
      * Aus diesen Event Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
@@ -80,12 +60,9 @@ public class ControllerService {
 
         maxInfiniteUsers = maxInfiniteUsers != null;
 
-
-        if(maxInfiniteUsers) {
+        if (maxInfiniteUsers) {
             userMaximum = 100000L;
         }
-
-        checkFields(description, title, userMaximum);
 
         visibility = visibility == null;
 
@@ -104,26 +81,13 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
-        List<User> userList = new ArrayList<>();
+    public UUID createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException, IOException {
         maxInfiniteUsers = maxInfiniteUsers != null;
-        if(maxInfiniteUsers) {
+
+        if (maxInfiniteUsers) {
             userMaximum = 100000L;
         }
 
-        checkFields(description, title, userMaximum);
-
-        if (!file.isEmpty()) {
-            try {
-                userList = CsvService.read(file.getInputStream());
-                if (userList.size() > userMaximum) {
-                    userMaximum = (long) userList.size() + userMaximum;
-                }
-            } catch (UnrecognizedPropertyException | CharConversionException ex) {
-                logger.warning("File konnte nicht gelesen werden");
-                throw new WrongFileException(file.getOriginalFilename());
-            }
-        }
         visibility = visibility == null;
         lecture = lecture != null;
         Visibility visibility1;
@@ -148,7 +112,8 @@ public class ControllerService {
         updateTitle(account, groupId, title);
         updateDescription(account, groupId, description);
         updateRole(account.getName(), groupId);
-        addUserList(userList, groupId);
+
+        return groupId;
     }
 
 
