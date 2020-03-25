@@ -1,6 +1,5 @@
 package mops.gruppen2.service;
 
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -15,15 +14,11 @@ import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.event.UpdateUserMaxEvent;
 import mops.gruppen2.domain.exception.EventException;
-import mops.gruppen2.domain.exception.BadParameterException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
-import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.CharConversionException;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,8 +51,6 @@ public class ControllerService {
      */
     public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException {
         Visibility visibility1;
-        UUID groupId = UUID.randomUUID();
-
         maxInfiniteUsers = maxInfiniteUsers != null;
 
         if (maxInfiniteUsers) {
@@ -72,6 +65,7 @@ public class ControllerService {
             visibility1 = Visibility.PRIVATE;
         }
 
+        UUID groupId = UUID.randomUUID();
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
         eventService.saveEvent(createGroupEvent);
 
@@ -188,8 +182,8 @@ public class ControllerService {
         eventService.saveEvent(deleteUserEvent);
     }
 
-    public void deleteGroupEvent(String user_id, UUID groupId) {
-        DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, user_id);
+    public void deleteGroupEvent(String userId, UUID groupId) {
+        DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, userId);
         eventService.saveEvent(deleteGroupEvent);
     }
 
@@ -206,8 +200,8 @@ public class ControllerService {
         return false;
     }
 
-    private boolean isLastAdmin(Account account, Group group){
-        for (Map.Entry<String, Role> entry : group.getRoles().entrySet()){
+    private boolean isLastAdmin(Account account, Group group) {
+        for (Map.Entry<String, Role> entry : group.getRoles().entrySet()) {
             if (entry.getValue() == ADMIN) {
                 if (!(entry.getKey().equals(account.getName()))) {
                     return false;
