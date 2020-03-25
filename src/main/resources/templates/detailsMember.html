@@ -35,12 +35,16 @@
             <div class="shadow-sm p-4 col-8"
                  style="border: 10px solid aliceblue; display: inline-block; border-radius: 5px; background: aliceblue">
                 <div class="row">
-                    <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word; width: 95%"
-                        th:text="${group.getTitle()}"></h1>
-                    <a class="fa fa-pencil"
-                       style="font-size:30px; width: 5%"
-                       th:href="@{/gruppen2/details/changeMetadata/{id}(id=${group.getId()})}"
-                       th:if="${roles.get(user.getId()) == admin}"></a>
+                    <div class="col-11">
+                        <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word; width: 95%"
+                            th:text="${group.getTitle()}"></h1>
+                    </div>
+                    <div class="col-1">
+                        <a class="fa fa-pencil"
+                           style="font-size:30px; width: 5%"
+                           th:href="@{/gruppen2/details/changeMetadata/{id}(id=${group.getId()})}"
+                           th:if="${roles.get(user.getId()) == admin}"></a>
+                    </div>
                 </div>
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"

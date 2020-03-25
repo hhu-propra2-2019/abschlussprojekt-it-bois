@@ -82,7 +82,7 @@ public class WebController {
         UUID parentUUID = controllerService.getUUID(parent);
         List<User> userList = new ArrayList<>();
         validationService.checkFields(description, title, userMaximum, maxInfiniteUsers);
-        Group group = userService.getGroupById(controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID));
+        Group group = userService.getGroupById(controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID, file));
         userList = validationService.checkFile(file, userList, group.getId().toString(), group, account);
         controllerService.addUserList(userList, group.getId());
         return "redirect:/gruppen2/";
