@@ -46,6 +46,26 @@ public class ControllerService {
     }
 
     /**
+     * Überprüft ob alle Felder richtig gesetzt sind.
+     * @param description
+     * @param title
+     * @param userMaximum
+     */
+    private void checkFields(String description, String title, Long userMaximum ) {
+        if(description == null) {
+            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
+        }
+
+        if(title == null) {
+            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
+        }
+
+        if (userMaximum == null) {
+            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+        }
+    }
+
+    /**
      * Erzeugt eine neue Gruppe, fügt den User, der die Gruppe erstellt hat, hinzu und setzt seine Rolle als Admin fest.
      * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
      * Aus diesen Event Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
@@ -65,17 +85,7 @@ public class ControllerService {
             userMaximum = 100000L;
         }
 
-        if(description == null) {
-            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
-        }
-
-        if(title == null) {
-            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
-        }
-
-        if (userMaximum == null) {
-            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
-        }
+        checkFields(description, title, userMaximum);
 
         visibility = visibility == null;
 
@@ -101,17 +111,8 @@ public class ControllerService {
             userMaximum = 100000L;
         }
 
-        if(description == null) {
-            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
-        }
+        checkFields(description, title, userMaximum);
 
-        if(title == null) {
-            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
-        }
-
-        if (userMaximum == null) {
-            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
-        }
         if (!file.isEmpty()) {
             try {
                 userList = CsvService.read(file.getInputStream());
