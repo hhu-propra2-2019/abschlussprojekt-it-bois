@@ -1,34 +1,21 @@
 package mops.gruppen2.controller;
 
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
-import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.EventException;
-import mops.gruppen2.domain.exception.GroupFullException;
-import mops.gruppen2.domain.exception.GroupNotFoundException;
-import mops.gruppen2.domain.exception.NoAccessException;
-import mops.gruppen2.domain.exception.NoAdminAfterActionException;
 import mops.gruppen2.domain.exception.PageNotFoundException;
-import mops.gruppen2.domain.exception.UserAlreadyExistsException;
-import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.io.CharConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +81,10 @@ public class WebController {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
-        controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID, file);
+        List<User> userList = new ArrayList<>();
+        Group group = userService.getGroupById(controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID));
+        userList = validationService.checkFile(file, userList, group.getId().toString(), group, account);
+        controllerService.addUserList(userList, group.getId());
         return "redirect:/gruppen2/";
     }
 
@@ -134,17 +124,7 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        if (!file.isEmpty()) {
-            try {
-                userList = CsvService.read(file.getInputStream());
-                if (userList.size() + group.getMembers().size() > group.getUserMaximum()) {
-                    controllerService.updateMaxUser(account, UUID.fromString(groupId), (long) userList.size() + group.getMembers().size());
-                }
-            } catch (UnrecognizedPropertyException | CharConversionException ex) {
-                throw new WrongFileException(file.getOriginalFilename());
-            }
-        }
-
+        userList = validationService.checkFile(file, userList, groupId, group, account);
         UUID groupUUID = controllerService.getUUID(groupId);
         controllerService.addUserList(userList, groupUUID);
         return "redirect:/gruppen2/details/members/" + groupId;
@@ -156,13 +136,11 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(UUID.fromString(groupId));
+        validationService.checkIfAdmin(group, user);
         model.addAttribute("account", account);
         UUID parentId = group.getParent();
         Group parent = new Group();
-        if (!group.getMembers().contains(user)) {
-            if (group.getVisibility() == Visibility.PRIVATE) {
-                return "privateGroupNoMember";
-            }
+        if (!validationService.checkIfUserInGroup(group, user)) {
             model.addAttribute("group", group);
             model.addAttribute("parentId", parentId);
             model.addAttribute("parent", parent);
@@ -185,10 +163,10 @@ public class WebController {
                                   @RequestParam("groupId") String groupId) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        if(validationService.checkTitleAndDescription(title, description)) {
-            controllerService.updateTitle(account, UUID.fromString(groupId), title);
-            controllerService.updateDescription(account, UUID.fromString(groupId), description);
-        }
+        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+        validationService.checkIfAdmin(group, user);
+        validationService.checkTitleAndDescription(title, description, account, groupId);
         return "redirect:/gruppen2/details/" + groupId;
     }
 
@@ -198,12 +176,10 @@ public class WebController {
                             Model model,
                             @RequestParam(value = "suchbegriff", required = false) String search) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        List<Group> groupse = new ArrayList<>();
-        if (!validationService.checkSearch(search)) {
-            groupse = groupService.findGroupWith(search, account);
-        }
+        List<Group> groups = new ArrayList<>();
+        groups = validationService.checkSearch(search, groups, account);
         model.addAttribute("account", account);
-        model.addAttribute("gruppen", groupse);
+        model.addAttribute("gruppen", groups);
         return "search";
     }
 
@@ -216,13 +192,11 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         UUID parentId = group.getParent();
-        String URL = request.getRequestURL().toString();
-        String serverURL = URL.substring(0, URL.indexOf("gruppen2/"));
 
         validationService.checkGroup(group.getTitle());
         Group parent = validationService.checkParent(parentId);
 
-        if (!validationService.checkIfUserInGroup(Group group, User user)) {
+        if (!validationService.checkIfUserInGroup(group, user)) {
             model.addAttribute("group", group);
             model.addAttribute("parentId", parentId);
             model.addAttribute("parent", parent);
@@ -235,6 +209,9 @@ public class WebController {
         model.addAttribute("roles", group.getRoles());
         model.addAttribute("user", user);
         model.addAttribute("admin", Role.ADMIN);
+
+        String URL = request.getRequestURL().toString();
+        String serverURL = URL.substring(0, URL.indexOf("gruppen2/"));
         model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + groupId);
 
         return "detailsMember";
@@ -249,9 +226,7 @@ public class WebController {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(UUID.fromString(groupId));
         validationService.checkIfUserInGroupJoin(group, user);
-        if (group.getUserMaximum() < group.getMembers().size()+1) {
-            throw new GroupFullException("Du kannst der Gruppe daher leider nicht beitreten.");
-        }
+        validationService.checkIfGroupFull(group);
         controllerService.addUser(account, UUID.fromString(groupId));
         return "redirect:/gruppen2/";
     }
@@ -266,14 +241,12 @@ public class WebController {
         UUID parentId = group.getParent();
         Group parent = validationService.checkParent(parentId);
 
-        if (group.getUserMaximum() > group.getMembers().size()) {
-            model.addAttribute("group", group);
-            model.addAttribute("parentId", parentId);
-            model.addAttribute("parent", parent);
+        validationService.checkIfGroupFull(group);
+        model.addAttribute("group", group);
+        model.addAttribute("parentId", parentId);
+        model.addAttribute("parent", parent);
 
-            return "detailsNoMember";
-        }
-        throw new GroupNotFoundException("@search");
+        return "detailsNoMember";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
@@ -282,11 +255,9 @@ public class WebController {
                                Model model, @PathVariable String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        if (group != null) {
-            model.addAttribute("group", group);
-            return "redirect:/gruppen2/detailsSearch?id=" + group.getId();
-        }
-        throw new GroupNotFoundException("@accept");
+        validationService.checkGroup(group.getTitle());
+        model.addAttribute("group", group);
+        return "redirect:/gruppen2/detailsSearch?id=" + group.getId();
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
@@ -297,11 +268,7 @@ public class WebController {
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         controllerService.passIfLastAdmin(account, UUID.fromString(groupId));
         controllerService.deleteUser(user.getId(), UUID.fromString(groupId));
-
-        if (userService.getGroupById(UUID.fromString(groupId)).getMembers().isEmpty()) {
-            controllerService.deleteGroupEvent(user.getId(), UUID.fromString(groupId));
-        }
-
+        validationService.checkIfGroupEmpty(groupId, user);
         return "redirect:/gruppen2/";
     }
 
@@ -312,9 +279,7 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        if (group.getRoles().get(user.getId()) != Role.ADMIN) {
-            throw new NoAccessException("");
-        }
+        validationService.checkIfAdmin(group, user);
         controllerService.deleteGroupEvent(user.getId(), UUID.fromString(groupId));
         return "redirect:/gruppen2/";
     }
@@ -327,19 +292,12 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
         User user = new User(account.getName(), "", "", "");
-        if (group.getMembers().contains(user)) {
-            if (group.getRoles().get(account.getName()) == Role.ADMIN) {
-                model.addAttribute("account", account);
-                model.addAttribute("members", group.getMembers());
-                model.addAttribute("group", group);
-                model.addAttribute("admin", Role.ADMIN);
-                return "editMembers";
-            } else {
-                return "redirect:/details/";
-            }
-        } else {
-            return "privateGroupNoMember";
-        }
+        validationService.checkIfAdmin(group, user);
+        model.addAttribute("account", account);
+        model.addAttribute("members", group.getMembers());
+        model.addAttribute("group", group);
+        model.addAttribute("admin", Role.ADMIN);
+        return "editMembers";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
@@ -348,14 +306,9 @@ public class WebController {
                              @RequestParam("group_id") String groupId,
                              @RequestParam("user_id") String userId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        if (userId.equals(account.getName())) {
-            if (controllerService.passIfLastAdmin(account, UUID.fromString(groupId))) {
-                throw new NoAdminAfterActionException("Du otto bist letzter Admin");
-            }
-            controllerService.updateRole(userId, UUID.fromString(groupId));
+        if (validationService.checkIfDemotingSelf(userId, groupId, account)) {
             return "redirect:/gruppen2/details/" + groupId;
         }
-        controllerService.updateRole(userId, UUID.fromString(groupId));
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
@@ -373,10 +326,9 @@ public class WebController {
     @PostMapping("/details/members/deleteUser")
     public String deleteUser(@RequestParam("group_id") String groupId,
                              @RequestParam("user_id") String userId) throws EventException {
+        User user = new User(userId, "", "", "");
         controllerService.deleteUser(userId, UUID.fromString(groupId));
-        if (userService.getGroupById(UUID.fromString(groupId)).getMembers().isEmpty()) {
-            controllerService.deleteGroupEvent(userId, UUID.fromString(groupId));
-        }
+        validationService.checkIfGroupEmpty(groupId, user);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 

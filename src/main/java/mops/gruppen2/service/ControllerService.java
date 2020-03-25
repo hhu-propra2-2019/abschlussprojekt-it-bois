@@ -76,21 +76,10 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
+    public UUID createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException, IOException {
         List<User> userList = new ArrayList<>();
         if (userMaximum == null) {
             userMaximum = 100000L;
-        }
-        if (!file.isEmpty()) {
-            try {
-                userList = CsvService.read(file.getInputStream());
-                if (userList.size() > userMaximum) {
-                    userMaximum = (long) userList.size() + userMaximum;
-                }
-            } catch (UnrecognizedPropertyException | CharConversionException ex) {
-                logger.warning("File konnte nicht gelesen werden");
-                throw new WrongFileException(file.getOriginalFilename());
-            }
         }
         visibility = visibility == null;
         lecture = lecture != null;
@@ -122,7 +111,8 @@ public class ControllerService {
         updateTitle(account, groupId, title);
         updateDescription(account, groupId, description);
         updateRole(account.getName(), groupId);
-        addUserList(userList, groupId);
+
+        return groupId;
     }
 
 
