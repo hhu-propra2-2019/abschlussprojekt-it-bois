@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static mops.gruppen2.domain.Role.ADMIN;
 
@@ -54,25 +55,13 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException {
-        Visibility visibility1;
+    public void createGroup(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isMaximumInfinite, Long userMaximum, UUID parent) throws EventException {
+        Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
         UUID groupId = UUID.randomUUID();
 
-        maxInfiniteUsers = maxInfiniteUsers != null;
+        userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
-        if (maxInfiniteUsers) {
-            userMaximum = 100000L;
-        }
-
-        visibility = visibility == null;
-
-        if (visibility) {
-            visibility1 = Visibility.PUBLIC;
-        } else {
-            visibility1 = Visibility.PRIVATE;
-        }
-
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, groupVisibility, userMaximum);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);
@@ -81,31 +70,20 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public UUID createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException, IOException {
-        maxInfiniteUsers = maxInfiniteUsers != null;
+    public UUID createOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
+        userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
-        if (maxInfiniteUsers) {
-            userMaximum = 100000L;
+        List<User> userList = readCsvFile(file);
+
+        if (userList.size() > userMaximum) {
+            userMaximum = (long) userList.size() + 1;
         }
 
-        visibility = visibility == null;
-        lecture = lecture != null;
-        Visibility visibility1;
         UUID groupId = UUID.randomUUID();
-        if (visibility) {
-            visibility1 = Visibility.PUBLIC;
-        } else {
-            visibility1 = Visibility.PRIVATE;
-        }
+        Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
+        GroupType groupType = setGroupType(isLecture);
 
-        GroupType groupType;
-        if (lecture) {
-            groupType = GroupType.LECTURE;
-        } else {
-            groupType = GroupType.SIMPLE;
-        }
-
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, visibility1, userMaximum);
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, groupVisibility, userMaximum);
         eventService.saveEvent(createGroupEvent);
 
         addUser(account, groupId);
@@ -116,6 +94,47 @@ public class ControllerService {
         return groupId;
     }
 
+    private Long checkInfiniteUsers(Boolean isMaximumInfinite, Long userMaximum) {
+        isMaximumInfinite = isMaximumInfinite != null;
+
+        if(isMaximumInfinite) {
+            userMaximum = 100000L;
+        }
+
+        return userMaximum;
+    }
+
+    private Visibility setGroupVisibility(Boolean isVisibilityPrivate) {
+        isVisibilityPrivate = isVisibilityPrivate != null;
+
+        if (isVisibilityPrivate) {
+            return Visibility.PRIVATE;
+        } else {
+            return Visibility.PUBLIC;
+        }
+    }
+
+    private GroupType setGroupType(Boolean isLecture) {
+        isLecture = isLecture != null;
+        if (isLecture) {
+            return GroupType.LECTURE;
+        } else {
+            return GroupType.SIMPLE;
+        }
+    }
+
+    public List<User> readCsvFile(MultipartFile file) throws EventException, IOException {
+        if (!file.isEmpty()) {
+            try {
+                List<User> userList = CsvService.read(file.getInputStream());
+                return userList.stream().distinct().collect(Collectors.toList()); //filters duplicates from list
+            } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                logger.warning("File konnte nicht gelesen werden");
+                throw new WrongFileException(file.getOriginalFilename());
+            }
+        }
+        return new ArrayList<>();
+    }
 
     public void addUser(Account account, UUID groupId) {
         AddUserEvent addUserEvent = new AddUserEvent(groupId, account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
