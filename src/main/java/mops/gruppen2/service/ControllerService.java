@@ -15,7 +15,7 @@ import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.event.UpdateUserMaxEvent;
 import mops.gruppen2.domain.exception.EventException;
-import mops.gruppen2.domain.exception.NoMaximumMemberException;
+import mops.gruppen2.domain.exception.BadParameterException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
@@ -54,18 +54,35 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean maxInfiniteUsers, Boolean visibility, Long userMaximum, UUID parent) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException {
         Visibility visibility1;
         UUID groupId = eventService.checkGroup();
+
+        maxInfiniteUsers = maxInfiniteUsers != null;
+
+
+        if(maxInfiniteUsers) {
+            userMaximum = 100000L;
+        }
+
+        if(description == null) {
+            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
+        }
+
+        if(title == null) {
+            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
+        }
+
+        if (userMaximum == null) {
+            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+        }
+
+        visibility = visibility == null;
 
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
-        }
-
-        if(maxInfiniteUsers){
-            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
@@ -80,11 +97,20 @@ public class ControllerService {
     public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
         List<User> userList = new ArrayList<>();
         maxInfiniteUsers = maxInfiniteUsers != null;
-        if(maxInfiniteUsers){
+        if(maxInfiniteUsers) {
             userMaximum = 100000L;
         }
+
+        if(description == null) {
+            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
+        }
+
+        if(title == null) {
+            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
+        }
+
         if (userMaximum == null) {
-            throw new NoMaximumMemberException(this.getClass().toString());
+            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
         }
         if (!file.isEmpty()) {
             try {
