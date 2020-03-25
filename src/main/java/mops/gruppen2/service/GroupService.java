@@ -70,43 +70,43 @@ public class GroupService {
     }
 
     /**
-     * Sucht alle Zeilen in der DB mit visibility=true.
-     * Erstellt eine Liste aus öffentlichen Gruppen (ohen bereits beigetretenen Gruppen).
+     * Wird verwendet bei der Suche nach Gruppen: Titel, Beschreibung werden benötigt.
+     * Außerdem wird beachtet, ob der eingeloggte User bereits in entsprechenden Gruppen mitglied ist.
      *
      * @return Liste von projizierten Gruppen
      * @throws EventException Projektionsfehler
      */
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
-        List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("AddUserEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteUserEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
-        List<Group> visibleGroups = projectEventList(createEvents);
+        List<Event> groupEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
 
-        User user = new User(userId, null, null, null);
-        List<UUID> groupIds = eventService.findGroupIdsByUser(user.getId());
-        List<Event> events = getGroupEvents(groupIds);
-        List<Group> groups = projectEventList(events);
-        List<UUID> userGroupIds = new ArrayList<>();
-        for (Group group : groups) {
-            if (group.getMembers().contains(user)) {
-                userGroupIds.add(group.getId());
-            }
-        }
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findEventsByTypeAndUserId("AddUserEvent", userId)));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findEventsByTypeAndUserId("DeleteUserEvent", userId)));
+
+        List<Group> visibleGroups = projectEventList(groupEvents);
+
+        User currentUserDummy = new User(userId, null, null, null);
 
         return visibleGroups.parallelStream()
                             .filter(group -> group.getType() != null)
-                            .filter(group -> !userGroupIds.contains(group.getId()))
+                            .filter(group -> !group.getMembers().contains(currentUserDummy))
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
 
     }
 
+    /**
+     * Wird verwendet beim Gruppe erstellen bei der Parent-Auswahl: nur Titel benötigt.
+     *
+     * @return
+     * @throws EventException
+     */
     public List<Group> getAllLecturesWithVisibilityPublic() throws EventException {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
 
         List<Group> visibleGroups = projectEventList(createEvents);
