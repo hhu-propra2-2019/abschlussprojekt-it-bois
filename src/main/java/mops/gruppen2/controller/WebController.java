@@ -163,7 +163,7 @@ public class WebController {
         Group parent = new Group();
         if (!group.getMembers().contains(user)) {
             if (group.getVisibility() == Visibility.PRIVATE) {
-                return "privateGroupNoMember";
+                throw new NoAccessException("Die Gruppe ist privat");
             }
             model.addAttribute("group", group);
             model.addAttribute("parentId", parentId);
@@ -226,7 +226,7 @@ public class WebController {
 
         if (!group.getMembers().contains(user)) {
             if (group.getVisibility() == Visibility.PRIVATE) {
-                return "privateGroupNoMember";
+                throw new NoAccessException("Die Gruppe ist privat");
             }
             model.addAttribute("group", group);
             model.addAttribute("parentId", parentId);
@@ -358,7 +358,7 @@ public class WebController {
                 return "redirect:/details/";
             }
         } else {
-            return "privateGroupNoMember";
+            throw new NoAccessException("Die Gruppe ist privat");
         }
     }
 
