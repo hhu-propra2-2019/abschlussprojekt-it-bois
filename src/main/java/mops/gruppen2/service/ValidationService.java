@@ -10,6 +10,7 @@ import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.StyledEditorKit;
 import javax.validation.ValidationException;
 import java.io.CharConversionException;
 import java.io.File;
@@ -46,7 +47,7 @@ public class ValidationService {
     }
 
     public void checkGroup(String title) {
-        if(title == null) throw new GroupNotFoundException("@details");
+        if (title == null) throw new GroupNotFoundException("@details");
     }
 
     public boolean checkIfUserInGroup(Group group, User user) {
@@ -64,7 +65,7 @@ public class ValidationService {
     }
 
     public void checkIfUserInGroupJoin(Group group, User user) {
-        if(!group.getMembers().contains(user)){
+        if (group.getMembers().contains(user)) {
             throw new UserAlreadyExistsException("@details");
         }
     }
@@ -113,5 +114,25 @@ public class ValidationService {
             }
         }
         return userList;
+    }
+
+    /**
+     * Überprüft ob alle Felder richtig gesetzt sind.
+     * @param description
+     * @param title
+     * @param userMaximum
+     */
+    public void checkFields(String description, String title, Long userMaximum, Boolean maxInfiniteUsers) {
+        if (description == null) {
+            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
+        }
+
+        if (title == null) {
+            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
+        }
+
+        if (userMaximum == null && maxInfiniteUsers == null) {
+            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+        }
     }
 }

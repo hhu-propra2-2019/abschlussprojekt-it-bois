@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -82,6 +81,7 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
         List<User> userList = new ArrayList<>();
+        validationService.checkFields(description, title, userMaximum, maxInfiniteUsers);
         Group group = userService.getGroupById(controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID));
         userList = validationService.checkFile(file, userList, group.getId().toString(), group, account);
         controllerService.addUserList(userList, group.getId());
@@ -109,6 +109,7 @@ public class WebController {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
+        validationService.checkFields(description, title, userMaximum, maxInfiniteUsers);
         controllerService.createGroup(account, title, description, visibility, maxInfiniteUsers, userMaximum, parentUUID);
         return "redirect:/gruppen2/";
     }
