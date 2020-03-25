@@ -69,31 +69,37 @@ public class GroupService {
     }
 
     /**
-     * Sucht alle Zeilen in der DB mit visibility=true.
-     * Erstellt eine Liste aus öffentlichen Gruppen (ohen bereits beigetretenen Gruppen).
+     * Wird verwendet bei der Suche nach Gruppen: Titel, Beschreibung werden benötigt.
+     * Außerdem wird beachtet, ob der eingeloggte User bereits in entsprechenden Gruppen mitglied ist.
      *
      * @return Liste von projizierten Gruppen
      * @throws EventException Projektionsfehler
      */
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
-        List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
-        List<Group> visibleGroups = projectEventList(createEvents);
+        List<Event> groupEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
 
-        List<UUID> userGroupIds = eventService.findGroupIdsByUser(userId);
+        List<Group> visibleGroups = projectEventList(groupEvents);
 
         return visibleGroups.parallelStream()
                             .filter(group -> group.getType() != null)
-                            .filter(group -> !userGroupIds.contains(group.getId()))
+                            .filter(group -> !eventService.userInGroup(group.getId(), userId))
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
-
     }
 
+    /**
+     * Wird verwendet beim Gruppe erstellen bei der Parent-Auswahl: nur Titel benötigt.
+     *
+     * @return
+     * @throws EventException
+     */
     public List<Group> getAllLecturesWithVisibilityPublic() throws EventException {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
 
         List<Group> visibleGroups = projectEventList(createEvents);
@@ -115,6 +121,10 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     public List<Group> findGroupWith(String search, Account account) throws EventException {
+        if (search.isEmpty()) {
+            return getAllGroupWithVisibilityPublic(account.getName());
+        }
+
         return getAllGroupWithVisibilityPublic(account.getName())
                 .parallelStream()
                 .filter(group ->
