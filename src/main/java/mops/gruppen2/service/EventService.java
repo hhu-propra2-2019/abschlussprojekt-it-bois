@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+//TODO: Evtl aufsplitten in EventRepoService und EventService?
 public class EventService {
 
     private final JsonService jsonService;
@@ -28,8 +29,22 @@ public class EventService {
      * @param event Event, welches gespeichert wird
      */
     public void saveEvent(Event event) {
-        EventDTO eventDTO = getDTO(event);
-        eventStore.save(eventDTO);
+        eventStore.save(getDTO(event));
+    }
+
+    public void saveAll(Event... events) {
+        for (Event event : events) {
+            eventStore.save(getDTO(event));
+        }
+    }
+
+    @SafeVarargs
+    public final void saveAll(List<Event>... events) {
+        for (List<Event> eventlist : events) {
+            for (Event event : eventlist) {
+                eventStore.save(getDTO(event));
+            }
+        }
     }
 
     /**
@@ -39,6 +54,7 @@ public class EventService {
      * @param event Event, welches in DTO übersetzt wird
      * @return EventDTO Neues DTO
      */
+    //TODO Rename: getDTOFromEvent?
     public EventDTO getDTO(Event event) {
         String payload = "";
         try {
@@ -57,25 +73,8 @@ public class EventService {
     }
 
     /**
-     * Gibt die nächst höhere groupID zurück die belegt werden kann.
-     * Gibt 1 zurück, falls keine Gruppe vorhanden ist.
-     *
-     * @return Long GruppenId
-     */
-    public UUID checkGroup() {
-        return UUID.randomUUID();
-
-        /*Long maxGroupID = eventStore.getMaxGroupID();
-
-        if (maxGroupID == null) {
-            return 1L;
-        }
-
-        return maxGroupID + 1;*/
-    }
-
-    /**
      * Findet alle Events welche ab dem neuen Status hinzugekommen sind.
+     * Sucht alle Events mit event_id > status
      *
      * @param status Die Id des zuletzt gespeicherten Events
      * @return Liste von neueren Events
@@ -93,6 +92,7 @@ public class EventService {
      * @param eventDTOS Liste von DTOs
      * @return Liste von Events
      */
+    //TODO Rename: getEventsFromDTO?
     public List<Event> translateEventDTOs(Iterable<EventDTO> eventDTOS) {
         List<Event> events = new ArrayList<>();
 
@@ -106,17 +106,6 @@ public class EventService {
         return events;
     }
 
-    /**
-     * Sichert eine Liste von Event Objekten mithilfe der Methode saveEvent(Event event).
-     *
-     * @param eventList Liste von Event Objekten
-     */
-    public void saveEventList(List<Event> eventList) {
-        for (Event event : eventList) {
-            saveEvent(event);
-        }
-    }
-
     public Long getMaxEvent_id() {
         return eventStore.getHighesEvent_ID();
     }
@@ -126,6 +115,7 @@ public class EventService {
         return translateEventDTOs(eventDTOList);
     }
 
+    //TODO: Nur AddUserEvents betrachten
     public List<UUID> findGroupIdsByUser(String userId) {
         return eventStore.findGroup_idsWhereUser_id(userId).stream()
                          .map(UUID::fromString)

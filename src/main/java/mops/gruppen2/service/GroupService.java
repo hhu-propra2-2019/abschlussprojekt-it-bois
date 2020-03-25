@@ -35,6 +35,7 @@ public class GroupService {
      * @param groupIds Liste an IDs
      * @return Liste an Events
      */
+    //TODO Das vielleicht in den EventRepoService?
     public List<Event> getGroupEvents(List<UUID> groupIds) {
         List<EventDTO> eventDTOS = new ArrayList<>();
         for (UUID groupId : groupIds) {
@@ -75,6 +76,7 @@ public class GroupService {
      * @return Liste von projizierten Gruppen
      * @throws EventException Projektionsfehler
      */
+    //TODO Rename
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
         List<Event> groupEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
@@ -103,11 +105,11 @@ public class GroupService {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
 
         List<Group> visibleGroups = projectEventList(createEvents);
 
         return visibleGroups.stream()
-                            .filter(group -> group.getType() != null)
                             .filter(group -> group.getType() == GroupType.LECTURE)
                             .filter(group -> group.getVisibility() == Visibility.PUBLIC)
                             .collect(Collectors.toList());
@@ -122,6 +124,7 @@ public class GroupService {
      * @return Liste von projizierten Gruppen
      * @throws EventException Projektionsfehler
      */
+    //Todo Rename
     public List<Group> findGroupWith(String search, Account account) throws EventException {
         if (search.isEmpty()) {
             return getAllGroupWithVisibilityPublic(account.getName());
