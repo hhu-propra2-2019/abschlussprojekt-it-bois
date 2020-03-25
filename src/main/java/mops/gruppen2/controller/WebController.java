@@ -46,6 +46,7 @@ public class WebController {
      * @param model tolles model
      * @return index.html
      */
+
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("")
     public String index(KeycloakAuthenticationToken token, Model model) throws EventException {

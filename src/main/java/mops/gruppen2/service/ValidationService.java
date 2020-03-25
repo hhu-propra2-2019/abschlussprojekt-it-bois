@@ -123,15 +123,19 @@ public class ValidationService {
      * @param userMaximum
      */
     public void checkFields(String description, String title, Long userMaximum, Boolean maxInfiniteUsers) {
-        if (description == null) {
+        if (description == null || description.trim().length() == 0) {
             throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
         }
 
-        if (title == null) {
+        if (title == null || title.trim().length() == 0) {
             throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
         }
 
         if (userMaximum == null && maxInfiniteUsers == null) {
+            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+        }
+
+        if (userMaximum < 1 || userMaximum > 10000L) {
             throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
         }
     }
