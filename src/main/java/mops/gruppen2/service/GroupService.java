@@ -11,6 +11,7 @@ import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,8 @@ public class GroupService {
 
         List<Group> visibleGroups = projectEventList(groupEvents);
 
+        sortByGroupType(visibleGroups);
+
         return visibleGroups.parallelStream()
                             .filter(group -> group.getType() != null)
                             .filter(group -> !eventService.userInGroup(group.getId(), userId))
@@ -131,5 +134,21 @@ public class GroupService {
                                 group.getTitle().toLowerCase().contains(search.toLowerCase()) ||
                                         group.getDescription().toLowerCase().contains(search.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+    public void sortByGroupType(List<Group> groups) {
+        groups.sort(new Comparator<Group>() {
+            @Override
+            public int compare(Group g1, Group g2) {
+                if (g1.getType() == GroupType.LECTURE) {
+                    return -1;
+                }
+                if (g2.getType() == GroupType.LECTURE) {
+                    return 0;
+                }
+
+                return 1;
+            }
+        });
     }
 }
