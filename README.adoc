@@ -61,5 +61,4 @@ Für *Studenten* (keycloak Rolle) :
 
 === Verwendung
 
-Wir werden ein Dockerfile bereitstellen, das heißt ihr könnt die Anwendung einfach starten.
-Unter localhost:8081/swagger-ui.html findet ihr die API-Dokumentation.
+Die Anwendung kann mit `docker-compse up` im Wurzelverzeichnis gestartet werden, eine API-Doku befindet sich im Dokumentation-Ordner (das swagger-zip).
