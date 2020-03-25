@@ -7,6 +7,7 @@ import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,6 +155,7 @@ class GroupServiceTest {
         assertThat(groupService.getAllGroupWithVisibilityPublic("test1").size()).isEqualTo(3);
     }
 
+    @Disabled
     @Test
     void getAllGroupWithVisibilityPublicTestIsUserInGroup() {
 //        eventService.saveEvent(new CreateGroupEvent(uuidFromInt(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
