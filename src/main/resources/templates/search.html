@@ -49,23 +49,26 @@
                 <br>
                 <table class="table">
                     <!-- Erscheint dann, wenn man "Suchen" Button klickt und Ergebnisse angezeigt werden, aber so solls aussehen -->
-                    <thead th:if="${!gruppen.isEmpty()}">
+                    <thead th:if='${!gruppen.isEmpty()}'>
                     <tr>
                         <th scope="col">Gruppenname</th>
                         <th scope="col">Beschreibung</th>
-                        <th scope="col">Mitgliederanzahl</th>
+                        <th scope="col">Max. Mitgliederanzahl</th>
                     </tr>
                     </thead>
-                    <tbody th:each="gruppe : ${gruppen}">
-                    <tr>
+                    <tbody>
+                    <tr th:each="gruppe : ${gruppen}" th:switch="${gruppe.getUserMaximum() != 100000}">
                         <th scope="row">
                             <a th:href="@{/gruppen2/detailsSearch(id=${gruppe.getId()})}"
-                               th:text="${gruppe.title}">Gruppenname</a>
+                               th:text="${gruppe.getTitle()}">Gruppenname</a>
                         </th>
                         <td style="" th:text="${#strings.abbreviate(gruppe.getDescription(), 50)}">
                             Beschreibung
                         </td>
-                        <td th:text="${gruppe.getMembers().size()}">Mitgliederanzahl</td>
+                        <td th:case="${true}">
+                            <a th:text="${gruppe.getUserMaximum()}"></a>
+                        </td>
+                        <td th:case="${false}">unbegrenzt</td>
                     </tr>
                     </tbody>
                 </table>

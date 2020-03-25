@@ -1,5 +1,6 @@
 package mops.gruppen2.service;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -14,10 +15,15 @@ import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.event.UpdateUserMaxEvent;
 import mops.gruppen2.domain.exception.EventException;
+import mops.gruppen2.domain.exception.BadParameterException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
+import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.CharConversionException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -40,6 +46,26 @@ public class ControllerService {
     }
 
     /**
+     * Überprüft ob alle Felder richtig gesetzt sind.
+     * @param description
+     * @param title
+     * @param userMaximum
+     */
+    private void checkFields(String description, String title, Long userMaximum ) {
+        if(description == null) {
+            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
+        }
+
+        if(title == null) {
+            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
+        }
+
+        if (userMaximum == null) {
+            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+        }
+    }
+
+    /**
      * Erzeugt eine neue Gruppe, fügt den User, der die Gruppe erstellt hat, hinzu und setzt seine Rolle als Admin fest.
      * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
      * Aus diesen Event Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
@@ -48,18 +74,25 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean maxInfiniteUsers, Boolean visibility, Long userMaximum, UUID parent) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException {
         Visibility visibility1;
         UUID groupId = UUID.randomUUID();
+
+        maxInfiniteUsers = maxInfiniteUsers != null;
+
+
+        if(maxInfiniteUsers) {
+            userMaximum = 100000L;
+        }
+
+        checkFields(description, title, userMaximum);
+
+        visibility = visibility == null;
 
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
             visibility1 = Visibility.PRIVATE;
-        }
-
-        if(maxInfiniteUsers){
-            userMaximum = 100000L;
         }
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
@@ -71,10 +104,30 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, List<User> users) throws EventException {
-        Visibility visibility1;
-        UUID groupId = UUID.randomUUID();
+    public void createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
+        List<User> userList = new ArrayList<>();
+        maxInfiniteUsers = maxInfiniteUsers != null;
+        if(maxInfiniteUsers) {
+            userMaximum = 100000L;
+        }
 
+        checkFields(description, title, userMaximum);
+
+        if (!file.isEmpty()) {
+            try {
+                userList = CsvService.read(file.getInputStream());
+                if (userList.size() > userMaximum) {
+                    userMaximum = (long) userList.size() + userMaximum;
+                }
+            } catch (UnrecognizedPropertyException | CharConversionException ex) {
+                logger.warning("File konnte nicht gelesen werden");
+                throw new WrongFileException(file.getOriginalFilename());
+            }
+        }
+        visibility = visibility == null;
+        lecture = lecture != null;
+        Visibility visibility1;
+        UUID groupId = eventService.checkGroup();
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
@@ -88,11 +141,6 @@ public class ControllerService {
             groupType = GroupType.SIMPLE;
         }
 
-
-        if(maxInfiniteUsers){
-            userMaximum = 100000L;
-        }
-
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, visibility1, userMaximum);
         eventService.saveEvent(createGroupEvent);
 
@@ -100,7 +148,7 @@ public class ControllerService {
         updateTitle(account, groupId, title);
         updateDescription(account, groupId, description);
         updateRole(account.getName(), groupId);
-        addUserList(users, groupId);
+        addUserList(userList, groupId);
     }
 
 
