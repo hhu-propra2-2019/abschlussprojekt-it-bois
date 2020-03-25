@@ -127,7 +127,7 @@ public class ControllerService {
         visibility = visibility == null;
         lecture = lecture != null;
         Visibility visibility1;
-        UUID groupId = eventService.checkGroup();
+        UUID groupId = UUID.randomUUID();
         if (visibility) {
             visibility1 = Visibility.PUBLIC;
         } else {
