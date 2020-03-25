@@ -53,8 +53,8 @@
                             <form method="post" action="/gruppen2/detailsBeitreten">
                                 <button class="btn btn-primary"
                                         style="background: #52a1eb; border-style: none;"
-                                        th:href="@{/gruppen2/detailsBeitreten(id=${group.getId()})}"
-                                        th:name="id" th:value="${group.id}"
+                                        th:href="@{/gruppen2/detailsBeitreten}"
+                                        th:name="id" th:value="${group.getId()}"
                                         type="submit">Gruppe beitreten
                                 </button>
                             </form>

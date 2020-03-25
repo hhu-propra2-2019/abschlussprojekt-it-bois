@@ -203,7 +203,7 @@ public class WebController {
         if (search != null) {
             groups = groupService.findGroupWith(search, account);
         }
-        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
+        model.addAttribute("account", account);
         model.addAttribute("gruppen", groups);
         return "search";
     }
