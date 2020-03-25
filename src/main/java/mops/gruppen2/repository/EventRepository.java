@@ -31,4 +31,13 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
     @Query("SELECT * FROM event WHERE event_type = :type")
     List<EventDTO> findAllEventsByType(@Param("type") String type);
+
+    @Query("SELECT *  FROM event WHERE event_type = :type AND user_id = :userId")
+    List<EventDTO> findEventsByTypeAndUserId(@Param("type") String type, @Param("userId") String userId);
+
+    @Query("SELECT COUNT(*) FROM event WHERE event_type = :type AND group_id = :groupId")
+    Long countEventsByTypeAndGroupId(@Param("type") String type, @Param("groupId") String groupId);
+
+    @Query("SELECT COUNT(*) FROM event WHERE group_id = :groupId AND user_id = :userId AND event_type = :type")
+    Long countEventsByGroupIdAndUserIdAndEventType(@Param("groupId") String groupId, @Param("userId") String userId, @Param("type") String type);
 }

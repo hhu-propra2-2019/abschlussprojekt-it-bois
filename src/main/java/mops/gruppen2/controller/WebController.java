@@ -199,12 +199,14 @@ public class WebController {
                             Model model,
                             @RequestParam(value = "suchbegriff", required = false) String search) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        List<Group> groupse = new ArrayList<>();
+
+        List<Group> groups = new ArrayList<>();
         if (search != null) {
-            groupse = groupService.findGroupWith(search, account);
+            groups = groupService.findGroupWith(search, account);
         }
+
         model.addAttribute("account", account);
-        model.addAttribute("gruppen", groupse);
+        model.addAttribute("gruppen", groups);
         return "search";
     }
 
