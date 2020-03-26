@@ -1,7 +1,6 @@
 package mops.gruppen2.service;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -93,8 +92,6 @@ public class ControllerService {
         userMaximum = adjustUserMaximum((long) newUsers.size(), 1L, userMaximum);
 
         UUID groupId = createGroup(account, title, description, isVisibilityPrivate, isLecture, isMaximumInfinite, userMaximum, parent);
-
-        inviteService.createLink(groupId);
 
         addUserList(newUsers, groupId);
     }

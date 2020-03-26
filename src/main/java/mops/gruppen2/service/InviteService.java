@@ -1,6 +1,8 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.domain.dto.InviteLinkDTO;
+import mops.gruppen2.domain.exception.InvalidInviteException;
+import mops.gruppen2.domain.exception.NoInviteExistException;
 import mops.gruppen2.repository.InviteRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +24,22 @@ public class InviteService {
     }
 
     public UUID getGroupIdFromLink(String link) {
-        return UUID.fromString(inviteRepository.findGroupIdByLink(link));
+        try {
+            return UUID.fromString(inviteRepository.findGroupIdByLink(link));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        throw new InvalidInviteException(link);
     }
 
-    public String getLinkFromGroupId(UUID groupId) {
-        return inviteRepository.findLinkByGroupId(groupId.toString());
-    }
+    public String getLinkByGroupId(UUID groupId) {
+        try {
+            return inviteRepository.findLinkByGroupId(groupId.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        throw new NoInviteExistException(groupId.toString());
+    }
 }

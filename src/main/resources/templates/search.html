@@ -69,7 +69,7 @@
                             <span class="badge badge-pill badge-success"
                                   style="background: lightseagreen; margin-right: 25px;"
                                   th:if='${gruppe.getType() == gruppe.getType().LECTURE}'>Veranstaltung</span>
-                            <a th:href="@{/gruppen2/detailsSearch(link=${inviteService.getLinkFromGroupId(gruppe.getId())})}"
+                            <a th:href="@{/gruppen2/detailsSearch(id=${gruppe.getId()})}"
                                th:text="${#strings.abbreviate(gruppe.getTitle(), 50)}">Gruppenname</a>
                         </th>
                         <td style="" th:text="${#strings.abbreviate(gruppe.getDescription(), 50)}">

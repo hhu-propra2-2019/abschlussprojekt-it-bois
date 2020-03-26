@@ -3,11 +3,15 @@ package mops.gruppen2.controller;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
-import mops.gruppen2.domain.dto.InviteLinkDTO;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.PageNotFoundException;
 import mops.gruppen2.security.Account;
-import mops.gruppen2.service.*;
+import mops.gruppen2.service.ControllerService;
+import mops.gruppen2.service.GroupService;
+import mops.gruppen2.service.InviteService;
+import mops.gruppen2.service.KeyCloakService;
+import mops.gruppen2.service.UserService;
+import mops.gruppen2.service.ValidationService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -191,8 +195,11 @@ public class WebController {
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
-    @GetMapping("/details/{link}")
-    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, HttpServletRequest request, @PathVariable("link") String groupId) throws EventException {
+    @GetMapping("/details/{id}")
+    public String showGroupDetails(KeycloakAuthenticationToken token,
+                                   Model model,
+                                   HttpServletRequest request,
+                                   @PathVariable("id") String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
 
         Group group = userService.getGroupById(UUID.fromString(groupId));
@@ -219,7 +226,7 @@ public class WebController {
 
         String actualURL = request.getRequestURL().toString();
         String serverURL = actualURL.substring(0, actualURL.indexOf("gruppen2/"));
-        model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + groupId);
+        model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + inviteService.getLinkByGroupId(group.getId()));
 
         return "detailsMember";
     }
@@ -227,11 +234,11 @@ public class WebController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/detailsBeitreten")
     public String joinGroup(KeycloakAuthenticationToken token,
-                            Model model, @RequestParam("link") String link) throws EventException {
+                            Model model, @RequestParam("id") String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        Group group = userService.getGroupById(inviteService.getGroupIdFromLink(link));
+        Group group = userService.getGroupById(UUID.fromString(groupId));
         validationService.checkIfUserInGroupJoin(group, user);
         validationService.checkIfGroupFull(group);
         controllerService.addUser(account, group.getId());
@@ -260,12 +267,16 @@ public class WebController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/acceptinvite/{link}")
     public String acceptInvite(KeycloakAuthenticationToken token,
-                               Model model, @PathVariable String link) throws EventException {
+                               Model model,
+                               @PathVariable("link") String link) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(inviteService.getGroupIdFromLink(link));
         validationService.checkGroup(group.getTitle());
         model.addAttribute("group", group);
-        return "redirect:/gruppen2/detailsSearch?id=" + group.getId();
+
+        controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), group.getId());
+
+        return "redirect:/gruppen2/details/" + group.getId();
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
