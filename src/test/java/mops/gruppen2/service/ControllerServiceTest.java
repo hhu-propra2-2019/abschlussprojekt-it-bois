@@ -31,8 +31,7 @@ import static org.mockito.Mockito.mock;
 @Transactional
 @Rollback
 class ControllerServiceTest {
-    Faker faker;
-    Account account;
+    Account account, account2;
     ControllerService controllerService;
     EventService eventService;
     UserService userService;
@@ -41,8 +40,6 @@ class ControllerServiceTest {
     GroupService groupService;
     @Autowired
     JsonService jsonService;
-
-
 
     @BeforeEach
     void setUp() {
@@ -53,6 +50,7 @@ class ControllerServiceTest {
         Set<String> roles = new HashSet<>();
         roles.add("l");
         account = new Account("ich", "ich@hhu.de", "l", "ichdude", "jap", roles);
+        account2 = new Account("ich2", "ich2@hhu.de", "l", "ichdude2", "jap2", roles);
     }
 
     @Test
@@ -100,6 +98,58 @@ class ControllerServiceTest {
     }
 
     @Test
+    void createPrivateGroupWithParentAndLimitedNumberTest() throws IOException {
+        eventRepository.deleteAll();
+        controllerService.createOrga(account2, "test", "hi", null, null, true, null, null);
+        List<Group> groups1= userService.getUserGroups(new User(account2.getName(),account2.getGivenname(),account2.getFamilyname(),account2.getEmail()));
+        controllerService.createGroup(account,"test", "hi", true, null, 20L, groups1.get(0).getId());
+        List<Group> groups = userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
+        assertEquals(Visibility.PRIVATE, groups.get(0).getVisibility());
+        assertEquals(20L, groups.get(0).getUserMaximum()); //100k ist "maximum"
+        assertEquals(groups1.get(0).getId(),groups.get(0).getParent());
+    }
+
+    @Test
+    void createPublicGroupWithParentAndLimitedNumberTest() throws IOException {
+        eventRepository.deleteAll();
+        controllerService.createOrga(account2, "test", "hi", null, null, true, null, null);
+        List<Group> groups1= userService.getUserGroups(new User(account2.getName(),account2.getGivenname(),account2.getFamilyname(),account2.getEmail()));
+        controllerService.createGroup(account,"test", "hi", null, null, 20L, groups1.get(0).getId());
+        List<Group> groups = userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
+        assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());
+        assertEquals(20L, groups.get(0).getUserMaximum()); //100k ist "maximum"
+        assertEquals(groups1.get(0).getId(),groups.get(0).getParent());
+    }
+
+    @Test
+    void createPublicGroupWithParentAndUnlimitedNumberTest() throws IOException {
+        eventRepository.deleteAll();
+        controllerService.createOrga(account2, "test", "hi", null, null, true, null, null);
+        List<Group> groups1= userService.getUserGroups(new User(account2.getName(),account2.getGivenname(),account2.getFamilyname(),account2.getEmail()));
+        controllerService.createGroup(account,"test", "hi", null, true, null, groups1.get(0).getId());
+        List<Group> groups = userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
+        assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());
+        assertEquals(100000L, groups.get(0).getUserMaximum()); //100k ist "maximum"
+        assertEquals(groups1.get(0).getId(),groups.get(0).getParent());
+    }
+
+    @Test
+    void createPrivateGroupWithParentAndUnlimitedNumberTest() throws IOException {
+        eventRepository.deleteAll();
+        controllerService.createOrga(account2, "test", "hi", null, null, true, null, null);
+        List<Group> groups1= userService.getUserGroups(new User(account2.getName(),account2.getGivenname(),account2.getFamilyname(),account2.getEmail()));
+        controllerService.createGroup(account,"test", "hi", true, true, null, groups1.get(0).getId());
+        List<Group> groups = userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
+        assertEquals(Visibility.PRIVATE, groups.get(0).getVisibility());
+        assertEquals(100000L, groups.get(0).getUserMaximum()); //100k ist "maximum"
+        assertEquals(groups1.get(0).getId(),groups.get(0).getParent());
+    }
+
+    @Test
     void createPublicOrgaGroupWithNoParentAndLimitedNumberTest() throws IOException {
         eventRepository.deleteAll();
         controllerService.createOrga(account, "test", "hi", null, null, null, 20L, null);
@@ -134,6 +184,46 @@ class ControllerServiceTest {
         assertEquals(20L, groups.get(0).getUserMaximum());
         assertNull(groups.get(0).getParent());
     }
+
+    @Test
+    void createPrivateOrgaGroupWithNoParentAndUnlimitedNumberTest() throws IOException {
+        eventRepository.deleteAll();
+        controllerService.createOrga(account, "test", "hi", true, null, true, null, null);
+        List<Group> groups= userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
+        assertEquals(GroupType.SIMPLE, groups.get(0).getType());
+        assertEquals(Visibility.PRIVATE, groups.get(0).getVisibility());
+        assertEquals(100000L, groups.get(0).getUserMaximum());
+        assertNull(groups.get(0).getParent());
+    }
+
+    @Test
+    void createOrgaLectureGroupAndLimitedNumberTest() throws IOException {
+        eventRepository.deleteAll();
+        controllerService.createOrga(account, "test", "hi", null, true, null, 20L, null);
+        List<Group> groups= userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
+        assertEquals(GroupType.LECTURE, groups.get(0).getType());
+        assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());
+        assertEquals(20L, groups.get(0).getUserMaximum());
+        assertNull(groups.get(0).getParent());
+    }
+
+    @Test
+    void createOrgaLectureGroupAndUnlimitedNumberTest() throws IOException {
+        eventRepository.deleteAll();
+        controllerService.createOrga(account, "test", "hi", null, true, true, null, null);
+        List<Group> groups= userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
+        assertEquals(GroupType.LECTURE, groups.get(0).getType());
+        assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());
+        assertEquals(100000L, groups.get(0).getUserMaximum());
+        assertNull(groups.get(0).getParent());
+    }
+
+
+
+
 
     void testTitleAndDescription(String title, String description) {
         assertEquals("test", title);
