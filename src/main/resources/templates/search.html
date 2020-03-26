@@ -10,7 +10,8 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li>
                 <a th:href="@{/gruppen2}" href="/">Gruppen</a>
@@ -32,20 +33,26 @@
         <div class="row">
             <div class="col-10">
                 <h1>Gruppensuche</h1>
-                <form action="/gruppen2/findGroup" method="get">
-                    <div class="shadow-sm p-2" style="border: 10px solid aliceblue; border-radius: 5px; background: aliceblue">
-                        <div class="form-group">
-                            <label for="suchleiste">Suchbegriff:</label>
-                            <input class="form-control" id="suchleiste"
-                                   placeholder="z.B. Programmieren, Lerngruppe, ..."
-                                   th:name="suchbegriff" type="text">
-                        </div>
-                        <button class="btn btn-primary"
-                                style="background: #52a1eb; border-style: none"
-                                type="submit">Suchen
-                        </button>
-                    </div>
-                </form>
+                <div class="shadow-sm p-2"
+                     style="border: 10px solid aliceblue; border-radius: 5px; background: aliceblue">
+                        <form action="/gruppen2/findGroup" method="get">
+                            <div class="form-group">
+                                <label for="suchleiste">Suchbegriff:</label>
+                                <input class="form-control" id="suchleiste"
+                                       placeholder="z.B. Programmieren, Lerngruppe, ..."
+                                       th:name="suchbegriff" type="text">
+                            </div>
+                            <button class="btn btn-primary"
+                                    style="background: #52a1eb; border-style: none"
+                                    type="submit">Suchen
+                            </button>
+                            <button class="btn btn-primary"
+                                    style="background: deepskyblue; border-style: none"
+                                    type="submit">
+                                <a style="color: white" href="/gruppen2/findGroup?suchbegriff=">Alle anzeigen</a>
+                            </button>
+                        </form>
+                </div>
                 <br>
                 <table class="table">
                     <!-- Erscheint dann, wenn man "Suchen" Button klickt und Ergebnisse angezeigt werden, aber so solls aussehen -->
