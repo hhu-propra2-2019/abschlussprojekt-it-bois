@@ -9,7 +9,8 @@ Architekturtests erweitert und umstrukturiert, neue tests für die deserialisier
 
 = ProjectionService
 
-Die Eventliste wird komplett gelesen und zu gruppen verarbeitet Außerdem kann man Gruppen IDs nach User erhalten
+Die Eventliste wird komplett gelesen und zu gruppen verarbeitet
+Außerdem kann man Gruppen IDs nach User erhalten
 
 = UI
 

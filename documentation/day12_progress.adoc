@@ -1,29 +1,21 @@
 = Tag 12
 
 == Backend
-
-zeiHeute haben wir uns darum gekümmert eine Veranstaltung mit einer csv Datei zu erstellen.
-Außerdem haben wir die Suchfunktion verbessert.
+zeiHeute haben wir uns darum gekümmert eine Veranstaltung mit einer csv Datei zu erstellen. Außerdem haben wir die Suchfunktion verbessert.
 Bedeutet Groß und Kleinschreibung wird ignoriert, damit eine bessere suche möglich ist.
 Außerdem haben wir die Suchfunktion verbessert.
 
 == Frontend
-
-Heute haben wir die Templates für das Editieren von Mitgliedern der Gruppe fertiggestellt und den entsprechenden Buttons ihre Funktion gegeben.
-Das Frontend ist nun im groben fertig, es fehlt nur noch der Feinschliff.
+Heute haben wir die Templates für das Editieren von Mitgliedern der Gruppe fertiggestellt und den entsprechenden Buttons ihre Funktion gegeben. Das Frontend ist nun im groben fertig, es fehlt nur noch der Feinschliff.
 Außerdem haben wir einige Changes am Styling gemacht, damit alles konsistenter und schöner aussieht.
 
 == CSv-Import
-
 Heute haben wir uns darum gekümmert eine Veranstaltung mit einer csv Datei zu erstellen.
 Außerdem kann jetzt ein orga auch in der gruppenübersicht -> mitgliedglider bearbeiten über eine csv-datei mitglieder hinzufügen.
 Wenn man die CSV-Datei auswählt wird nun ihr Name auf der website angezeigt.
 
 == Eventservice
-
 Checkgroup Methode auf Query umgestellt(performence)
 
 == ErrorHandling
-
-Errorpage angepasst und als default gesetzt.
-Außerdem die Exceptions überarbeitet, deren Message wird nun auch auf der Errorpage angezeigt.
+Errorpage angepasst und als default gesetzt. Außerdem die Exceptions überarbeitet, deren Message wird nun auch auf der Errorpage angezeigt.

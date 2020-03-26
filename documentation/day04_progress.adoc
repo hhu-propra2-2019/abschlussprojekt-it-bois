@@ -3,8 +3,7 @@
 == Datenbankschema
 
 Also wir haben wieder leichte Veränderungen am Datenbankmodell vorgenommen.
-Wir werden Eventsourcing als Persistenzmodell Verwenden.
-Die Datenbank besteht nun aus den Spalten:
+Wir werden Eventsourcing als Persistenzmodell Verwenden. Die Datenbank besteht nun aus den Spalten:
 `event_id` `group_id` `user_id` und `eventpayload`.
 
 Die Spalte `eventpayload` wird im JSON-Format representiert und beinhaltet alle Infos zu veränderungen.
@@ -23,6 +22,7 @@ Ganz vorne steht die Action die stattfand, welche wir in 7 mögliche Actions unt
 Wir verwenden nun einen Datentyp `Event` um die verschiedenen Events zu handleln.
 Es wird eine Eventliste als Parameter an eine überladene Methode in die `Gruppe` Klasse übergeben.
 Vom Datentyp Event erben die Verschiedenen Events die wir in der DB haben und haben einen entsprechenden Konstruktor:
+
 
     public class CreateGroupEvent extends Event {
     String titel;

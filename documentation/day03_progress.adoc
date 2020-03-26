@@ -2,9 +2,7 @@
 
 == Datenbankschema
 
-Mit Jens' Input haben wir uns beim Datenbankschema umentschieden.
-Wir werden eine Tabelle nutzen die die alle Operationen chronologisch speichert.
-Die Operationen beinhalten:
+Mit Jens' Input haben wir uns beim Datenbankschema umentschieden. Wir werden eine Tabelle nutzen die die alle Operationen chronologisch speichert. Die Operationen beinhalten:
 
 - `add Student`
 - `del Student`
@@ -21,12 +19,7 @@ Dazu kommen noch weitere Spalten wie StudentID, StudentName und GroupID. So kann
 
 == Schnittstelle (Idee)
 
-Wir wollen anderen Gruppen die gesamte history, abhängig von der letzten ID die sie an uns mit einem Request schicken, schicken.
-Die Implementierung und das Handling in ihrem eigenen Modul wollen wir momentan noch ihnen überlassen.
-Also würden wir die Daten nicht Verarbeiten bevor wir sie rausgeben.
-Falls das Verarbeiten der Daten am Ende der Nutzer zu lange Dauert könnte man darüber nachdenken die Daten im eigenen Modul zu cachen und kompakter rauszugeben
+Wir wollen anderen Gruppen die gesamte history, abhängig von der letzten ID die sie an uns mit einem Request schicken, schicken. Die Implementierung und das Handling in ihrem eigenen Modul wollen wir momentan noch ihnen überlassen. Also würden wir die Daten nicht Verarbeiten bevor wir sie rausgeben. Falls das Verarbeiten der Daten am Ende der Nutzer zu lange Dauert könnte man darüber nachdenken die Daten im eigenen Modul zu cachen und kompakter rauszugeben
 
 == Spotbugs
-
-- Das reportlevel = "high" von spotbugs entfernt.
-Vorher hat spotbugs eine arrayOutOfBound nicht gemeldet.
+- Das reportlevel = "high" von spotbugs entfernt. Vorher hat spotbugs eine arrayOutOfBound nicht gemeldet.

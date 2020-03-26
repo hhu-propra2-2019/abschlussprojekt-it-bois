@@ -20,7 +20,7 @@ public class UpdateGroupTitleEvent extends Event {
 
     public UpdateGroupTitleEvent(UUID groupId, String userId, String newGroupTitle) {
         super(groupId, userId);
-        this.newGroupTitle = newGroupTitle;
+        this.newGroupTitle = newGroupTitle.trim();
     }
 
     @Override

@@ -1,15 +1,13 @@
 = Tag 7
 
 == Heute haben wir über die Struktur diskutiert. Wir sind zum folgenden Ergebnis gekommen:
-
 * Wir haben uns für zwei Maps entschieden
 ** 1. In der einen Map mappen wir die group_id mit der Gruppe.
 ** 2. In der anderen Map mappen wir die user_id mit einer Liste von Gruppen ids.
 ** Beide Maps haben die Funktion, schneller auf die Gruppen zuzugreifen.
 
-Dafür haben wir einen neuen Branch erstellt und ein paar Funktionen implementiert.
-Danach haben wir nochmal Rücksprache mit Jens und Christian gehalten und gemerkt, dass die Implementierung über Maps nicht so vorteilhaft ist wie wir gedacht haben.
-Der Code wäre zu verwirrend und unübersichtlich.
+Dafür haben wir einen neuen Branch erstellt und ein paar Funktionen implementiert. 
+Danach haben wir nochmal Rücksprache mit Jens und Christian gehalten und gemerkt, dass die Implementierung über Maps nicht so vorteilhaft ist wie wir gedacht haben. Der Code wäre zu verwirrend und unübersichtlich.
 Auch wenn wir es so weitermachen könnten, haben wir uns für die Idee mit den Querys entschieden, da wir das als übersichtlicher empfinden.
 
 Ebenfalls haben wir die Readme geschrieben.

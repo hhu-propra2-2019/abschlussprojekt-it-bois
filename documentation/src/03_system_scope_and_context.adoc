@@ -6,17 +6,15 @@
 === Fachlicher Kontext
 
 
+image::fachlicher_kontext.png[]
 
-**<Diagramm und/oder Tabelle>**
-
-**<optional: Erläuterung der externen fachlichen Schnittstellen>**
+Das System wird vom User bedient. Externe Systeme, die Daten von unserem System anfordern, sind die angegebenen. Diese werden ebenfalls im Rahmen des Praktikums entwickelt.
 
 === Technischer Kontext
 
 
+image:technischer_kontext.png[]
 
-**<Diagramm oder Tabelle>**
+Das System erhält Authentifikationsinformationen von einem universitätsinternen Keycloak-Server. Damit können sich die User anmelden. Außerdem erhält es von den anderen Systemen die CSV-Dateien, die die Mitglieder, die einer Gruppe hinzugefügt werden sollen, angibt.
 
-**<optional: Erläuterung der externen technischen Schnittstellen>**
-
-**<Mapping fachliche auf technische Schnittstellen>**
+Die User erhält das System somit von Keycloak, den Input der externen Systeme in Form von CSV-Dateien.

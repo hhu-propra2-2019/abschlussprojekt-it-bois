@@ -1,22 +1,14 @@
 = Tag 11
 
 == Frontend
-
-Heute haben wir eine Seite zum Bearbeiten der Mitglieder eine Gruppe mit den entsprechenden Controllern geschrieben.
-Außerdem haben wir das Styling aller Seiten vereinheitlicht.
+Heute haben wir eine Seite zum Bearbeiten der Mitglieder eine Gruppe mit den entsprechenden Controllern geschrieben. Außerdem haben wir das Styling aller Seiten vereinheitlicht.
 
 == InviteLink
 
 Es wird nun beim erstellen einer privaten Gruppe ein Einladungslink erstellt, der zusammen mit der zugehörigen GroupID in einer seperaten Tabelle gespeichert wird.
-Der Link soll Admins auf der Detailsseite der Gruppe angezeigt werden.
-Über den Link kommt man dann zur Beitrittsseite der jeweiligen Gruppe.
+Der Link soll Admins auf der Detailsseite der Gruppe angezeigt werden. Über den Link kommt man dann zur Beitrittsseite der jeweiligen Gruppe.
 Bei dem Löschen der Gruppe muss in Zukunft auch noch das löschen des Links hinzugefügt werden.
 
 == Backend
-
-Heute haben wir alte Fehlermeldungen implementiert.
-Wir haben außerdem das beitreten in eine Gruppe über die UI implementiert.
-Zudem haben wir angefangen eine extra Seite zu erstellen, wo man Gruppen über eine csv Datei eine Gruppe erstellen kann.
-Dort hatten wir Schwierigkeiten einen Button je nach Role des Users anzeigen zu lassen.
-Das Problem lag im th:if.
-Dort hatten wir anstatt das ' ' -> " "
+Heute haben wir alte Fehlermeldungen implementiert. Wir haben außerdem das beitreten in eine Gruppe über die UI implementiert.
+Zudem haben wir angefangen eine extra Seite zu erstellen, wo man Gruppen über eine csv Datei eine Gruppe erstellen kann. Dort hatten wir Schwierigkeiten einen Button je nach Role des Users anzeigen zu lassen. Das Problem lag im th:if. Dort hatten wir anstatt das ' ' -> " "   

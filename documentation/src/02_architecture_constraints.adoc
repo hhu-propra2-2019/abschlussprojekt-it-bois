@@ -1,4 +1,28 @@
 [[section-architecture-constraints]]
 == Randbedingungen
 
+=== Technische Randbedingungen
 
+[cols="1,2" options="header"]
+|===
+|Randbedingung |Erläuterung und Hintergrund
+|Niedrige Hardwareanforderungen |Da nicht von jedem Studenten erwartet werden kann, sich einen PC mit starker Hardware zuzulegen, muss das System auch in Kombination mit Hardware von geringerer Leistung gut funktionieren.
+|Betrieb auf allen standartmäßigen browserfähigen Geräten |Da die geschriebene Software eine Webanwendung ist, deren Darstellung nur über Websites funktioniert, ist es auf jedem browserfähigen Gerät möglich, sie zu verwenden. Unter anderem sind demnach Apple, Windows, Linux unterstützte Betriebssysteme.
+|Implementierung in Java, Darstellung durch HTML |Die Funktionalität der Software ist vollständig mit Java 11 implementiert. In der Anwendung wird die Software durch HTML sichtbar gemacht.
+|Anbindung an andere MOPS-Komponenten durch Links |Da die Software ein Teil des MOPS-Moduls ist, ist die Kommunikation mit den anderen Komponenten gewährleistet. Die Weiterleitung erfolgt über Links.
+|Keine Verwendung von fremder Software außerhalb des MOPS-Moduls |Abgesehen von den anderen Komponenten des MOPS-Moduls wird keine Fremdsoftware verwendet.
+|===
+
+=== Organisatorische Randbedingungen
+
+[cols="1, 2" options="header"]
+|===
+|Randbedingung |Erläuterung und Hintergrund
+|Team |Team IT-Bois der Veranstaltung "Programmierpraktikum 2"
+|Zeitplan |Beginn der Entwicklung am 2. März 2020, Ende der Entwicklung am 27. März 2020. Abgabe der Software am letzten Tag.
+|Vorgehensmodell |Testorientierte Entwicklung, also Schreiben der Tests vor oder während der Implementierung der Funktionalität. Zur Dokumentation wird das arc42-Modell verwendet. Die vollständige Dokumentation ist eins der Ziele des Praktikums.
+|Entwicklungswerkzeuge |Erstellen der Grundidee durch Tafelbilder, die von Teammitgliedern entworfen werden. Implementierung der Quelltexte in IntelliJ, außerdem Einbindung vom Spring Framework.
+|Konfigurations- und Versionsverwaltung |Verwendung von Github während des gesamten Praktikums.
+|Testwerkzeuge und -prozesse |JUnit 5 für automatisiertes Testing, Checkstyle und Spotbugs für das Prüfen des Quellcodes. Alle Tests, Checkstyle und Spotbugs und die Continuous Integration (lässt Tests der Anwendung laufen) prüfen den Code vor dem Merge in den Master-Branch.
+|Veröffentlichung als Werkzeug der Universität |Die Quelltexte werden nach Abgabe der Lösung der Universität übergeben.
+|===
