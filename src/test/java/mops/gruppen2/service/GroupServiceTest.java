@@ -48,7 +48,6 @@ class GroupServiceTest {
     @BeforeEach
     void setUp() {
         groupService = new GroupService(eventService, eventRepository);
-        eventRepository.deleteAll();
     }
 
     //TODO: Wofür ist dieser Test?

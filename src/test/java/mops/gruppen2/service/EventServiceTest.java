@@ -40,7 +40,6 @@ class EventServiceTest {
     @BeforeEach
     void setUp() {
         eventService = new EventService(jsonService, eventRepository);
-        eventRepository.deleteAll();
     }
 
     @Test

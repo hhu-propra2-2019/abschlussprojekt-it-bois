@@ -41,6 +41,10 @@ public class UserService {
         return newGroups;
     }
 
+    public List<Group> getUserGroups(String userId) throws EventException {
+        return getUserGroups(new User(userId, null, null, null));
+    }
+
     public Group getGroupById(UUID groupId) throws EventException {
         List<UUID> groupIds = new ArrayList<>();
         groupIds.add(groupId);
