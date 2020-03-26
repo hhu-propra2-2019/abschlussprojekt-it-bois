@@ -1,19 +1,21 @@
 package mops.gruppen2.service;
 
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.exception.*;
+import mops.gruppen2.domain.exception.BadParameterException;
+import mops.gruppen2.domain.exception.GroupFullException;
+import mops.gruppen2.domain.exception.GroupNotFoundException;
+import mops.gruppen2.domain.exception.NoAccessException;
+import mops.gruppen2.domain.exception.NoAdminAfterActionException;
+import mops.gruppen2.domain.exception.NoValueException;
+import mops.gruppen2.domain.exception.UserAlreadyExistsException;
+import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.StyledEditorKit;
-import javax.validation.ValidationException;
-import java.io.CharConversionException;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -47,13 +49,17 @@ public class ValidationService {
     }
 
     public void checkGroup(String title) {
-        if (title == null) throw new GroupNotFoundException("@details");
+        if (title == null) {
+            throw new GroupNotFoundException("@details");
+        }
     }
 
     public boolean checkIfUserInGroup(Group group, User user) {
         if (!group.getMembers().contains(user) && group.getVisibility() == Visibility.PRIVATE) {
             throw new NoAccessException("");
-        } else return group.getMembers().contains(user);
+        } else {
+            return group.getMembers().contains(user);
+        }
     }
 
     public Group checkParent(UUID parentId) {
@@ -118,9 +124,10 @@ public class ValidationService {
 
     /**
      * Überprüft ob alle Felder richtig gesetzt sind.
-     * @param description
-     * @param title
-     * @param userMaximum
+     *
+     * @param description Die Beschreibung der Gruppe
+     * @param title Der Titel der Gruppe
+     * @param userMaximum Das user Limit der Gruppe
      */
     public void checkFields(String description, String title, Long userMaximum, Boolean maxInfiniteUsers) {
         if (description == null || description.trim().length() == 0) {

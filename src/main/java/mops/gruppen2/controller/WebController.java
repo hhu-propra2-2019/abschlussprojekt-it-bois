@@ -6,13 +6,22 @@ import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.PageNotFoundException;
 import mops.gruppen2.security.Account;
-import mops.gruppen2.service.*;
+import mops.gruppen2.service.ControllerService;
+import mops.gruppen2.service.GroupService;
+import mops.gruppen2.service.KeyCloakService;
+import mops.gruppen2.service.UserService;
+import mops.gruppen2.service.ValidationService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -209,8 +218,8 @@ public class WebController {
         model.addAttribute("user", user);
         model.addAttribute("admin", Role.ADMIN);
 
-        String URL = request.getRequestURL().toString();
-        String serverURL = URL.substring(0, URL.indexOf("gruppen2/"));
+        String actualURL = request.getRequestURL().toString();
+        String serverURL = actualURL.substring(0, actualURL.indexOf("gruppen2/"));
         model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + groupId);
 
         return "detailsMember";
@@ -237,10 +246,11 @@ public class WebController {
                                            @RequestParam("id") String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(UUID.fromString(groupId));
+        validationService.checkIfGroupFull(group);
+
         UUID parentId = group.getParent();
         Group parent = validationService.checkParent(parentId);
 
-        validationService.checkIfGroupFull(group);
         model.addAttribute("group", group);
         model.addAttribute("parentId", parentId);
         model.addAttribute("parent", parent);
