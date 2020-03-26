@@ -6,13 +6,16 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
+import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.repository.EventRepository;
 import mops.gruppen2.security.Account;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(SpringExtension.class)
@@ -213,7 +215,7 @@ class ControllerServiceTest {
     void createOrgaLectureGroupAndUnlimitedNumberTest() throws IOException {
         eventRepository.deleteAll();
         controllerService.createOrga(account, "test", "hi", null, true, true, null, null);
-        List<Group> groups= userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        List<Group> groups=userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(GroupType.LECTURE, groups.get(0).getType());
         assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());
@@ -221,8 +223,26 @@ class ControllerServiceTest {
         assertNull(groups.get(0).getParent());
     }
 
+    @Test
+    public void deleteUserTest() {
+        eventRepository.deleteAll();
+        controllerService.createGroup(account,"test", "hi", true, true, null, null);
+        List<Group> groups=userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
+        controllerService.addUser(account2,groups.get(0).getId());
+        controllerService.deleteUser(account.getName(), groups.get(0).getId());
+        assertTrue(userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail())).isEmpty());
+    }
 
+    @Disabled
+    @Test
+    public void deleteNonUserTest() {
+        eventRepository.deleteAll();
+        controllerService.createGroup(account,"test", "hi", true, true, null, null);
+        List<Group> groups=userService.getUserGroups(new User(account.getName(),account.getGivenname(),account.getFamilyname(),account.getEmail()));
 
+        Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.deleteUser(account2.getName(), groups.get(0).getId()));
+        assertEquals(HttpStatus.NOT_FOUND, "Der User wurde nicht gefunden.    (class mops.gruppen2.service.ControllerService)", exception.getMessage()); //noch fixen
+    }
 
 
     void testTitleAndDescription(String title, String description) {
