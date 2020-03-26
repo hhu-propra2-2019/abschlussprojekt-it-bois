@@ -1,0 +1,19 @@
+= Tag 15
+
+== Event 
+
+Heute haben wir ein neues Event hinzugefügt. Dieses bewirkt das man die maximale Teilnehmer Zahl ändern kann.
+
+== Fehler
+
+Heute haben wir Fehler die mit dem neuen Event aufgetaucht sind behoben. Außerdem auch andere die uns jetzt erst aufgefallen sind.
+Wir haben heute angefangen unsere Tests zu refactorn.
+
+== Invite Link
+Der Einladungslink von privaten Gruppen wird nun auf der Details Seite angezeigt und kann per Button
+kopiert werden. Die Server URL ist bei Verbindung über localhost aber noch fehlerhaft. Um dies zu beheben
+wurde localhost gehardcoded, was unbedingt am Ende entfernt werden sollte.
+
+== Frontend
+Heute haben wir einen Scrollbar für die Mitgliederliste eingefügt und das Styling bei "EditMembers.html" angepasst.
+
