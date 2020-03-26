@@ -38,7 +38,8 @@
         <div class="row">
             <div class="col-10">
                 <h1>Gruppenerstellung</h1>
-                <form method="post" action="/gruppen2/createOrga" enctype="multipart/form-data">
+                <form enctype="multipart/form-data" method="post"
+                      th:action="@{/gruppen2/createOrga}">
                     <div class="shadow-sm p-2"
                          style=" border: 10px solid aliceblue; background: aliceblue">
                         <div class="form-group">

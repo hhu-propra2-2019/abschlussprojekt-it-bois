@@ -35,7 +35,7 @@
                 <h1>Gruppensuche</h1>
                 <div class="shadow-sm p-2"
                      style="border: 10px solid aliceblue; border-radius: 5px; background: aliceblue">
-                        <form action="/gruppen2/findGroup" method="get">
+                        <form method="get" th:action="@{/gruppen2/findGroup}">
                             <div class="form-group">
                                 <label for="suchleiste">Suchbegriff:</label>
                                 <input class="form-control" id="suchleiste"

@@ -83,15 +83,16 @@
                             style="background: #52a1eb; border: none; margin: 5px">
                         <a style="color: white" th:href="@{/gruppen2}">Zurück</a>
                     </button>
-                    <form action="/gruppen2/leaveGroup" method="post">
+                    <form method="post" th:action="@{/gruppen2/leaveGroup}">
                         <button class="btn btn-danger" style="border-style: none; margin: 5px"
                                 th:name="group_id" th:value="${group.getId()}"
                                 type="submit">Gruppe verlassen
                         </button>
                     </form>
-                    <form action="/gruppen2/deleteGroup" method="post">
+                    <form method="post" th:action="@{/gruppen2/deleteGroup}">
                         <button class="btn btn-danger" style="border-style: none; margin: 5px"
-                                th:name="group_id" th:value="${group.getId()}" th:if="${group.getRoles().get(user.getId()) == admin}"
+                                th:name="group_id" th:value="${group.getId()}"
+                                th:if="${group.getRoles().get(user.getId()) == admin}"
                                 type="submit">Gruppe löschen
                         </button>
                     </form>
@@ -132,7 +133,7 @@
     </div>
     <script>
         function copyLink() {
-            var copyText = document.getElementById("groupLink");
+            const copyText = document.getElementById("groupLink");
 
             copyText.select();
             copyText.setSelectionRange(0, 99999);
