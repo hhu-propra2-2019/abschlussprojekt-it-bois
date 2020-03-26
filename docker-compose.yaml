@@ -10,12 +10,14 @@ services:
     restart: always
     volumes:
       - './mysql/db/storage:/var/lib/mysql'
+      - './mysql/db/entrypoint:/docker-entrypoint-initdb.d/'
     ports:
       - '3306:3306'
-  gruppen2app:
+  gruppenapp:
     build: .
-    container_name: 'gruppen2app'
+    container_name: 'gruppenapp'
     depends_on:
       - dbmysql
+    command: ["/app/wait-for-it.sh", "dbmysql:3306", "--", "java", "-Dspring.profiles.active=docker", "-jar", "/app/gruppen2.jar"]
     ports:
       - '8081:8080'
