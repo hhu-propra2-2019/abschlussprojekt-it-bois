@@ -18,6 +18,7 @@ import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
+import org.keycloak.jose.jwk.JWK;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,7 +62,7 @@ public class ControllerService {
         Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
         UUID groupId = UUID.randomUUID();
 
-       GroupType groupType = setGroupType(isLecture);
+        GroupType groupType = setGroupType(isLecture);
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, groupVisibility, userMaximum);
         eventService.saveEvent(createGroupEvent);
@@ -77,19 +78,32 @@ public class ControllerService {
     public void createGroupAsOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
-        List<User> userList = readCsvFile(file);
-        userMaximum = adjustUserMaximum((long) userList.size(), 1L, userMaximum);
+        List<User> newUsers = readCsvFile(file);
+
+        List<User> oldUsers = new ArrayList<>();
+        User user = new User(account.getName(), "", "", "");
+        oldUsers.add(user);
+
+        removeOldUsersFromNewUsers(oldUsers, newUsers);
+
+        userMaximum = adjustUserMaximum((long) newUsers.size(), 1L, userMaximum);
 
         UUID groupId = createGroup(account, title, description, isVisibilityPrivate, isLecture, isMaximumInfinite, userMaximum, parent);
 
-        addUserList(userList, groupId);
+        addUserList(newUsers, groupId);
+    }
+
+    private void removeOldUsersFromNewUsers(List<User> oldUsers, List<User> newUsers){
+        for(User oldUser : oldUsers) {
+            newUsers.remove(oldUser);
+        }
     }
 
 
     private Long checkInfiniteUsers(Boolean isMaximumInfinite, Long userMaximum) {
         isMaximumInfinite = isMaximumInfinite != null;
 
-        if(isMaximumInfinite) {
+        if (isMaximumInfinite) {
             userMaximum = 100000L;
         }
 
@@ -128,7 +142,7 @@ public class ControllerService {
         return new ArrayList<>();
     }
 
-    private Long adjustUserMaximum(Long newUsers, Long oldUsers, Long maxUsers){
+    private Long adjustUserMaximum(Long newUsers, Long oldUsers, Long maxUsers) {
         if (oldUsers + newUsers > maxUsers) {
             maxUsers = oldUsers + newUsers;
         }
