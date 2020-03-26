@@ -1,0 +1,21 @@
+= To Dos der Documentation
+
+== Kontextabgrenzung in 03
+
+* Fachlicher Kontext mit Diagramm
+* Technischer Kontext mit Diagramm
+
+== Blocksicht des Aufbaus in 05
+
+* 1000 verschiedene sachen
+
+== Laufzeitsicht in 06
+
+* auch todes viel
+
+== Noch ne sicht in 07
+
+* auch ass viel
+
+== Mehr Konzepte hinzufügen in 08
+

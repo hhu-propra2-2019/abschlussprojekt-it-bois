@@ -1,0 +1,30 @@
+
+= Fortschritt Tag 2
+
+=== Datenbankschema
+
+Wir haben ein simplifiziertes Datenbankschema aufgebaut um die Grundfunktionalität zu implementieren und die Entitäten implementiert.
+
+=== Dockerfile
+
+Wir haben ein Dockerfile geschrieben, welches ein jar-file baut ausführt.
+
+== API
+
+- Swagger2 für Springboot hinzugefügt und einen Beispielcontroller mit einer Produktliste erstellt.
+
+
+== Entities
+-   Entities für die Logik in der Java application erstellt
+-   ToDo: DTO klassen für das handleln der Datenbank erstellen
+
+== Checkstyle
+- nerviges Problem mit Checkstyle gefixt bei dem die Imports immer alphabetisch sortiert werden mussten(!?)
+
+== KeyCloak
+- implementiert, dass man mit einer Rolle angemeldet sein muss, um auf die index.html zu gelangen.
+- @Sessionscope mit rein gepackt, noch nicht 100% sicher ob es funktioniert
+
+== Webdesign
+- Wir haben an der index.html gearbeitet. Es gab jedoch Probleme mit Spring Security, weshalb die Änderungen nicht hochgeladen wurden.
+  Der Fehler wurde jedoch nun gefunden.
