@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <title>Gruppendetails</title>
     <th:block th:fragment="headcontent">
-        <!-- Links, Skripts, Styles hier einfügen! -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+              rel="stylesheet">
     </th:block>
 </head>
 <body>
@@ -30,37 +31,55 @@
 </header>
 <main th:fragment="bodycontent">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-9 shadow-sm p-4" style="border: 10px solid aliceblue;  border-radius: 5px; background: aliceblue">
-                <h1 style="color: black; font-weight: bold" th:text="${group.getTitle()}"></h1>
+        <div>
+            <div class="shadow-sm p-4 col-8"
+                 style="border: 10px solid aliceblue; display: inline-block; border-radius: 5px; background: aliceblue">
+                <div class="row">
+                    <div class="col-11">
+                        <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word; width: 95%"
+                            th:text="${group.getTitle()}"></h1>
+                    </div>
+                    <div class="col-1">
+                        <a class="fa fa-pencil"
+                           style="font-size:30px; width: 5%"
+                           th:href="@{/gruppen2/details/changeMetadata/{id}(id=${group.getId()})}"
+                           th:if="${roles.get(user.getId()) == admin}"></a>
+                    </div>
+                </div>
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"
                           th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
-                    <span class="badge badge-pill badge-primary"
+                    <span class="badge badge-pill badge-primary" style="background: #52a1eb"
                           th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
                     <span class="badge badge-pill badge-success" style="background: lightseagreen"
                           th:if='${group.getType() == group.getType().LECTURE}'>Veranstaltung</span>
                     <span class="badge badge-pill badge-info" style="background: mediumorchid"
                           th:text="${parent.getTitle()}">Parent</span>
-                    <div class="input-group mb-3" style="margin-top: 10px" th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
+                    <div class="input-group mb-3" style="margin-top: 10px"
+                         th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="inputGroup-sizing-default" style="background: #52a1eb">Einladungslink:</span>
+                            <span class="input-group-text" id="inputGroup-sizing-default"
+                                  style="background: #52a1eb">Einladungslink:</span>
                         </div>
-                        <input type="text" class="form-control" th:value="${link}"
-                               aria-label="Recipient's username" aria-describedby="basic-addon2" id="groupLink" style="background: white" readonly>
+                        <input aria-describedby="basic-addon2" aria-label="Recipient's username"
+                               class="form-control"
+                               id="groupLink" readonly style="background: white" th:value="${link}"
+                               type="text">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" onclick="copyLink()">Link kopieren</button>
+                            <button class="btn btn-outline-secondary" onclick="copyLink()"
+                                    type="button">Link kopieren
+                            </button>
                         </div>
                     </div>
                 </h3>
                 <br>
                 <div class="shadow-sm p-4" style="background: white">
-                    <p style="overflow-wrap: break-word" th:text="${group.getDescription()}"></p>
+                    <p style="overflow-wrap: break-word; font-optical-sizing: auto" th:text="${group.getDescription()}"></p>
                 </div>
                 <br>
                 <div class="text-right btn-toolbar" role="toolbar" style="float: right">
                     <button class="btn btn-primary"
-                            style="background: dodgerblue; border: none; margin: 5px">
+                            style="background: #52a1eb; border: none; margin: 5px">
                         <a style="color: white" th:href="@{/gruppen2}">Zurück</a>
                     </button>
                     <form action="/gruppen2/leaveGroup" method="post">
@@ -77,27 +96,27 @@
                     </form>
                 </div>
             </div>
-            <div class="col-3" style="white-space: nowrap">
-                <div style="display: inline-block; margin: 0">
-                    <h2>Mitglieder</h2>
-                    <div>
-                        <h4>
-                            <a th:text="${group.getMembers().size()}"></a>
-                            <a>von maximal</a>
-                            <a th:text="${group.getUserMaximum()}"></a>
-                            <a>Benutzern.</a>
-                        </h4>
-                    </div>
-                    <div th:if="${group.getRoles().get(user.getId()) == admin}">
-                        <form method="get"
-                              th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
-                            <button class="btn btn-secondary" style="background: slategrey; float: left">Mitglieder bearbeiten</button>
-                        </form>
-                    </div>
+            <div class="col-4" style="white-space: nowrap; float: right; background: white; display: inline-block; margin-bottom: 100px; margin-top: -8px">
+                <h2>Mitglieder</h2>
+                <div th:switch="${group.getUserMaximum() != 100000}">
+                    <h4 th:case="${true}">
+                        <a th:text="${group.getMembers().size()}"></a>
+                        <a>von maximal</a>
+                        <a th:text="${group.getUserMaximum()}"></a>
+                        <a>Benutzern.</a>
+                    </h4>
+                    <h4 th:case="${false}"> unbegrenzte Teilnehmeranzahl</h4>
+                </div>
+                <div th:if="${group.getRoles().get(user.getId()) == admin}">
+                    <form method="get"
+                          th:action="@{/gruppen2/details/members/{id}(id=${group.getId()})}">
+                        <button class="btn btn-secondary" style="background: slategrey; float: left">Mitglieder bearbeiten</button>
+                    </form>
                     <br>
                     <br>
                 </div>
-                <div>
+                <div style="overflow-y: scroll;
+                     height:60vh">
                     <ul class="list-group-flush" style="background: slategrey"
                         th:each="member : ${group.getMembers()}">
                         <li class="list-group-item" style="background: aliceblue">

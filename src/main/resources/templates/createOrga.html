@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>Gruppenerstellung</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+              rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
+        <ul>
+            <li>
+                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+            </li>
+            <li th:case="${true}" class="active">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}" class="active">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
+            </li>
+            <li>
+                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10">
+                <h1>Gruppenerstellung</h1>
+                <form method="post" action="/gruppen2/createOrga" enctype="multipart/form-data">
+                    <div class="shadow-sm p-2"
+                         style=" border: 10px solid aliceblue; background: aliceblue">
+                        <div class="form-group">
+                            <label for="titel">Titel</label>
+                            <input class="form-control" id="titel" required th:name="title"
+                                   type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Beschreibung</label>
+                            <textarea class="form-control" id="description" required
+                                      rows="3" th:name="description"></textarea>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" id="maxInfiniteUsers" th:name="maxInfiniteUsers"
+                                   type="checkbox">
+                            <label class="custom-control-label" for="maxInfiniteUsers">Anzahl unbegrenzt</label>
+                        </div>
+                        <div class="form-group mt-3" id="userMaximum">
+                            <label for="userMaximum">Teilnehmeranzahl</label>
+                            <input class="form-control" th:name="userMaximum"
+                                   type="number" min="1" max="10000">
+                        </div>
+                        <div class="custom-control custom-checkbox" id="privateCheckbox">
+                            <input class="custom-control-input" id="visibility" th:name="visibility"
+                                   type="checkbox">
+                            <label class="custom-control-label" for="visibility">Private
+                                Gruppe</label>
+                        </div>
+                        <div class="custom-control custom-checkbox" id="lectureCheckbox">
+                            <input class="custom-control-input" id="lecture" th:name="lecture"
+                                   type="checkbox">
+                            <label class="custom-control-label" for="lecture">Veranstaltung</label>
+                        </div>
+                        <div class="form-group" id="lectureParent">
+                            <label for="parent"></label>
+                            <select class="form-control" id="parent" name="parent">
+                                <option disabled selected="true">--Bitte Veranstaltung auswählen--</option>
+                                <option th:each="lecture : ${lectures}" th:name="parent" th:value="${lecture.getId()}" th:text="${lecture.getTitle()}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group pt-4">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="custom-file">
+                                        <input class="custom-file-input" id="file" th:name="file"
+                                               type="file">
+                                        <label class="custom-file-label" for="file">CSV Datei von
+                                            Mitgliedern hochladen</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group pt-4">
+                            <button class="btn btn-primary"
+                                    style="background: #52a1eb; border-style: none"
+                                    type="submit">Erstellen
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+        // Collapsing lectureParent if lecture is checked
+        $(document).ready(function () {
+            $('#lecture').change(function () {
+                $('#lectureParent').fadeToggle();
+            });
+        });
+
+        $(document).ready(function () {
+            $('#lecture').change(function () {
+                $('#privateCheckbox').fadeToggle();
+            });
+        });
+
+        $(document).ready(function () {
+            $('#visibility').change(function () {
+                $('#lectureCheckbox').fadeToggle();
+            });
+        });
+
+        $(document).ready(function () {
+            $('#maxInfiniteUsers').change(function () {
+                $('#userMaximum').fadeToggle();
+            });
+        });
+    </script>
+</main>
+</body>
+</html>

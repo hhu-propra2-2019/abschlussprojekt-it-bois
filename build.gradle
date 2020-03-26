@@ -1,25 +1,29 @@
+import com.github.spotbugs.SpotBugsTask
+
 plugins {
 	id 'org.springframework.boot' version '2.2.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
-	id 'com.github.spotbugs' version "3.0.0"
+
+	id 'com.github.spotbugs' version '3.0.0'
 	id 'checkstyle'
 }
+
+group = 'mops'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
 spotbugs{
 	ignoreFailures = true
-	effort = "max"
 	reportLevel = "high"
+	effort = "max"
 	toolVersion = '4.0.0-RC1'
 }
 
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
+tasks.withType(SpotBugsTask) {
 	reports {
-		html {
-			enabled = true
-		}
-		xml {
-			enabled = false
-		}
+		xml.enabled = false
+		html.enabled = true
 	}
 }
 
@@ -28,10 +32,6 @@ checkstyle {
 	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 	ignoreFailures = true
 }
-
-group = 'mops'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 configurations {
 	developmentOnly
@@ -59,17 +59,36 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'mops:styleguide:2.0.0'
+
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '2.2.5.RELEASE'
+
+	implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
+	implementation 'org.keycloak.bom:keycloak-adapter-bom:9.0.0'
+	implementation 'mops:styleguide:2.1.0'
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'com.github.javafaker:javafaker:1.0.2'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.10.2'
+
 	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
-	annotationProcessor 'org.projectlombok:lombok'
+	runtimeOnly 'mysql:mysql-connector-java'
+
+	compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.4.0.RELEASE'
+
+	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.10.3'
+
+	testImplementation 'org.assertj:assertj-core:3.15.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.1'
 }
 
 test {
 	useJUnitPlatform()
 }
+
