@@ -164,7 +164,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/changeMetadata")
-    public String pChangeMetadata(KeycloakAuthenticationToken token,
+    public String changeMetadata(KeycloakAuthenticationToken token,
                                   @RequestParam("title") String title,
                                   @RequestParam("description") String description,
                                   @RequestParam("groupId") String groupId) {
