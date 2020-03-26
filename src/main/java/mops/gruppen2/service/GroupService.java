@@ -39,9 +39,9 @@ public class GroupService {
     public List<Event> getGroupEvents(List<UUID> groupIds) {
         List<EventDTO> eventDTOS = new ArrayList<>();
         for (UUID groupId : groupIds) {
-            eventDTOS.addAll(eventRepository.findEventDTOByGroup_id(groupId.toString()));
+            eventDTOS.addAll(eventRepository.findEventDTOByGroupId(groupId.toString()));
         }
-        return eventService.translateEventDTOs(eventDTOS);
+        return eventService.getEventsFromDTOs(eventDTOS);
     }
 
     /**
@@ -85,11 +85,11 @@ public class GroupService {
      */
     //TODO Rename
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
-        List<Event> groupEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
-        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
-        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
-        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
-        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
+        List<Event> groupEvents = eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
 
         List<Group> visibleGroups = projectEventList(groupEvents);
 
@@ -108,10 +108,10 @@ public class GroupService {
      * @return List of groups
      */
     public List<Group> getAllLecturesWithVisibilityPublic() {
-        List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        List<Event> createEvents = eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        createEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        createEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        createEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
 
         List<Group> visibleGroups = projectEventList(createEvents);
 

@@ -69,7 +69,7 @@ class EventServiceTest {
     void getDTO() {
         Event event = createPublicGroupEvent();
 
-        EventDTO dto = eventService.getDTO(event);
+        EventDTO dto = eventService.getDTOFromEvent(event);
 
         assertThat(dto.getGroup_id()).isEqualTo(event.getGroupId().toString());
         assertThat(dto.getUser_id()).isEqualTo(event.getUserId());

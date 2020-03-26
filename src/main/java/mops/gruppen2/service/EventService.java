@@ -29,20 +29,24 @@ public class EventService {
      * @param event Event, welches gespeichert wird
      */
     public void saveEvent(Event event) {
-        eventStore.save(getDTO(event));
+        eventStore.save(getDTOFromEvent(event));
     }
 
     public void saveAll(Event... events) {
         for (Event event : events) {
-            eventStore.save(getDTO(event));
+            eventStore.save(getDTOFromEvent(event));
         }
     }
 
+    /**
+     * Speichert alle Events aus der übergebenen Liste in der DB.
+     * @param events Liste an Events die gespeichert werden soll
+     */
     @SafeVarargs
     public final void saveAll(List<Event>... events) {
         for (List<Event> eventlist : events) {
             for (Event event : eventlist) {
-                eventStore.save(getDTO(event));
+                eventStore.save(getDTOFromEvent(event));
             }
         }
     }
@@ -52,10 +56,9 @@ public class EventService {
      * Ist die Gruppe öffentlich, dann wird die visibility auf true gesetzt.
      *
      * @param event Event, welches in DTO übersetzt wird
-     * @return EventDTO Neues DTO
+     * @return EventDTO (Neues DTO)
      */
-    //TODO Rename: getDTOFromEvent?
-    public EventDTO getDTO(Event event) {
+    public EventDTO getDTOFromEvent(Event event) {
         String payload = "";
         try {
             payload = jsonService.serializeEvent(event);
@@ -66,6 +69,11 @@ public class EventService {
         return new EventDTO(null, event.getGroupId().toString(), event.getUserId(), getEventType(event), payload);
     }
 
+    /**
+     * Gibt den Eventtyp als String wieder.
+     * @param event Event dessen Typ abgefragt werden soll
+     * @return Der Name des Typs des Events
+     */
     private String getEventType(Event event) {
         int lastDot = event.getClass().getName().lastIndexOf('.');
 
@@ -83,7 +91,7 @@ public class EventService {
         List<String> groupIdsThatChanged = eventStore.findNewEventSinceStatus(status);
 
         List<EventDTO> groupEventDTOS = eventStore.findAllEventsOfGroups(groupIdsThatChanged);
-        return translateEventDTOs(groupEventDTOS);
+        return getEventsFromDTOs(groupEventDTOS);
     }
 
     /**
@@ -92,8 +100,7 @@ public class EventService {
      * @param eventDTOS Liste von DTOs
      * @return Liste von Events
      */
-    //TODO Rename: getEventsFromDTO?
-    public List<Event> translateEventDTOs(Iterable<EventDTO> eventDTOS) {
+    public List<Event> getEventsFromDTOs(Iterable<EventDTO> eventDTOS) {
         List<Event> events = new ArrayList<>();
 
         for (EventDTO eventDTO : eventDTOS) {
@@ -107,21 +114,36 @@ public class EventService {
     }
 
     public Long getMaxEvent_id() {
-        return eventStore.getHighesEvent_ID();
+        return eventStore.getHighesEventID();
     }
 
+    /**
+     * Gibt eine Liste mit allen Events zurück, die zu der Gruppe gehören.
+     * @param groupId Gruppe die betrachtet werden soll
+     * @return Liste aus Events
+     */
     public List<Event> getEventsOfGroup(UUID groupId) {
-        List<EventDTO> eventDTOList = eventStore.findEventDTOByGroup_id(groupId.toString());
-        return translateEventDTOs(eventDTOList);
+        List<EventDTO> eventDTOList = eventStore.findEventDTOByGroupId(groupId.toString());
+        return getEventsFromDTOs(eventDTOList);
     }
 
-    //TODO: Nur AddUserEvents betrachten
+    /**
+     * Gibt eine Liste aus Gruppen zurück in denen sich der User befindet.
+     * @param userId Der User
+     * @return Liste aus Gruppen
+     */
     public List<UUID> findGroupIdsByUser(String userId) {
-        return eventStore.findGroup_idsWhereUser_id(userId).stream()
+        return eventStore.findGroupIdsWhereUserId(userId).stream()
                          .map(UUID::fromString)
                          .collect(Collectors.toList());
     }
 
+    /**
+     * Gibt true zurück, falls der User aktuell in der Gruppe ist, sonst false
+     * @param groupId Id der Gruppe
+     * @param userId Id des zu überprüfenden Users
+     * @return true or false
+     */
     public boolean userInGroup(UUID groupId, String userId) {
         return eventStore.countEventsByGroupIdAndUserIdAndEventType(groupId.toString(), userId, "AddUserEvent")
                 > eventStore.countEventsByGroupIdAndUserIdAndEventType(groupId.toString(), userId, "DeleteUserEvent");
