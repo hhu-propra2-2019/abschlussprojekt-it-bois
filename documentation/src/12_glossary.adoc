@@ -17,4 +17,8 @@
 |Checkstyle und Spotbugs |Werkzeuge zum automatisierten Finden von Fehlern in Quellcode. Spotbugs findet Fehler in der Funktionalität und Checkstyle prüft die Schreibweise des Codes.
 |Continuous Integration/CI |Lässt Tests laufen, bevor Änderungen an der Software endgültig gespeichert werden können. So kann eine funktionierende Software zu jedem Zeitpunkt garantiert werden.
 |Log |Aufzeichnung der Meldungen während der Laufzeit einer Software. Darin kann man mögliche Fehler- oder Erfolgsmeldungen auslesen und so bessere Auskunft über die unsichtbaren Vorgänge innerhalb der Software erlangen.
+|Keycload |Externes Plugin, das die Authentifizierung und damit den Zugang zur Anwendung ermöglicht.
+|DTO |Data Transfer Object. Dies ist eine Vereinfachung einer Java-Instanz, die leichter innerhalb der Datenbank verwaltet werden kann.
+|Interface |Sammlung von Java-Methoden, die von Klassen implementiert werden können.
+|Queries |Zeichenketten, die in der Sprache einer Datenbank geschrieben sind und so die Kommunikation mit ihr ermöglichen.
 |===
