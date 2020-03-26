@@ -108,6 +108,24 @@ public class ControllerService {
         addUserList(newUserList, groupUUID);
     }
 
+    public void changeMetaData(Account account, Group group, String title, String description) {
+        if (!title.equals(group.getTitle())){
+            updateTitle(account, group.getId(), title);
+        }
+
+        if (!description.equals(group.getDescription())) {
+            updateDescription(account, group.getId(), description);
+        }
+    }
+
+    public Group getParent(UUID parentId) {
+        Group parent = new Group();
+        if (!idIsEmpty(parentId)) {
+            parent = userService.getGroupById(parentId);
+        }
+        return parent;
+    }
+
     private void removeOldUsersFromNewUsers(List<User> oldUsers, List<User> newUsers) {
         for (User oldUser : oldUsers) {
             newUsers.remove(oldUser);

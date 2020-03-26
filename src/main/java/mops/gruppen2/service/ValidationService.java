@@ -9,14 +9,10 @@ import mops.gruppen2.domain.exception.GroupFullException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
 import mops.gruppen2.domain.exception.NoAccessException;
 import mops.gruppen2.domain.exception.NoAdminAfterActionException;
-import mops.gruppen2.domain.exception.NoValueException;
 import mops.gruppen2.domain.exception.UserAlreadyExistsException;
-import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,14 +29,6 @@ public class ValidationService {
         this.groupService = groupService;
     }
 
-    public void checkTitleAndDescription(String title, String description, Account account, String groupId) {
-        if (title == null || description == null) {
-            throw new NoValueException("Titel und Beschreibung müssen ausgefüllt werden");
-        }
-        controllerService.updateTitle(account, UUID.fromString(groupId), title);
-        controllerService.updateDescription(account, UUID.fromString(groupId), description);
-    }
-
     public List<Group> checkSearch(String search, List<Group> groups, Account account) {
         if (search != null) {
             groups = groupService.findGroupWith(search, account);
@@ -48,30 +36,24 @@ public class ValidationService {
         return groups;
     }
 
-    public void checkGroup(String title) {
+    public void throwIfGroupNotExisting(String title) {
         if (title == null) {
             throw new GroupNotFoundException("@details");
         }
     }
 
-    public boolean checkIfUserInGroup(Group group, User user) {
-        if (!group.getMembers().contains(user) && group.getVisibility() == Visibility.PRIVATE) {
+    public void throwIfNoAccessToPrivate(Group group, User user) {
+        if (!checkIfUserInGroup(group, user) && group.getVisibility() == Visibility.PRIVATE) {
             throw new NoAccessException("");
-        } else {
-            return group.getMembers().contains(user);
         }
     }
 
-    public Group checkParent(UUID parentId) {
-        Group parent = new Group();
-        if (!controllerService.idIsEmpty(parentId)) {
-            parent = userService.getGroupById(parentId);
-        }
-        return parent;
+    public boolean checkIfUserInGroup(Group group, User user) {
+        return group.getMembers().contains(user);
     }
 
-    public void checkIfUserInGroupJoin(Group group, User user) {
-        if (group.getMembers().contains(user)) {
+    public void throwIfUserAlreadyInGroup(Group group, User user) {
+        if (checkIfUserInGroup(group, user)) {
             throw new UserAlreadyExistsException("@details");
         }
     }
@@ -89,11 +71,18 @@ public class ValidationService {
         }
     }
 
-    public void checkIfAdmin(Group group, User user) {
-        checkIfUserInGroup(group, user);
+    public void throwIfNoAdmin(Group group, User user) {
+        throwIfNoAccessToPrivate(group, user);
         if (group.getRoles().get(user.getId()) != Role.ADMIN) {
             throw new NoAccessException("");
         }
+    }
+
+    public boolean checkIfAdmin(Group group, User user) {
+        if (checkIfUserInGroup(group, user)) {
+            return group.getRoles().get(user.getId()) == Role.ADMIN;
+        }
+        return false;
     }
 
     public boolean checkIfDemotingSelf(String userId, String groupId, Account account) {
@@ -115,7 +104,7 @@ public class ValidationService {
      * @param title Der Titel der Gruppe
      * @param userMaximum Das user Limit der Gruppe
      */
-    public void checkFields(String description, String title, Long userMaximum, Boolean maxInfiniteUsers) {
+    public void checkFields(String title, String description, Long userMaximum, Boolean maxInfiniteUsers) {
         if (description == null || description.trim().length() == 0) {
             throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
         }
@@ -132,6 +121,16 @@ public class ValidationService {
             if (userMaximum < 1 || userMaximum > 10000L) {
                 throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
             }
+        }
+    }
+
+    public void checkFields(String title, String description) {
+        if (description == null || description.trim().length() == 0) {
+            throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
+        }
+
+        if (title == null || title.trim().length() == 0) {
+            throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
         }
     }
 

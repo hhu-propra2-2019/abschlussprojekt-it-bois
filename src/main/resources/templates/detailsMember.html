@@ -57,7 +57,7 @@
                           th:text="${parent.getTitle()}">Parent</span>
 
                     <div class="input-group mb-3" style="margin-top: 10px"
-                         th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
+                         th:if="${roles.get(user.getId()) == admin}">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-default"
                                   style="background: #52a1eb">Einladungslink:</span>
