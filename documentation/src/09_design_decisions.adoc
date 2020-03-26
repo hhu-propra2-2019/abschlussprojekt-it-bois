@@ -1,6 +1,37 @@
 [[section-design-decisions]]
 == Entwurfsentscheidungen
 
-=== 9.1 Kommunikation zu Schnittstellen
+=== Festlegen auf einen Datenbanktypen
 
+Während der Entwicklung wird eine H2-Datenbank verwendet, da sie In-Memory funktioniert und automatisch und schnell startet. Die Daten werden hier nur temporär gespeichert, weshalb sie sich nur für die Entwicklung und nicht für die Produktion eignet. In der Produktion wird dann eine MySQL-Datenbank als persistenter Speicher verwendet.
 
+=== Verwendung einer Swagger-API
+
+Da eine Schnittstelle benötigt wird, damit andere MOPS-Komponenten mit unserer Software kommunizieren können, haben wir uns für eine Swagger-API entschieden. Diese nimmt Statusinformationen von den Komponenten entgegen und reagiert mit aktuellen Informationen. Wir haben uns dafür entschieden, weil diese API gut mit Spring funktioniert.
+
+=== Verwendung von Event Sourcing
+
+Dieses Vorgehen wurde uns von unserem Dozenten vorgestellt. Es bewirkt, dass nicht die Gruppen gespeichert werden, sondern die Aktionen, die auf die Gruppen ausgeführt werden. Dies ist an einem Beispiel eines Bankaccouts darstellen, in dem auch nicht der aktuelle Kontostand gespeichert wird, sondern vielmehr die Transaktionen, aus denen dann der Kontostand ausgehend von einem Startwert berechnet wird. So kann man den Stand des Kontos sowohl zum aktuellen, als auch zu jedem vergangenen Zeitpunkt bestimmen.
+
+=== Ausgabe von JSON-Files als Schnittstelle nach außen
+
+Wir haben uns für JSON-Files als Schnittstelle gewählt, weil man sie sehr gut in Java-Objekte umwandeln kann. Somit lassen sie sich von anderen MOPS-Komponenten sehr gut weiterverwenden.
+
+=== Verwenden von aussagekräftigen Exceptions
+
+Durch das Verwenden von Exceptions kann man bessere Aufzeichnung der Fehler der Software erzielen. So sieht man in den Logs genau, welcher Fehler wo aufgetreten ist. Außerdem kann man in den automatisierten Tests die Fehler schneller und genauer identifizieren.
+
+=== Differenzieren der Rechte von Studenten und Organisatoren
+
+Wir haben uns darauf geeinigt, dass Organisatoren nicht nur wie Studenten Gruppen erstellen können, sondern auch die übergeordneten Lehrveranstaltungen, mit denen eine Gruppe verknüpft werden kann.
+So ist die Kontrolle über Lehrveranstaltungen in verantwortungsvollen Händen.
+Studenten können Gruppen jeder Art erstellen.
+
+=== Beitreten in Gruppen in beide Richtungen
+
+Wir haben uns entschieden, dass man als Student Gruppen von sich aus beitreten kann, aber auch, dass man als Ersteller von Gruppen Studenten in eine Gruppe hinzufügen kann. Dies geschieht über den Upload einer CSV-Datei.
+
+=== Beitreten in private Gruppen
+
+Das Beitreten in private Gruppen funktioniert über einen Link, der nur dem Admin der privaten Gruppe sichtbar ist. Diesen Link kann er mit entsprechenden Studenten teilen, sodass nur diese die Möglichkeit erhalten, der Gruppe beizutreten.
+Private Gruppen können in der Suche auch nicht gefunden werden und sind demnach nur über den Link zu erreichen.

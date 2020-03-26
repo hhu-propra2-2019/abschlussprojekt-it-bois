@@ -1,5 +1,8 @@
 = Tag 16
 
+== Documentation
+Heute haben wir an der arc42-Dokumentation weitergearbeitet und die ersten Abschnitte fertiggestellt.
+
 == Tests
 
 Heute haben wir damit weiter gemacht unsere Tests zu Refactorn.
@@ -17,3 +20,9 @@ Wir haben eine Seite erstellt über die man den Titel und die Beschreibung einer
 == Suche reparieren
 
 Man kann nicht wieder beitreten sobald man die Gruppe verlassen hat
+
+== changeMetaData
+Der Titel und die Beschreibung sind nun bearbeitbar über die Detailseite der Gruppe.
+
+== InviteLink
+Der Einladungs Link wird nun richtig zusammengebaut und angezeigt.
