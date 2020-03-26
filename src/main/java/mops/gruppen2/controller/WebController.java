@@ -69,7 +69,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @GetMapping("/createOrga")
-    public String createOrga(KeycloakAuthenticationToken token, Model model) {
+    public String createGroupAsOrga(KeycloakAuthenticationToken token, Model model) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         model.addAttribute("account", account);
         model.addAttribute("lectures", groupService.getAllLecturesWithVisibilityPublic());
@@ -78,29 +78,28 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/createOrga")
-    public String pCreateOrga(KeycloakAuthenticationToken token,
-                              @RequestParam("title") String title,
-                              @RequestParam("description") String description,
-                              @RequestParam(value = "visibility", required = false) Boolean visibility,
-                              @RequestParam(value = "lecture", required = false) Boolean lecture,
-                              @RequestParam("userMaximum") Long userMaximum,
-                              @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
-                              @RequestParam(value = "parent", required = false) String parent,
-                              @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
+    public String postCrateGroupAsOrga(KeycloakAuthenticationToken token,
+                                       @RequestParam("title") String title,
+                                       @RequestParam("description") String description,
+                                       @RequestParam(value = "visibility", required = false) Boolean visibility,
+                                       @RequestParam(value = "lecture", required = false) Boolean lecture,
+                                       @RequestParam("userMaximum") Long userMaximum,
+                                       @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
+                                       @RequestParam(value = "parent", required = false) String parent,
+                                       @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
-        List<User> userList = new ArrayList<>();
+
         validationService.checkFields(description, title, userMaximum, maxInfiniteUsers);
-        Group group = userService.getGroupById(controllerService.createOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID));
-        userList = validationService.checkFile(file, userList, group.getId().toString(), group, account);
-        controllerService.addUserList(userList, group.getId());
+        controllerService.createGroupAsOrga(account, title, description, visibility, lecture, maxInfiniteUsers, userMaximum, parentUUID, file);
+
         return "redirect:/gruppen2/";
     }
 
     @RolesAllowed({"ROLE_studentin"})
     @GetMapping("/createStudent")
-    public String createStudent(KeycloakAuthenticationToken token, Model model) {
+    public String createGroupAsStudent(KeycloakAuthenticationToken token, Model model) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         model.addAttribute("account", account);
         model.addAttribute("lectures", groupService.getAllLecturesWithVisibilityPublic());
@@ -109,18 +108,18 @@ public class WebController {
 
     @RolesAllowed({"ROLE_studentin"})
     @PostMapping("/createStudent")
-    public String pCreateStudent(KeycloakAuthenticationToken token,
-                                 @RequestParam("title") String title,
-                                 @RequestParam("description") String description,
-                                 @RequestParam(value = "visibility", required = false) Boolean visibility,
-                                 @RequestParam("userMaximum") Long userMaximum,
-                                 @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
-                                 @RequestParam(value = "parent", required = false) String parent) throws EventException {
+    public String postCreateGroupAsStudent(KeycloakAuthenticationToken token,
+                                           @RequestParam("title") String title,
+                                           @RequestParam("description") String description,
+                                           @RequestParam(value = "visibility", required = false) Boolean visibility,
+                                           @RequestParam("userMaximum") Long userMaximum,
+                                           @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
+                                           @RequestParam(value = "parent", required = false) String parent) throws EventException {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
         validationService.checkFields(description, title, userMaximum, maxInfiniteUsers);
-        controllerService.createGroup(account, title, description, visibility, maxInfiniteUsers, userMaximum, parentUUID);
+        controllerService.createGroup(account, title, description, visibility, null, maxInfiniteUsers, userMaximum, parentUUID);
         return "redirect:/gruppen2/";
     }
 
