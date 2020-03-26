@@ -117,7 +117,7 @@ class GroupServiceTest {
         Group group = TestBuilder.apply(test1, test2);
 
         assertThat(group.getType()).isEqualTo(null);
-        assertThat(groupService.getAllGroupWithVisibilityPublic("test1")).isEmpty();
+        assertThat(groupService.getAllGroupsWithVisibilityPublic("test1")).isEmpty();
     }
 
     @Test
@@ -131,7 +131,7 @@ class GroupServiceTest {
                              deleteGroupEvent(uuidFromInt(0)),
                              createPublicGroupEvent());
 
-        assertThat(groupService.getAllGroupWithVisibilityPublic("test1").size()).isEqualTo(1);
+        assertThat(groupService.getAllGroupsWithVisibilityPublic("test1").size()).isEqualTo(1);
     }
 
     @Test
@@ -151,7 +151,7 @@ class GroupServiceTest {
                              createPublicGroupEvent(),
                              createPrivateGroupEvent());
 
-        assertThat(groupService.getAllGroupWithVisibilityPublic("test1").size()).isEqualTo(3);
+        assertThat(groupService.getAllGroupsWithVisibilityPublic("test1").size()).isEqualTo(3);
     }
 
     @Test
@@ -167,8 +167,8 @@ class GroupServiceTest {
         //Das kommt glaube ich eher in einen Test für die Projektion
         //assertThat(groupService.getAllGroupWithVisibilityPublic("test2").get(0).getMembers().size()).isEqualTo(1);
 
-        assertThat(groupService.getAllGroupWithVisibilityPublic("kobold")).hasSize(1);
-        assertThat(groupService.getAllGroupWithVisibilityPublic("peter")).hasSize(2);
+        assertThat(groupService.getAllGroupsWithVisibilityPublic("kobold")).hasSize(1);
+        assertThat(groupService.getAllGroupsWithVisibilityPublic("peter")).hasSize(2);
     }
 
     @Test
