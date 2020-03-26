@@ -130,16 +130,37 @@ public class ValidationService {
      * @param userMaximum Das user Limit der Gruppe
      */
     public void checkFields(String description, String title, Long userMaximum, Boolean maxInfiniteUsers) {
-        if (description == null) {
+        if (description == null || description.trim().length() == 0) {
             throw new BadParameterException("Die Beschreibung wurde nicht korrekt angegeben");
         }
 
-        if (title == null) {
+        if (title == null || title.trim().length() == 0) {
             throw new BadParameterException("Der Titel wurde nicht korrekt angegeben");
         }
 
         if (userMaximum == null && maxInfiniteUsers == null) {
             throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+        }
+
+        if (userMaximum != null) {
+            if (userMaximum < 1 || userMaximum > 10000L) {
+                throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+            }
+        }
+    }
+
+    public void checkIfNewMaximumIsValid(Long newUserMaximum, String groupId) {
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+        if (newUserMaximum == null) {
+            throw new BadParameterException("Es wurde keine neue maximale Teilnehmeranzahl angegeben!");
+        }
+
+        if (newUserMaximum < 1 || newUserMaximum > 10000L) {
+            throw new BadParameterException("Die neue maximale Teilnehmeranzahl wurde nicht korrekt angegeben!");
+        }
+
+        if (group.getMembers().size() > newUserMaximum) {
+            throw new BadParameterException("Die neue maximale Teilnehmeranzahl ist kleiner als die aktuelle Teilnehmeranzahl!");
         }
     }
 }
