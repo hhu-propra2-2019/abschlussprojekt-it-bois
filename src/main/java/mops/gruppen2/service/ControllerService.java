@@ -32,11 +32,13 @@ public class ControllerService {
 
     private final EventService eventService;
     private final UserService userService;
+    private final InviteService inviteService;
     private final Logger logger;
 
-    public ControllerService(EventService eventService, UserService userService) {
+    public ControllerService(EventService eventService, UserService userService, InviteService inviteService) {
         this.eventService = eventService;
         this.userService = userService;
+        this.inviteService = inviteService;
         this.logger = Logger.getLogger("controllerServiceLogger");
     }
 
@@ -49,6 +51,8 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
+    //TODO: better assignments
+    //TODO: createGroup + createOrga auslagern
     public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException {
         Visibility visibility1;
         maxInfiniteUsers = maxInfiniteUsers != null;
@@ -68,6 +72,8 @@ public class ControllerService {
         UUID groupId = UUID.randomUUID();
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, GroupType.SIMPLE, visibility1, userMaximum);
         eventService.saveEvent(createGroupEvent);
+
+        inviteService.createLink(groupId);
 
         addUser(account, groupId);
         updateTitle(account, groupId, title);
@@ -91,6 +97,8 @@ public class ControllerService {
         } else {
             visibility1 = Visibility.PRIVATE;
         }
+
+        inviteService.createLink(groupId);
 
         GroupType groupType;
         if (lecture) {
@@ -143,6 +151,7 @@ public class ControllerService {
         eventService.saveEvent(updateUserMaxEvent);
     }
 
+    //TODO: updateRole + deleteUser, teilweise auslagern zu userInGroup oder sowas
     public void updateRole(String userId, UUID groupId) throws EventException {
         UpdateRoleEvent updateRoleEvent;
         Group group = userService.getGroupById(groupId);
@@ -184,6 +193,7 @@ public class ControllerService {
 
     public void deleteGroupEvent(String userId, UUID groupId) {
         DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, userId);
+        inviteService.destroyLink(groupId);
         eventService.saveEvent(deleteGroupEvent);
     }
 
