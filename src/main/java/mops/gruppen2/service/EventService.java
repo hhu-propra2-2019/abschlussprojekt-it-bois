@@ -128,9 +128,9 @@ public class EventService {
     }
 
     /**
-     * Gibt eine Liste aus Gruppen zurück in denen sich der User befindet.
-     * @param userId Der User
-     * @return Liste aus Gruppen
+     * Gibt eine Liste aus GruppenIds zurück in denen sich der User befindet.
+     * @param userId Die Id des Users
+     * @return Liste aus GruppenIds
      */
     public List<UUID> findGroupIdsByUser(String userId) {
         return eventStore.findGroupIdsWhereUserId(userId).stream()
