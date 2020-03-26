@@ -58,7 +58,7 @@ public class ValidationService {
         }
     }
 
-    public void checkIfGroupFull(Group group) {
+    public void throwIfGroupFull(Group group) {
         if (group.getUserMaximum() < group.getMembers().size() + 1) {
             throw new GroupFullException("Du kannst der Gruppe daher leider nicht beitreten.");
         }
