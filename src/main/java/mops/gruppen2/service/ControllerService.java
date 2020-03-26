@@ -74,7 +74,7 @@ public class ControllerService {
         return groupId;
     }
 
-    public void createGroupAsOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) {
+    public void createGroupAsOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws IOException {
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
         List<User> newUsers = readCsvFile(file);
