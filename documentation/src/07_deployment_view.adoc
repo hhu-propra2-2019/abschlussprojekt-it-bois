@@ -3,32 +3,16 @@
 
 
 
-=== Infrastruktur Ebene 1
+=== Infrastruktur
 
+image::deployment.png[]
 
+[cols="1,2" options="header"]
+|===
+|Komponente |Definition
+|Java Application |Ausführbares Programm, mithilfe dessen sich die Anwendung starten lässt
+|Java Runtime Environment SE |Umgebung, auf der das Programm läuft
+|Docker Container |Beinhaltet die Anwendung und simuliert Betriebssystem, auf dem die Anwendung läuft. Enthält außerdem die Datenbank.
+|Browser |Anwendung, die Zugang zum Internet ermöglicht
+|Any type of host |Jedes Endsystem, das Zugriff auf einen Browser hat, kann die Gruppen2Application verwenden.
 
-_**<Übersichtsdiagramm>**_
-
-Begründung:: _<Erläuternder Text>_
-
-Qualitäts- und/oder Leistungsmerkmale:: _<Erläuternder Text>_
-
-Zuordnung von Bausteinen zu Infrastruktur:: _<Beschreibung der Zuordnung>_
-
-=== Infrastruktur Ebene 2
-
-
-
-==== _<Infrastrukturelement 1>_
-
-_<Diagramm + Erläuterungen>_
-
-==== _<Infrastrukturelement 2>_
-
-_<Diagramm + Erläuterungen>_
-
-...
-
-==== _<Infrastrukturelement n>_
-
-_<Diagramm + Erläuterungen>_

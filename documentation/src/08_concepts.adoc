@@ -17,12 +17,3 @@ image::frontend_2.png[]
 
 Hier ist das Ausfüllen der Felder des Formulars selbsterklärend und eindeutig.
 
-=== _<Konzept 2>_
-
-_<Erklärung>_
-
-...
-
-=== _<Konzept n>_
-
-_<Erklärung>_
