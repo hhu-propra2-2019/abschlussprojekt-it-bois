@@ -1,7 +1,11 @@
 FROM gradle:jdk11 AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
+
 RUN chmod +x ./pull-wait-for-it.sh
+RUN ./pull-wait-for-it.sh
+RUN chmod +x ./wait-for-it.sh
+
 RUN gradle bootJar --no-daemon
 
 FROM openjdk:11-jre-slim
