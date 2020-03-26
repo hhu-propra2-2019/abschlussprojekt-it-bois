@@ -9,7 +9,6 @@
 
 image::bausteinsicht.png[]
 
-Begründung
 
 Das System erhält vom User zunächst eine Eingabe in Form eines textuellen Inputs in ein Formular oder eines Knopfdrucks. Dieser Input wird, entsprechend seiner Art, an die Komponenten Gruppenerstellung, Gruppenverwaltung, Gruppensuche und Gruppenbeitritt gegeben.
 
@@ -28,7 +27,7 @@ Wichtige Schnittstellen:: Die Kommunikation zwischen den Komponenten erfolgt mit
 
 ==== Gruppenerstellung
 
-image::whitebox_erstellen.png
+image::whitebox_erstellen.png[]
 
 Im obigen Diagramm sieht man eine detaillierte Ansicht des Vorgangs der Gruppenerstellung.
 
