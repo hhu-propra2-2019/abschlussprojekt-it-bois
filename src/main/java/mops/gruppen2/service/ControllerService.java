@@ -92,6 +92,22 @@ public class ControllerService {
         addUserList(newUsers, groupId);
     }
 
+    public void addUsersFromCsv(Account account, MultipartFile file, String groupId) throws IOException{
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+
+        List<User> newUserList = readCsvFile(file);
+        removeOldUsersFromNewUsers(group.getMembers(), newUserList);
+
+        UUID groupUUID = getUUID(groupId);
+
+        Long newUserMaximum = adjustUserMaximum((long) newUserList.size(), (long) group.getMembers().size(), group.getUserMaximum());
+        if (newUserMaximum > group.getUserMaximum()){
+            updateMaxUser(account, groupUUID, newUserMaximum);
+        }
+
+        addUserList(newUserList, groupUUID);
+    }
+
     private void removeOldUsersFromNewUsers(List<User> oldUsers, List<User> newUsers) {
         for (User oldUser : oldUsers) {
             newUsers.remove(oldUser);
@@ -153,8 +169,8 @@ public class ControllerService {
         eventService.saveEvent(addUserEvent);
     }
 
-    public void addUserList(List<User> users, UUID groupId) {
-        for (User user : users) {
+    public void addUserList(List<User> newUsers, UUID groupId) {
+        for (User user : newUsers) {
             Group group = userService.getGroupById(groupId);
             if (group.getMembers().contains(user)) {
                 logger.info("Benutzer " + user.getId() + " ist bereits in Gruppe");

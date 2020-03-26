@@ -108,20 +108,6 @@ public class ValidationService {
         return false;
     }
 
-    public List<User> checkFile(MultipartFile file, List<User> userList, String groupId, Group group, Account account) {
-        if (!file.isEmpty()) {
-            try {
-                userList = CsvService.read(file.getInputStream());
-                if (userList.size() + group.getMembers().size() > group.getUserMaximum()) {
-                    controllerService.updateMaxUser(account, UUID.fromString(groupId), (long) userList.size() + group.getMembers().size());
-                }
-            } catch (IOException ex) {
-                throw new WrongFileException(file.getOriginalFilename());
-            }
-        }
-        return userList;
-    }
-
     /**
      * Überprüft ob alle Felder richtig gesetzt sind.
      *

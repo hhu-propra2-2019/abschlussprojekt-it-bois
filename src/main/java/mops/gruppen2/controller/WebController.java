@@ -129,11 +129,7 @@ public class WebController {
                                   @RequestParam("group_id") String groupId,
                                   @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        List<User> userList = new ArrayList<>();
-        Group group = userService.getGroupById(UUID.fromString(groupId));
-        userList = validationService.checkFile(file, userList, groupId, group, account);
-        UUID groupUUID = controllerService.getUUID(groupId);
-        controllerService.addUserList(userList, groupUUID);
+        controllerService.addUsersFromCsv(account, file, groupId);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
