@@ -92,8 +92,8 @@ public class ControllerService {
         addUserList(newUsers, groupId);
     }
 
-    private void removeOldUsersFromNewUsers(List<User> oldUsers, List<User> newUsers){
-        for(User oldUser : oldUsers) {
+    private void removeOldUsersFromNewUsers(List<User> oldUsers, List<User> newUsers) {
+        for (User oldUser : oldUsers) {
             newUsers.remove(oldUser);
         }
     }
