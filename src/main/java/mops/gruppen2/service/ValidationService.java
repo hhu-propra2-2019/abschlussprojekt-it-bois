@@ -142,8 +142,12 @@ public class ValidationService {
             throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
         }
 
-        if (userMaximum < 1 || userMaximum > 10000L) {
-            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+        if (userMaximum != null) {
+            if (userMaximum < 1 || userMaximum > 10000L) {
+                throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
+            }
+        }
+    }
         }
     }
 }
