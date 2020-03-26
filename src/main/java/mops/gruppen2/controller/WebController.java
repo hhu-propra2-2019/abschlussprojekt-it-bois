@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -86,7 +85,7 @@ public class WebController {
                                        @RequestParam("userMaximum") Long userMaximum,
                                        @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
                                        @RequestParam(value = "parent", required = false) String parent,
-                                       @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+                                       @RequestParam(value = "file", required = false) MultipartFile file) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);

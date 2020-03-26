@@ -139,7 +139,7 @@ public class EventService {
     }
 
     /**
-     * Gibt true zurück, falls der User aktuell in der Gruppe ist, sonst false
+     * Gibt true zurück, falls der User aktuell in der Gruppe ist, sonst false.
      * @param groupId Id der Gruppe
      * @param userId Id des zu überprüfenden Users
      * @return true or false

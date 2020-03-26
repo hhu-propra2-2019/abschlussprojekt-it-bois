@@ -74,7 +74,7 @@ public class ControllerService {
         return groupId;
     }
 
-    public void createGroupAsOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws IOException {
+    public void createGroupAsOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws EventException {
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
         List<User> newUsers = readCsvFile(file);
@@ -128,12 +128,12 @@ public class ControllerService {
         }
     }
 
-    private List<User> readCsvFile(MultipartFile file) throws EventException, IOException {
+    private List<User> readCsvFile(MultipartFile file) throws EventException {
         if (!file.isEmpty()) {
             try {
                 List<User> userList = CsvService.read(file.getInputStream());
                 return userList.stream().distinct().collect(Collectors.toList()); //filters duplicates from list
-            } catch (UnrecognizedPropertyException | CharConversionException ex) {
+            } catch (IOException ex) {
                 logger.warning("File konnte nicht gelesen werden");
                 throw new WrongFileException(file.getOriginalFilename());
             }
