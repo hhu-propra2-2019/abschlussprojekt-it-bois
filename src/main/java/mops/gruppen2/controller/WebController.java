@@ -55,6 +55,7 @@ public class WebController {
      * @param model tolles model
      * @return index.html
      */
+
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("")
     public String index(KeycloakAuthenticationToken token, Model model) throws EventException {
@@ -326,6 +327,7 @@ public class WebController {
                                 @RequestParam("group_id") String groupId,
                                 KeycloakAuthenticationToken token) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
+        validationService.checkIfNewMaximumIsValid(maximum, groupId);
         controllerService.updateMaxUser(account, UUID.fromString(groupId), maximum);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
