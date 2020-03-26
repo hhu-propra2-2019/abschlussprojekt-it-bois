@@ -49,7 +49,7 @@
                              style="border: none; border-radius: 5px; background: aliceblue">
                             <h3 style="color: dodgerblue; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word">
                                 <span class="badge badge-pill badge-success"
-                                      style="background: lightseagreen; margin-right: 25px;"
+                                      style="background: lightseagreen; margin-right: 25px; float: right"
                                       th:if='${gruppe.getType() == gruppe.getType().LECTURE}'>Veranstaltung</span>
                                 <a th:href="@{/gruppen2/details/{id}(id=${gruppe.getId()})}"
                                    th:text="${gruppe.getTitle()}"></a>

@@ -15,8 +15,8 @@ public class UpdateUserMaxEvent extends Event {
 
     private  Long userMaximum;
 
-    public UpdateUserMaxEvent(UUID group_id, String user_id, Long userMaximum) {
-        super(group_id, user_id);
+    public UpdateUserMaxEvent(UUID groupId, String userId, Long userMaximum) {
+        super(groupId, userId);
         this.userMaximum = userMaximum;
     }
 
