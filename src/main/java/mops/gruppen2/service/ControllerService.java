@@ -18,7 +18,6 @@ import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
-import org.keycloak.jose.jwk.JWK;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
