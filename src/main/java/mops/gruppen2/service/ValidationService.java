@@ -148,6 +148,19 @@ public class ValidationService {
             }
         }
     }
+
+    public void checkIfNewMaximumIsValid(Long newUserMaximum, String groupId) {
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+        if (newUserMaximum == null) {
+            throw new BadParameterException("Es wurde keine neue maximale Teilnehmeranzahl angegeben!");
+        }
+
+        if (newUserMaximum < 1 || newUserMaximum > 10000L) {
+            throw new BadParameterException("Die neue maximale Teilnehmeranzahl wurde nicht korrekt angegeben!");
+        }
+
+        if (group.getMembers().size() > newUserMaximum) {
+            throw new BadParameterException("Die neue maximale Teilnehmeranzahl ist kleiner als die aktuelle Teilnehmeranzahl!");
         }
     }
 }

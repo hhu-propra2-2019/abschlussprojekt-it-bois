@@ -327,6 +327,7 @@ public class WebController {
                                 @RequestParam("group_id") String groupId,
                                 KeycloakAuthenticationToken token) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
+        validationService.checkIfNewMaximumIsValid(maximum, groupId);
         controllerService.updateMaxUser(account, UUID.fromString(groupId), maximum);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
