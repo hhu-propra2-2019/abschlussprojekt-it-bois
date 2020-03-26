@@ -15,4 +15,5 @@ image::deployment.png[]
 |Docker Container |Beinhaltet die Anwendung und simuliert Betriebssystem, auf dem die Anwendung läuft. Enthält außerdem die Datenbank.
 |Browser |Anwendung, die Zugang zum Internet ermöglicht
 |Any type of host |Jedes Endsystem, das Zugriff auf einen Browser hat, kann die Gruppen2Application verwenden.
+|===
 
