@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
-    @Query("select distinct group_id from event where user_id =:id AND event_type = AddUserEvent")
-    List<String> findGroupIdsWhereUserId(@Param("id") String userId);
+    @Query("select distinct group_id from event where user_id =:id AND event_type = :type")
+    List<String> findGroupIdsWhereUserId(@Param("id") String userId, @Param("type") String type);
 
     @Query("select * from event where group_id =:id")
     List<EventDTO> findEventDTOByGroupId(@Param("id") String groupId);

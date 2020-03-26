@@ -133,7 +133,7 @@ public class EventService {
      * @return Liste aus GruppenIds
      */
     public List<UUID> findGroupIdsByUser(String userId) {
-        return eventStore.findGroupIdsWhereUserId(userId).stream()
+        return eventStore.findGroupIdsWhereUserId(userId, "AddUserEvent").stream()
                          .map(UUID::fromString)
                          .collect(Collectors.toList());
     }

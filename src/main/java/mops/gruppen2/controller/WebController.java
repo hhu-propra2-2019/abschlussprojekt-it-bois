@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +56,7 @@ public class WebController {
      */
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("")
-    public String index(KeycloakAuthenticationToken token, Model model) throws EventException {
+    public String index(KeycloakAuthenticationToken token, Model model) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
@@ -66,7 +65,7 @@ public class WebController {
         return "index";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
     @GetMapping("/createOrga")
     public String createOrga(KeycloakAuthenticationToken token, Model model) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
@@ -75,7 +74,7 @@ public class WebController {
         return "createOrga";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
     @PostMapping("/createOrga")
     public String pCreateOrga(KeycloakAuthenticationToken token,
                               @RequestParam("title") String title,
@@ -85,7 +84,7 @@ public class WebController {
                               @RequestParam("userMaximum") Long userMaximum,
                               @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
                               @RequestParam(value = "parent", required = false) String parent,
-                              @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
+                              @RequestParam(value = "file", required = false) MultipartFile file) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
@@ -114,7 +113,7 @@ public class WebController {
                                  @RequestParam(value = "visibility", required = false) Boolean visibility,
                                  @RequestParam("userMaximum") Long userMaximum,
                                  @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
-                                 @RequestParam(value = "parent", required = false) String parent) throws EventException {
+                                 @RequestParam(value = "parent", required = false) String parent) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
@@ -123,11 +122,11 @@ public class WebController {
         return "redirect:/gruppen2/";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
     @PostMapping("/details/members/addUsersFromCsv")
     public String addUsersFromCsv(KeycloakAuthenticationToken token,
                                   @RequestParam("group_id") String groupId,
-                                  @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+                                  @RequestParam(value = "file", required = false) MultipartFile file) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<User> userList = new ArrayList<>();
         Group group = userService.getGroupById(UUID.fromString(groupId));
@@ -167,7 +166,7 @@ public class WebController {
     public String pChangeMetadata(KeycloakAuthenticationToken token,
                                   @RequestParam("title") String title,
                                   @RequestParam("description") String description,
-                                  @RequestParam("groupId") String groupId) throws EventException {
+                                  @RequestParam("groupId") String groupId) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
@@ -181,7 +180,7 @@ public class WebController {
     @GetMapping("/findGroup")
     public String findGroup(KeycloakAuthenticationToken token,
                             Model model,
-                            @RequestParam(value = "suchbegriff", required = false) String search) throws EventException {
+                            @RequestParam(value = "suchbegriff", required = false) String search) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<Group> groups = new ArrayList<>();
         groups = validationService.checkSearch(search, groups, account);
@@ -190,9 +189,9 @@ public class WebController {
         return "search";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/details/{id}")
-    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, HttpServletRequest request, @PathVariable("id") String groupId) throws EventException {
+    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, HttpServletRequest request, @PathVariable("id") String groupId) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
 
         Group group = userService.getGroupById(UUID.fromString(groupId));
@@ -227,7 +226,7 @@ public class WebController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/detailsBeitreten")
     public String joinGroup(KeycloakAuthenticationToken token,
-                            Model model, @RequestParam("id") String groupId) throws EventException {
+                            Model model, @RequestParam("id") String groupId) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
@@ -242,7 +241,7 @@ public class WebController {
     @GetMapping("/detailsSearch")
     public String showGroupDetailsNoMember(KeycloakAuthenticationToken token,
                                            Model model,
-                                           @RequestParam("id") String groupId) throws EventException {
+                                           @RequestParam("id") String groupId) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(UUID.fromString(groupId));
         validationService.checkIfGroupFull(group);
@@ -260,7 +259,7 @@ public class WebController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/acceptinvite/{groupId}")
     public String acceptInvite(KeycloakAuthenticationToken token,
-                               Model model, @PathVariable String groupId) throws EventException {
+                               Model model, @PathVariable String groupId) {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(UUID.fromString(groupId));
         validationService.checkGroup(group.getTitle());
@@ -271,7 +270,7 @@ public class WebController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/leaveGroup")
     public String pLeaveGroup(KeycloakAuthenticationToken token,
-                              @RequestParam("group_id") String groupId) throws EventException {
+                              @RequestParam("group_id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         controllerService.passIfLastAdmin(account, UUID.fromString(groupId));
@@ -292,11 +291,11 @@ public class WebController {
         return "redirect:/gruppen2/";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/details/members/{id}")
     public String editMembers(Model model,
                               KeycloakAuthenticationToken token,
-                              @PathVariable("id") String groupId) throws EventException {
+                              @PathVariable("id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
         User user = new User(account.getName(), "", "", "");
@@ -308,11 +307,11 @@ public class WebController {
         return "editMembers";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/members/changeRole")
     public String changeRole(KeycloakAuthenticationToken token,
                              @RequestParam("group_id") String groupId,
-                             @RequestParam("user_id") String userId) throws EventException {
+                             @RequestParam("user_id") String userId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         if (validationService.checkIfDemotingSelf(userId, groupId, account)) {
             return "redirect:/gruppen2/details/" + groupId;
@@ -320,7 +319,7 @@ public class WebController {
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/members/changeMaximum")
     public String changeMaxSize(@RequestParam("maximum") Long maximum,
                                 @RequestParam("group_id") String groupId,
@@ -330,10 +329,10 @@ public class WebController {
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/members/deleteUser")
     public String deleteUser(@RequestParam("group_id") String groupId,
-                             @RequestParam("user_id") String userId) throws EventException {
+                             @RequestParam("user_id") String userId) {
         User user = new User(userId, "", "", "");
         controllerService.deleteUser(userId, UUID.fromString(groupId));
         validationService.checkIfGroupEmpty(groupId, user);
