@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Gruppendetails</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+              rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
+        <ul>
+            <li class="active">
+                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+            </li>
+            <li th:case="${true}">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
+            </li>
+            <li>
+                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10">
+                <h1>Mitglieder bearbeiten</h1>
+                <div th:switch="${group.getUserMaximum() != 100000}">
+                    <h5 th:case="${true}">
+                        <a th:text="${group.getMembers().size()}"></a>
+                        <a>von maximal</a>
+                        <a th:text="${group.getUserMaximum()}"></a>
+                        <a>Benutzern.</a>
+                    </h5>
+                    <h5 th:case="${false}"> unbegrenzte Teilnehmeranzahl</h5>
+                </div>
+                <div class="shadow p-2" style="border: 10px solid aliceblue; background: aliceblue">
+                    <div class="form-group pt-4" th:if="${account.getRoles().contains('orga')}">
+                        <form action="/gruppen2/details/members/addUsersFromCsv"
+                              enctype="multipart/form-data"
+                              method="post">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input class="custom-file-input" id="file" th:name="file" type="file">
+                                    <label class="custom-file-label" for="file">CSV Datei von Mitgliedern hochladen</label>
+                                </div>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" style="background: #52a1eb; border-style: none"
+                                            th:name="group_id" th:value="${group.getId()}"
+                                            type="submit">
+                                        <a style="color: white">Hinzufügen</a>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="form-group pt-4">
+                        <form action="/gruppen2/details/members/changeMaximum" method="post">
+                            <div class="input-group mb-3" id="userMaximum">
+                                <input class="form-control" placeholder="Maximale Teilnehmerzahl ändern..." th:name="maximum"
+                                       type="number" th:min="${group.getMembers().size()}" max="10000">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" style="background: #52a1eb; border-style: none"
+                                            th:name="group_id" th:value="${group.getId()}"
+                                            type="submit">
+                                        <a style="color: white">Speichern</a>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <table class="table" style="table-layout: fixed">
+                        <thead>
+                        <tr>
+                            <th scope="col">Mitglied</th>
+                            <th scope="col" style="width: 180px">Rolle</th>
+                            <th scope="col" style="width: 280px">Optionen</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-striped">
+                        <tr th:each="member : ${group.getMembers()}">
+                            <th th:text="${member.getId()}"></th>
+                            <td>
+                                <span th:if='${group.getRoles().get(member.getId()) != admin}'>Mitglied</span>
+                                <span th:if='${group.getRoles().get(member.getId()) == admin}'>Admin</span>
+                            </td>
+                            <td>
+                                <div class="text-right btn-toolbar" style="float: right;" role="toolbar">
+                                    <form action="/gruppen2/details/members/changeRole" method="post">
+                                        <input th:name="group_id" th:value="${group.getId()}"
+                                               type="hidden">
+                                        <input th:name="user_id" th:value="${member.getId()}"
+                                               type="hidden">
+                                        <button class="btn btn-warning btn-sm" type="submit" style="margin: 5px">Rolle
+                                            ändern
+                                        </button>
+                                    </form>
+                                    <form action="/gruppen2/details/members/deleteUser" method="post">
+                                        <input th:name="group_id" th:value="${group.getId()}"
+                                               type="hidden">
+                                        <input th:name="user_id" th:value="${member.getId()}"
+                                               type="hidden">
+                                        <button class="btn btn-danger btn-sm" style="margin: 5px" th:if='!${account.getName().equals(member.getId())}'>Mitglied entfernen</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <form method="get" th:action="@{/gruppen2/details/{id}(id=${group.getId()})}">
+                        <button class="btn btn-primary" style="background: #52a1eb; border-style: none" type="submit">Fertig</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+</main>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Eigene Gruppen</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         th:switch="${account.getRoles().contains('orga')}">
+        <ul>
+            <li class="active">
+                <a href="/" th:href="@{/gruppen2}">Gruppen</a>
+            </li>
+            <li th:case="${true}">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
+            </li>
+            <li>
+                <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10">
+                <h1>Meine Gruppen</h1>
+                <form action="/" method="get">
+                    <h3 style="color: dodgerblue; font-weight: bold; font-optical-sizing: auto">
+                        <small style="font-weight: normal; color: black">Mitglied in </small>
+                        <small style="font-weight: bold; color: black"
+                               th:text="${gruppen.size()}"></small>
+                        <small style="font-weight: normal; color: black"
+                               th:if='${gruppen.size()==1}'> Gruppe.</small>
+                        <small style="font-weight: normal; color: black"
+                               th:if='${gruppen.size()!=1}'> Gruppen.</small>
+                    </h3>
+                    <br>
+                    <div th:each="gruppe: ${gruppen}">
+                        <div class="shadow-sm p-4"
+                             style="border: none; border-radius: 5px; background: aliceblue">
+                            <h3 style="color: dodgerblue; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word">
+                                <span class="badge badge-pill badge-success"
+                                      style="background: lightseagreen; margin-right: 25px; float: right"
+                                      th:if='${gruppe.getType() == gruppe.getType().LECTURE}'>Veranstaltung</span>
+                                <a th:href="@{/gruppen2/details/{id}(id=${gruppe.getId()})}"
+                                   th:text="${gruppe.getTitle()}"></a>
+                            </h3>
+                            <div class="shadow-sm p-4" style="background: white">
+                                <p style="overflow-wrap: break-word; font-optical-sizing: auto"
+                                   th:text="${#strings.abbreviate(gruppe.getDescription(),300)}"></p>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
