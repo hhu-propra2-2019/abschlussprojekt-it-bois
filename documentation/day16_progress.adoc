@@ -4,7 +4,22 @@
 Heute haben wir an der arc42-Dokumentation weitergearbeitet und die ersten Abschnitte fertiggestellt.
 
 == Tests
+
 Heute haben wir damit weiter gemacht unsere Tests zu Refactorn.
+Diese müssen sowieso noch angepasst werden weil wir für die GruppenId jetzt eine UUID nutzen.
+
+== Controller
+
+Wir haben den Controller refactored da zu viel Logik in den Methoden waren.
+Diese haben wir zum größten Teil in den Controllerservice ausgelagert.
+
+== Titel und Beschreibung
+
+Wir haben eine Seite erstellt über die man den Titel und die Beschreibung einer Gruppe nachträglich noch anpassen kann.
+
+== Suche reparieren
+
+Man kann nicht wieder beitreten sobald man die Gruppe verlassen hat
 
 == changeMetaData
 Der Titel und die Beschreibung sind nun bearbeitbar über die Detailseite der Gruppe.

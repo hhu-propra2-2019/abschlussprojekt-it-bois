@@ -3,3 +3,15 @@
 == Documentation
 
 Heute haben wir an der arc42-Documentation weitergearbeitet.
+
+== Gruppensuche
+Die Gruppensuche funktioniert nun, auch nach mehrfachem verlassen und beitreten der selben Gruppe.
+
+== sortierte Gruppen
+Die Gruppen werden nun sowohl auf der Startseite als auch bei der Suche sortiert nach Veranstaltung und normaler Gruppe angezeigt.
+
+== Checkstyle und Spotbugs
+Alle Fehler wurden behoben auf dem aktuellem Stand des masters.
+
+== Tests und Refactorn
+Wir haben heute unsere Tests für GroupService Refactort. Außerdem haben wir damit angefangen unsere Klasse ControllerService und unsere Tests dazu zu Refactorn.
