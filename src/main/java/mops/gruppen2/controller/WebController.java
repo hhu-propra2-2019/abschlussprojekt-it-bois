@@ -3,14 +3,11 @@ package mops.gruppen2.controller;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.dto.InviteLinkDTO;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.PageNotFoundException;
 import mops.gruppen2.security.Account;
-import mops.gruppen2.service.ControllerService;
-import mops.gruppen2.service.GroupService;
-import mops.gruppen2.service.KeyCloakService;
-import mops.gruppen2.service.UserService;
-import mops.gruppen2.service.ValidationService;
+import mops.gruppen2.service.*;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,13 +36,15 @@ public class WebController {
     private final UserService userService;
     private final ControllerService controllerService;
     private final ValidationService validationService;
+    private final InviteService inviteService;
 
-    public WebController(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, ValidationService validationService) {
+    public WebController(KeyCloakService keyCloakService, GroupService groupService, UserService userService, ControllerService controllerService, ValidationService validationService, InviteService inviteService) {
         this.keyCloakService = keyCloakService;
         this.groupService = groupService;
         this.userService = userService;
         this.controllerService = controllerService;
         this.validationService = validationService;
+        this.inviteService = inviteService;
     }
 
     /**
@@ -187,12 +186,13 @@ public class WebController {
         groups = validationService.checkSearch(search, groups, account);
         model.addAttribute("account", account);
         model.addAttribute("gruppen", groups);
+        model.addAttribute("inviteService", inviteService);
         return "search";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
-    @GetMapping("/details/{id}")
-    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, HttpServletRequest request, @PathVariable("id") String groupId) throws EventException {
+    @GetMapping("/details/{link}")
+    public String showGroupDetails(KeycloakAuthenticationToken token, Model model, HttpServletRequest request, @PathVariable("link") String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
 
         Group group = userService.getGroupById(UUID.fromString(groupId));
@@ -227,14 +227,14 @@ public class WebController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/detailsBeitreten")
     public String joinGroup(KeycloakAuthenticationToken token,
-                            Model model, @RequestParam("id") String groupId) throws EventException {
+                            Model model, @RequestParam("link") String link) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        Group group = userService.getGroupById(UUID.fromString(groupId));
+        Group group = userService.getGroupById(inviteService.getGroupIdFromLink(link));
         validationService.checkIfUserInGroupJoin(group, user);
         validationService.checkIfGroupFull(group);
-        controllerService.addUser(account, UUID.fromString(groupId));
+        controllerService.addUser(account, group.getId());
         return "redirect:/gruppen2/";
     }
 
@@ -258,11 +258,11 @@ public class WebController {
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @GetMapping("/acceptinvite/{groupId}")
+    @GetMapping("/acceptinvite/{link}")
     public String acceptInvite(KeycloakAuthenticationToken token,
-                               Model model, @PathVariable String groupId) throws EventException {
+                               Model model, @PathVariable String link) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
-        Group group = userService.getGroupById(UUID.fromString(groupId));
+        Group group = userService.getGroupById(inviteService.getGroupIdFromLink(link));
         validationService.checkGroup(group.getTitle());
         model.addAttribute("group", group);
         return "redirect:/gruppen2/detailsSearch?id=" + group.getId();
