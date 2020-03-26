@@ -61,6 +61,13 @@ public class GroupService {
         return new ArrayList<>(groupMap.values());
     }
 
+    /**
+     * Gibt die Gruppe mit der richtigen Id aus der übergebenen Map wieder, existiert diese nicht
+     * wird die Gruppe erstellt und der Map hizugefügt.
+     * @param groups Map aus GruppenIds und Gruppen
+     * @param groupId Die Id der Gruppe, die zurückgegeben werden soll
+     * @return Die gesuchte Gruppe
+     */
     private Group getOrCreateGroup(Map<UUID, Group> groups, UUID groupId) {
         if (!groups.containsKey(groupId)) {
             groups.put(groupId, new Group());
@@ -136,6 +143,10 @@ public class GroupService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Sortiert die übergebene Liste an Gruppen, sodass Veranstaltungen am Anfang der Liste sind.
+     * @param groups Die Liste von Gruppen die sortiert werden soll
+     */
     public void sortByGroupType(List<Group> groups) {
         groups.sort((g1, g2) -> {
             if (g1.getType() == GroupType.LECTURE) {

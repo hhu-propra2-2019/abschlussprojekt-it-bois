@@ -49,7 +49,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException {
+    public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) {
         Visibility visibility1;
         maxInfiniteUsers = maxInfiniteUsers != null;
 
@@ -75,7 +75,7 @@ public class ControllerService {
         updateRole(account.getName(), groupId);
     }
 
-    public UUID createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException, IOException {
+    public UUID createOrga(Account account, String title, String description, Boolean visibility, Boolean lecture, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) {
         maxInfiniteUsers = maxInfiniteUsers != null;
 
         if (maxInfiniteUsers) {
