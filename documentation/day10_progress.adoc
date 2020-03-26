@@ -1,0 +1,19 @@
+= Tag 10
+
+== Frontend
+
+Heute haben wir eine Error-Seite erstellt, die aber noch nicht error.html heißt, damit noch die normale Error-Seite mit dem Log angezeigt wird.
+Die Seite wird umbenannt, sobald das Frontend in Kombination mit dem Backend funktioniert.
+Außerdem haben wir die Detailseite überarbeitet, auf die man weitergeleitet wird, wenn man von der Suche aus kommt.
+Die Seite zeigt nun die richtigen Informationen an.
+Die benötigten Methoden haben wir in den Controller geschrieben.
+
+== Keycloak
+
+Änderungen an Keycloakanbindung -> APIController abgesichert
+
+== Backend
+
+Wir haben uns heute um die Umstrukturierung der Vererbung gekümmert.
+Vorher hatten wir die Methoden die Einfluss auf die Gruppe nehmen(also die Events) in der Klasse Group.
+Jetzt haben wir es so umgebaut, dass wir in die einzelnen Events die Gruppe reingeben und die Methode in dem jeweiligen Event ausgeführt wird.

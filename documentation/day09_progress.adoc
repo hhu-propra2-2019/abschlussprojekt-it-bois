@@ -1,0 +1,21 @@
+= Tag 9
+
+== Frontend
+
+Wir haben das Styling des Formulars zur Gruppenerstellung verbessert und die fehlenden Optionen zum Teil hinzugefügt.
+Außerdem haben wir eine Anzeige für die Details einer Gruppe erschaffen, die auch mit dem Programm funktioniert, und das Styling der Seite angepasst.
+Wir haben uns entschieden, getrennte HTML-Files zu erstellen: Eins für den Link von der Liste der eigenen Gruppen aus und eins für den Link über die Suche, in der der User kein Mitglied ist, damit ihm im letzteren Fall die Optionen, die ein Mitglied hätte, unzugänglich sind.
+
+== API Controller
+
+Den API Controller haben wir voerst fertiggestellt.
+Alle Anfragen die wir bisher bearbeiten wollen, werden nun auch bearbeitet.
+
+== EventService Tests
+
+In Zusammenhang mit dem API Controller haben wir ein paar Tests für den Eventservice erstellt, da auch hier einige neue Methoden hinzugefügt wurden und sich der Controller selbst nur schwer testen lässt.
+
+== DB und Backend
+
+Heute haben wir uns darum gekümmert der Datenbank die Spalte visibility hinzuzufügen, damit wir schneller nach öffenlichen und privaten Gruppen suchen können.
+Ebenfalls haben wir die Suche nach öffentlichen Gruppen implementiert.
