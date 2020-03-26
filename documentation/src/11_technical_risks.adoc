@@ -2,4 +2,71 @@
 == Risiken und technische Schulden
 
 
+=== Unklare Spezifikation und Umfang der Software, fehlerhafte Umsetzung
+
+Zu Beginn des Praktikums bestehen kleine Unstimmigkeiten zwischen der Information, die aus den Spezifikationen, die online zur Verfügung gestellt wurden, und denen, die uns zu Beginn von den Tutoren gegeben wurden. Zu diesem Zeitpunkt lässt sich keine klare Aussage über den Umfang der Software machen.
+In Erwartung, dass im Laufe des Praktikums nähere Informationen über Anforderungen und gewünschte Features gegeben werden, besteht das Risiko, dass wir zu Beginn einen falschen Ansatz wählen und mitten im Praktikum neu beginnen müssen oder länger brauchen als vorgegeben ist (s.u.).
+
+*Eventualfallplanung:*
+
+Falls wir einen falschen Ansatz wählen, dann bleibt uns nichts übrig, als neu zu beginnen oder so viel zu ändern, bis die Software den Anforderungen entspricht.
+
+*Risikominderung:*
+
+Um das Risiko zu mindern, sprechen wir uns mit den Tutoren ab und bitten regelmäßig um Auskunft über Anforderungen oder Wünsche. Außerdem versuchen wir, die Abhängigkeit der verschiedenen Komponenten der Software voneinander möglichst gering zu halten, um Teile bei Bedarf austauschen oder verändern zu können.
+
+
+=== Zeitliche Begrenzung des Praktikums in Relation zum Umfang der Software
+
+Da die Software bis zum 27. März fertiggestellt sein muss und Unklarheiten über den Umfang und die Anforderungen bestehen, sind wir uns nicht sicher, wie viel Zeit die Implementierung in Anspruch nehmen wird.
+
+*Eventualfallplanung:*
+
+Falls die Software nicht fertiggestellt werden kann, haben wir keine anderen Optionen als auf ein Bestehen zu hoffen oder mit den Dozenten eine Verlängerung auszuhandeln.
+
+*Risikominderung:*
+
+Um das Risiko der Zeitknappheit möglichst gering zu halten, beginnen wir mit der Implementierung der wesentlichsten Features, die sicher benötigt werden. Wir werden abwarten, bis die Tutoren oder Dozenten mit Anweisungen zu uns kommen, sondern auf sie zugehen und uns mit ihnen absprechen, um, auch solange Unklarheiten über das Endprodukt bestehen, schnell mit der Implementierung beginnen und voranschreiten zu können.
+Um während der Entwicklung schnell voranzukommen, werden wir uns immer gut absprechen, um ein effizientes Vorgehen umzusetzen.
+
+
+=== Mangelnde Vorkenntnisse
+
+Alle Mitglieder des Teams IT-Bois haben Vorkenntnisse aus den Vorlesungen zur Programmierung. Allerdings ist es möglich, dass die Software, die im Praktikum entwickelt wird, andere und höher gesteckte Anforderungen hat, als wir mit dem aktuellen Wissensstand bedienen können.
+
+*Eventualfallplanung:*
+
+Falls wir auf ein Problem stoßen, dass wir mit unseren Kenntnissen nicht lösen können, dann werden wir die Tutoren befragen können. Wenn dies auch nicht funktioniert, dann müssen wir uns auf einen anderen Lösungsweg einigen.
+
+*Risikominderung:*
+
+Da die Tutoren während des Praktikums stets zur Stelle sein werden, werden wir sie um Rat fragen können, wenn wir Probleme haben. Manche Probleme werden sich vermutlich auch mit einfachen Suchen im Internet lösen lassen. Außerdem sind wir ein Team mit vielen Mitgliedern, in dem sich hoffentlich zu den meisten Problemen eine Lösung finden lässt.
+
+
+=== Kommunikation mit anderen Gruppen, Einigung auf eine Schnittstelle
+
+Da unsere Komponente des MOPS-Moduls mit vielen verschiedenen anderen Komponenten interagieren muss, müssen wir uns mit den anderen Entwicklerteams auf eine Schnittstelle einigen. Da viele verschiedene Teams ggf. verschiedene Anforderungen haben, könnte diese Einigung ein Problem werden.
+
+*Eventualfallplanung:*
+
+Falls sich eine Unstimmigkeit bei der Wahl der Schnittstelle ergibt, dann bleibt keine Option, als so lange mit den anderen Teams zu kommunizieren, bis eine Einigung erzielt wird.
+
+*Risikominderung:*
+
+Um das Risiko von Unstimmigkeiten zu mindern, haben wir die Situation so gedreht, dass die anderen Gruppen unsere Ideen annehmen, statt dass wir ihre umsetzen, da so die Quelle der Idee nur eine ist, und nicht viele verschiedene. Die Schnittstelle, die wir entwerfen, muss dennoch für alle anderen Komponenten brauchbar und zu verwenden sein. Auch bleiben wir offen für Feedback, wenn wir etwas an der Grundidee unserer Schnittstelle ändern müssen.
+
+
+=== Aufteilung der Aufgaben auf 8 Leute
+
+Da keiner von uns bisher eine Software im Team mit über 5 Mitgliedern entwickelt hat, könnte sich die Aufteilung der Aufgaben auf 8 Personen als schwierig erweisen. Außerdem möchten wir vermeiden, dass Teammitglieder nur an einer Komponente der Software arbeiten und ihnen dann Kenntnis über andere Komponenten fehlt.
+
+*Eventualfallplanung:*
+
+Im schlimmsten Fall fehlen einzelnen Teammitgliedern Kenntnisse über einzelne Softwarekomponenten. In dem Fall muss nach dem Praktikum und vor der Klausur ein Teammeeting stattfinden, in dem wir uns über die Einzelteile der Software austauschen und so jeder ein Grundwissen über alle Komponenten entwickelt.
+
+*Risikominderung:*
+
+Damit jeder an jedem Teil der Software arbeiten kann und jeder eine Aufgabe hat, sprechen wir uns jeden Morgen ab, wer was an dem entsprechenden Tag in Angriff nehmen möchte. Außerdem wird Wert auf Programmieren in Paaren oder Kleingruppen gelegt, damit man Probleme gemeinsam lösen kann. Wenn jemand keine konkrete Aufgabe hat, dann setzt er sich zu bestehenden Teams dazu und arbeitet mit ihnen.
+
+
 

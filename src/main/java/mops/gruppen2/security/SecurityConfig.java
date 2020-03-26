@@ -48,7 +48,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Bean
     @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST,
-            proxyMode = ScopedProxyMode.TARGET_CLASS)
+           proxyMode = ScopedProxyMode.TARGET_CLASS)
     public AccessToken getAccessToken() {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder
@@ -61,17 +61,10 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .antMatchers("/actuator/**")
-                .hasRole("monitoring")
-                .and()
-                .authorizeRequests()
-                .antMatchers("/h2-console/**")
-                .permitAll()
-                .anyRequest()
-                .permitAll();
-
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+            .antMatchers("/actuator/**")
+            .hasRole("monitoring")
+            .anyRequest()
+            .permitAll();
     }
 
     /**
