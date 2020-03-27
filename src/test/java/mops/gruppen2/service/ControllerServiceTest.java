@@ -2,6 +2,7 @@ package mops.gruppen2.service;
 
 import com.github.javafaker.Faker;
 import mops.gruppen2.repository.EventRepository;
+import mops.gruppen2.repository.InviteRepository;
 import mops.gruppen2.security.Account;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import java.util.Set;
 import static org.mockito.Mockito.mock;
 
 class ControllerServiceTest {
+
     Faker faker;
     Account account;
     ControllerService controllerService;
@@ -20,7 +22,8 @@ class ControllerServiceTest {
     EventRepository eventRepository;
     GroupService groupService;
     JsonService jsonService;
-
+    InviteRepository inviteRepository;
+    InviteService inviteService;
 
 
     @BeforeEach
@@ -30,7 +33,9 @@ class ControllerServiceTest {
         eventService = new EventService(jsonService, eventRepository);
         groupService = new GroupService(eventService, eventRepository);
         userService = new UserService(groupService, eventService);
-        controllerService = new ControllerService(eventService, userService);
+        inviteRepository = mock(InviteRepository.class);
+        inviteService = new InviteService(inviteRepository);
+        controllerService = new ControllerService(eventService, userService, inviteService);
         Set<String> roles = new HashSet<>();
         roles.add("l");
         account = new Account("ich", "ich@hhu.de", "l", "ichdude", "jap", roles);

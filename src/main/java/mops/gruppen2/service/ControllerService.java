@@ -38,11 +38,13 @@ public class ControllerService {
 
     private final EventService eventService;
     private final UserService userService;
+    private final InviteService inviteService;
     private final Logger logger;
 
-    public ControllerService(EventService eventService, UserService userService) {
+    public ControllerService(EventService eventService, UserService userService, InviteService inviteService) {
         this.eventService = eventService;
         this.userService = userService;
+        this.inviteService = inviteService;
         this.logger = Logger.getLogger("controllerServiceLogger");
     }
 
@@ -65,6 +67,8 @@ public class ControllerService {
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, groupVisibility, userMaximum);
         eventService.saveEvent(createGroupEvent);
+
+        inviteService.createLink(groupId);
 
         addUser(account, groupId);
         updateTitle(account, groupId, title);
@@ -221,6 +225,7 @@ public class ControllerService {
 
     public void deleteGroupEvent(String userId, UUID groupId) {
         DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, userId);
+        inviteService.destroyLink(groupId);
         eventService.saveEvent(deleteGroupEvent);
     }
 

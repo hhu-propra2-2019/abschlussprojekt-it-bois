@@ -8,6 +8,7 @@ import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.repository.EventRepository;
 import mops.gruppen2.security.Account;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -84,6 +85,7 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     //TODO Rename
+    @Cacheable("groups")
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
         List<Event> groupEvents = eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
@@ -107,6 +109,7 @@ public class GroupService {
      *
      * @return List of groups
      */
+    @Cacheable("groups")
     public List<Group> getAllLecturesWithVisibilityPublic() {
         List<Event> createEvents = eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         createEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
@@ -131,6 +134,7 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     //Todo Rename
+    @Cacheable("groups")
     public List<Group> findGroupWith(String search, Account account) throws EventException {
         if (search.isEmpty()) {
             return getAllGroupWithVisibilityPublic(account.getName());

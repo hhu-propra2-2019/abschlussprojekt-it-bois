@@ -5,6 +5,7 @@ import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.GroupNotFoundException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class UserService {
      * @param user Der User
      * @return Liste aus Gruppen
      */
+    @Cacheable("groups")
     public List<Group> getUserGroups(User user) {
         List<UUID> groupIds = eventService.findGroupIdsByUser(user.getId());
         List<Event> events = groupService.getGroupEvents(groupIds);
@@ -41,6 +43,11 @@ public class UserService {
         groupService.sortByGroupType(newGroups);
 
         return newGroups;
+    }
+
+    @Cacheable("groups")
+    public List<Group> getUserGroups(String userId) throws EventException {
+        return getUserGroups(new User(userId, null, null, null));
     }
 
     /**
