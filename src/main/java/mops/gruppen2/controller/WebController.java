@@ -294,8 +294,6 @@ public class WebController {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("group", group);
 
-        //controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), group.getId());
-
         if (group.getVisibility() == Visibility.PUBLIC) {
             return "redirect:/gruppen2/details/" + group.getId();
         }
@@ -313,7 +311,7 @@ public class WebController {
 
         User user = new User(acc.getName(), acc.getGivenname(), acc.getFamilyname(), acc.getEmail());
 
-        if (!validationService.checkIfUserInGroup(userService.getGroupById(UUID.fromString(groupId)), user)) {
+        if (!validationService.checkIfUserInGroupWithoutNoAccessAcception(userService.getGroupById(UUID.fromString(groupId)), user)) {
             controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), UUID.fromString(groupId));
         }
 
