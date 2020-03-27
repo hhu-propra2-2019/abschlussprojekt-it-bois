@@ -8,6 +8,7 @@ import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.repository.EventRepository;
 import mops.gruppen2.security.Account;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -77,7 +78,8 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     //TODO Rename
-    public List<Group> getAllGroupsWithVisibilityPublic(String userId) throws EventException {
+    @Cacheable("groups")
+    public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
         List<Event> groupEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
         groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
@@ -100,6 +102,7 @@ public class GroupService {
      *
      * @return List of groups
      */
+    @Cacheable("groups")
     public List<Group> getAllLecturesWithVisibilityPublic() {
         List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
         createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
@@ -124,12 +127,13 @@ public class GroupService {
      * @throws EventException Projektionsfehler
      */
     //Todo Rename
+    @Cacheable("groups")
     public List<Group> findGroupWith(String search, Account account) throws EventException {
         if (search.isEmpty()) {
-            return getAllGroupsWithVisibilityPublic(account.getName());
+            return getAllGroupWithVisibilityPublic(account.getName());
         }
 
-        return getAllGroupsWithVisibilityPublic(account.getName())
+        return getAllGroupWithVisibilityPublic(account.getName())
                 .parallelStream()
                 .filter(group -> group.getTitle().toLowerCase().contains(search.toLowerCase())
                         || group.getDescription().toLowerCase().contains(search.toLowerCase()))

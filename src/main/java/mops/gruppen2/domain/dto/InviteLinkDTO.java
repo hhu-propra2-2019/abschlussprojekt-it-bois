@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class InviteLinkDTO {
 
     @Id
-    Long link_id;
+    Long invite_id;
     String group_id;
     String invite_link;
 }

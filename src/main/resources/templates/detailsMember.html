@@ -35,12 +35,16 @@
             <div class="shadow-sm p-4 col-8"
                  style="border: 10px solid aliceblue; display: inline-block; border-radius: 5px; background: aliceblue">
                 <div class="row">
-                    <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word; width: 95%"
-                        th:text="${group.getTitle()}"></h1>
-                    <a class="fa fa-pencil"
-                       style="font-size:30px; width: 5%"
-                       th:href="@{/gruppen2/details/changeMetadata/{id}(id=${group.getId()})}"
-                       th:if="${roles.get(user.getId()) == admin}"></a>
+                    <div class="col-11">
+                        <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word; width: 95%"
+                            th:text="${group.getTitle()}"></h1>
+                    </div>
+                    <div class="col-1">
+                        <a class="fa fa-pencil"
+                           style="font-size:30px; width: 5%"
+                           th:href="@{/gruppen2/details/changeMetadata/{id}(id=${group.getId()})}"
+                           th:if="${roles.get(user.getId()) == admin}"></a>
+                    </div>
                 </div>
                 <h3>
                     <span class="badge badge-pill badge-dark" style="background: darkslategray"
@@ -53,7 +57,7 @@
                           th:text="${parent.getTitle()}">Parent</span>
 
                     <div class="input-group mb-3" style="margin-top: 10px"
-                         th:if="${group.getVisibility() == group.getVisibility().PRIVATE}">
+                         th:if="${roles.get(user.getId()) == admin}">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-default"
                                   style="background: #52a1eb">Einladungslink:</span>
@@ -79,15 +83,16 @@
                             style="background: #52a1eb; border: none; margin: 5px">
                         <a style="color: white" th:href="@{/gruppen2}">Zurück</a>
                     </button>
-                    <form action="/gruppen2/leaveGroup" method="post">
+                    <form method="post" th:action="@{/gruppen2/leaveGroup}">
                         <button class="btn btn-danger" style="border-style: none; margin: 5px"
                                 th:name="group_id" th:value="${group.getId()}"
                                 type="submit">Gruppe verlassen
                         </button>
                     </form>
-                    <form action="/gruppen2/deleteGroup" method="post">
+                    <form method="post" th:action="@{/gruppen2/deleteGroup}">
                         <button class="btn btn-danger" style="border-style: none; margin: 5px"
-                                th:name="group_id" th:value="${group.getId()}" th:if="${group.getRoles().get(user.getId()) == admin}"
+                                th:name="group_id" th:value="${group.getId()}"
+                                th:if="${group.getRoles().get(user.getId()) == admin}"
                                 type="submit">Gruppe löschen
                         </button>
                     </form>
@@ -128,7 +133,7 @@
     </div>
     <script>
         function copyLink() {
-            var copyText = document.getElementById("groupLink");
+            const copyText = document.getElementById("groupLink");
 
             copyText.select();
             copyText.setSelectionRange(0, 99999);

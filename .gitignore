@@ -33,4 +33,4 @@ out/
 .floo
 .flooignore
 
-/mysql/*
+/mysql/db/storage/

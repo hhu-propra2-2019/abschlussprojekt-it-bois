@@ -12,14 +12,11 @@ import java.util.List;
 //TODO Rename Queries + Formatting
 public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
-    @Query("select distinct group_id from event where user_id =:id")
+    @Query("SELECT DISTINCT group_id FROM event WHERE user_id = :id")
     List<String> findGroup_idsWhereUser_id(@Param("id") String userId);
 
-    @Query("select * from event where group_id =:id")
+    @Query("SELECT * FROM event WHERE group_id = :id")
     List<EventDTO> findEventDTOByGroup_id(@Param("id") String groupId);
-
-    //@Query("SELECT * FROM event WHERE event_id > ?#{[0]}")
-    //Iterable<EventDTO> findNewEventSinceStatus(@Param("status") Long status);
 
     @Query("SELECT DISTINCT group_id FROM event WHERE event_id > :status")
     List<String> findNewEventSinceStatus(@Param("status") Long status);
