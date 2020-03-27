@@ -49,6 +49,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
+
     public void createGroup(Account account, String title, String description, Boolean visibility, Boolean maxInfiniteUsers, Long userMaximum, UUID parent) throws EventException {
         Visibility visibility1;
         maxInfiniteUsers = maxInfiniteUsers != null;
