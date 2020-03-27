@@ -14,5 +14,5 @@ public interface InviteRepository extends CrudRepository<InviteLinkDTO, Long> {
     void deleteLinkOfGroup(@Param("group") String group);
 
     @Query("SELECT invite_link FROM invite WHERE group_id = :group")
-    String findLinkByGroupId(String group);
+    String findLinkByGroupId(@Param("group") String group);
 }
