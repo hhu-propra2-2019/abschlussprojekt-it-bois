@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>Gruppendetails</title>
@@ -10,10 +11,11 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation" th:switch="${account.getRoles().contains('orga')}">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         th:switch="${account.getRoles().contains('orga')}">
         <ul>
             <li>
-                <a th:href="@{/gruppen2}" href="/">Gruppen</a>
+                <a href="/" th:href="@{/gruppen2}">Gruppen</a>
             </li>
             <li th:case="${true}">
                 <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
@@ -22,7 +24,7 @@
                 <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
             </li>
             <li class="active">
-                <a th:href="@{/gruppen2/findGroup}" href="/findGroup">Suche</a>
+                <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
             </li>
         </ul>
     </nav>
@@ -31,32 +33,28 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-9">
-                <div class="shadow-sm p-4" style="border: 1px solid aliceblue; border-radius: 5px; background: aliceblue">
-                    <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word" th:text="${group.getTitle()}"></h1>
-                    <h3>
-                        <span class="badge badge-pill badge-dark" style="background: darkslategray"
-                              th:if='${group.getVisibility() == group.getVisibility().PRIVATE }'>Private Gruppe</span>
-                        <span class="badge badge-pill badge-primary" style="background: #52a1eb"
-                              th:if="${group.getVisibility() == group.getVisibility().PUBLIC}">Öffentliche Gruppe</span>
-                        <span class="badge badge-pill badge-success"
-                              style="background: lightseagreen"
-                              th:if='${group.getType() == group.getType().LECTURE}'> Veranstaltung</span>
-                        <span class="badge badge-pill badge-info" style="background: mediumorchid"
-                              th:text="${parent.getTitle()}">Parent</span>
-                    </h3>
+                <div class="shadow-sm p-4"
+                     style="border: 1px solid aliceblue; border-radius: 5px; background: aliceblue">
+                    <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word"
+                        th:text="${group.getTitle()}"></h1>
+                    <h3>Möchtest du dieser privaten Gruppe beitreten?</h3>
                     <div class="shadow-sm p-4" style="background: white">
                         <p style="overflow-wrap: break-word; font-optical-sizing: auto"
                            th:text="${group.getDescription()}"></p>
                     </div>
                     <div class="form-group mt-2">
                         <div class="text-right">
-                            <form method="post" th:action="@{/gruppen2/detailsBeitreten}">
+                            <form method="post" th:action="@{/gruppen2/acceptinvite}">
+                                <input name="id" th:value="${group.getId()}" type="hidden"/>
                                 <button class="btn btn-primary"
                                         style="background: #52a1eb; border-style: none;"
-                                        th:href="@{/gruppen2/detailsBeitreten}"
-                                        th:name="id" th:value="${group.getId()}"
-                                        type="submit">Gruppe beitreten
+                                        type="submit">Ja, Gruppe beitreten
                                 </button>
+                                <a class="btn btn-primary"
+                                   href="/gruppen2"
+                                   style="background: #52a1eb; border-style: none;"
+                                   type="submit">Ich will das nicht.
+                                </a>
                             </form>
                         </div>
                     </div>
