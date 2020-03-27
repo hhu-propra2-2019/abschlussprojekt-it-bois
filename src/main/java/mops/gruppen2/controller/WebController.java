@@ -287,9 +287,11 @@ public class WebController {
     public String acceptInvite(KeycloakAuthenticationToken token,
                                Model model,
                                @PathVariable("link") String link) throws EventException {
-        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         Group group = userService.getGroupById(inviteService.getGroupIdFromLink(link));
+
         validationService.throwIfGroupNotExisting(group.getTitle());
+
+        model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
         model.addAttribute("group", group);
 
         //controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), group.getId());

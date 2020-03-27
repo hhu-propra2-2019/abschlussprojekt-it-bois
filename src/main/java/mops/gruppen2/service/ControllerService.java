@@ -42,7 +42,7 @@ public class ControllerService {
     private final InviteService inviteService;
     private final Logger logger;
 
-    public ControllerService(EventService eventService, UserService userService, ValidationService validationService) {
+    public ControllerService(EventService eventService, UserService userService, ValidationService validationService, InviteService inviteService) {
         this.eventService = eventService;
         this.userService = userService;
         this.validationService = validationService;

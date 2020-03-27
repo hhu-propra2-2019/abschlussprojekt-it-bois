@@ -19,6 +19,7 @@ class ControllerServiceTest {
     ControllerService controllerService;
     EventService eventService;
     UserService userService;
+    ValidationService validationService;
     EventRepository eventRepository;
     GroupService groupService;
     JsonService jsonService;
@@ -33,9 +34,10 @@ class ControllerServiceTest {
         eventService = new EventService(jsonService, eventRepository);
         groupService = new GroupService(eventService, eventRepository);
         userService = new UserService(groupService, eventService);
+        validationService = new ValidationService(userService, groupService);
         inviteRepository = mock(InviteRepository.class);
         inviteService = new InviteService(inviteRepository);
-        controllerService = new ControllerService(eventService, userService, inviteService);
+        controllerService = new ControllerService(eventService, userService, validationService, inviteService);
         Set<String> roles = new HashSet<>();
         roles.add("l");
         account = new Account("ich", "ich@hhu.de", "l", "ichdude", "jap", roles);
