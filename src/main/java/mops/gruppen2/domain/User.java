@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mops.gruppen2.security.Account;
 
 @Getter
 @AllArgsConstructor
@@ -16,11 +15,4 @@ public class User {
     private String givenname;
     private String familyname;
     private String email;
-
-    public User(Account account) {
-        this.id = account.getName();
-        this.givenname = account.getGivenname();
-        this.familyname = account.getFamilyname();
-        this.email = account.getEmail();
-    }
 }

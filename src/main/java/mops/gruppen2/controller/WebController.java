@@ -296,7 +296,9 @@ public class WebController {
     public String postAcceptInvite(KeycloakAuthenticationToken token,
                                    @RequestParam("id") String groupId) {
 
-        User user = new User(keyCloakService.createAccountFromPrincipal(token));
+        Account acc = keyCloakService.createAccountFromPrincipal(token);
+
+        User user = new User(acc.getName(), acc.getGivenname(), acc.getFamilyname(), acc.getEmail());
 
         if (!validationService.checkIfUserInGroup(userService.getGroupById(UUID.fromString(groupId)), user)) {
             controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), UUID.fromString(groupId));

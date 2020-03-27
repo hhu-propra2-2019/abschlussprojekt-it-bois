@@ -9,6 +9,8 @@ CREATE TABLE event
     event_payload VARCHAR(2500)
 );
 
+DROP TABLE IF EXISTS invite;
+
 CREATE TABLE invite
 (
     invite_id   INT PRIMARY KEY AUTO_INCREMENT,

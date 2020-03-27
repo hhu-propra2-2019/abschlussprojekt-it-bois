@@ -13,7 +13,9 @@ public class InviteService {
 
     private final InviteRepository inviteRepository;
 
-    public InviteService(InviteRepository inviteRepository) {this.inviteRepository = inviteRepository;}
+    public InviteService(InviteRepository inviteRepository) {
+        this.inviteRepository = inviteRepository;
+    }
 
     public void createLink(UUID groupId) {
         inviteRepository.save(new InviteLinkDTO(null, groupId.toString(), UUID.randomUUID().toString()));
