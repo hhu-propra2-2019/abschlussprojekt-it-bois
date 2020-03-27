@@ -47,8 +47,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     }
 
     @Bean
-    @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST,
-            proxyMode = ScopedProxyMode.TARGET_CLASS)
+    @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public AccessToken getAccessToken() {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder

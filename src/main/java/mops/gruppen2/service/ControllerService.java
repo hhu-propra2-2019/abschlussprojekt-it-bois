@@ -132,7 +132,8 @@ public class ControllerService {
         }
     }
 
-    private List<User> readCsvFile(MultipartFile file) throws EventException {
+    private List<User> readCsvFile(MultipartFile file) throws EventException{
+        if(file == null) return new ArrayList<>();
         if (!file.isEmpty()) {
             try {
                 List<User> userList = CsvService.read(file.getInputStream());

@@ -62,6 +62,11 @@ public class ValidationService {
         }
     }
 
+    //Warum ist das überhaupt nötig smh
+    public boolean checkIfUserInGroupWithoutNoAccessAcception(Group group, User user) {
+        return group.getMembers().contains(user);
+    }
+
     public Group checkParent(UUID parentId) {
         Group parent = new Group();
         if (!controllerService.idIsEmpty(parentId)) {
