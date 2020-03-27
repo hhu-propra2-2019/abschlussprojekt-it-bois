@@ -48,6 +48,7 @@ class GroupServiceTest {
     @BeforeEach
     void setUp() {
         groupService = new GroupService(eventService, eventRepository);
+        eventRepository.deleteAll();
     }
 
     //TODO: Wofür ist dieser Test?
@@ -116,7 +117,7 @@ class GroupServiceTest {
         Group group = TestBuilder.apply(test1, test2);
 
         assertThat(group.getType()).isEqualTo(null);
-        assertThat(groupService.getAllGroupWithVisibilityPublic("test1")).isEmpty();
+        assertThat(groupService.getAllGroupWithVisibilityPublic("errer")).isEmpty();
     }
 
     @Test
