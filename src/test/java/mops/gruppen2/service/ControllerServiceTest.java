@@ -30,7 +30,7 @@ class ControllerServiceTest {
         eventService = new EventService(jsonService, eventRepository);
         groupService = new GroupService(eventService, eventRepository);
         userService = new UserService(groupService, eventService);
-        controllerService = new ControllerService(eventService, userService);
+        controllerService = new ControllerService(eventService, userService, validationService);
         Set<String> roles = new HashSet<>();
         roles.add("l");
         account = new Account("ich", "ich@hhu.de", "l", "ichdude", "jap", roles);

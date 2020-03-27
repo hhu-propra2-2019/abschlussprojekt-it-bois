@@ -281,17 +281,15 @@ public class WebController {
         return "redirect:/gruppen2/detailsSearch?id=" + group.getId();
     }
 
-    //Bis hier gekommen
-
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/leaveGroup")
     public String pLeaveGroup(KeycloakAuthenticationToken token,
                               @RequestParam("group_id") String groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
-        controllerService.passIfLastAdmin(account, UUID.fromString(groupId));
-        controllerService.deleteUser(user.getId(), UUID.fromString(groupId));
-        validationService.checkIfGroupEmpty(groupId, user);
+        User user = new User(account.getName(), "", "", "");
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+
+        controllerService.deleteUser(account, user, group);
         return "redirect:/gruppen2/";
     }
 
@@ -302,7 +300,9 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(UUID.fromString(groupId));
+
         validationService.throwIfNoAdmin(group, user);
+
         controllerService.deleteGroupEvent(user.getId(), UUID.fromString(groupId));
         return "redirect:/gruppen2/";
     }
@@ -315,7 +315,9 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
         User user = new User(account.getName(), "", "", "");
+
         validationService.throwIfNoAdmin(group, user);
+
         model.addAttribute("account", account);
         model.addAttribute("members", group.getMembers());
         model.addAttribute("group", group);
@@ -330,9 +332,15 @@ public class WebController {
                              @RequestParam("user_id") String userId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        User user = new User(account.getName(), "", "", "");
-        validationService.throwIfNoAdmin(group, user);
-        if (validationService.checkIfDemotingSelf(userId, groupId, account)) {
+        User principle = new User(account.getName(), "", "", "");
+        User user = new User(userId, "", "", "");
+
+        validationService.throwIfNoAdmin(group, principle);
+
+        controllerService.changeRole(account, user, group);
+
+        group = userService.getGroupById(UUID.fromString(groupId));
+        if (!validationService.checkIfAdmin(group, principle)) {
             return "redirect:/gruppen2/details/" + groupId;
         }
         return "redirect:/gruppen2/details/members/" + groupId;
@@ -344,7 +352,10 @@ public class WebController {
                                 @RequestParam("group_id") String groupId,
                                 KeycloakAuthenticationToken token) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
-        validationService.checkIfNewMaximumIsValid(maximum, groupId);
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+
+        validationService.throwIfNewMaximumIsValid(maximum, group);
+
         controllerService.updateMaxUser(account, UUID.fromString(groupId), maximum);
         return "redirect:/gruppen2/details/members/" + groupId;
     }
@@ -352,10 +363,20 @@ public class WebController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/deleteUser")
     public String deleteUser(@RequestParam("group_id") String groupId,
-                             @RequestParam("user_id") String userId) throws EventException {
+                             @RequestParam("user_id") String userId,
+                             KeycloakAuthenticationToken token) throws EventException {
+        Account account = keyCloakService.createAccountFromPrincipal(token);
+        User principle = new User(account.getName(), "", "", "");
         User user = new User(userId, "", "", "");
-        controllerService.deleteUser(userId, UUID.fromString(groupId));
-        validationService.checkIfGroupEmpty(groupId, user);
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+
+        validationService.throwIfNoAdmin(group, principle);
+
+        controllerService.deleteUser(account, user, group);
+
+        if (!validationService.checkIfUserInGroup(group, principle)) {
+            return "redirect:/gruppen2/";
+        }
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 

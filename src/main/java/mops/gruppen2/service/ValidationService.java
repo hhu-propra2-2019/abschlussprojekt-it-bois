@@ -4,27 +4,23 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.exception.BadParameterException;
-import mops.gruppen2.domain.exception.GroupFullException;
-import mops.gruppen2.domain.exception.GroupNotFoundException;
-import mops.gruppen2.domain.exception.NoAccessException;
-import mops.gruppen2.domain.exception.NoAdminAfterActionException;
-import mops.gruppen2.domain.exception.UserAlreadyExistsException;
+import mops.gruppen2.domain.exception.*;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import static mops.gruppen2.domain.Role.ADMIN;
 
 @Service
 public class ValidationService {
 
-    private final ControllerService controllerService;
     private final UserService userService;
     private final GroupService groupService;
 
-    public ValidationService(ControllerService controllerService, UserService userService, GroupService groupService) {
-        this.controllerService = controllerService;
+    public ValidationService(UserService userService, GroupService groupService) {
         this.userService = userService;
         this.groupService = groupService;
     }
@@ -58,17 +54,20 @@ public class ValidationService {
         }
     }
 
+    public void throwIfNotInGroup(Group group, User user) {
+        if (!checkIfUserInGroup(group, user)) {
+            throw new UserNotFoundException(this.getClass().toString());
+        }
+    }
+
     public void throwIfGroupFull(Group group) {
         if (group.getUserMaximum() < group.getMembers().size() + 1) {
             throw new GroupFullException("Du kannst der Gruppe daher leider nicht beitreten.");
         }
     }
 
-
-    public void checkIfGroupEmpty(String groupId, User user) {
-        if (userService.getGroupById(UUID.fromString(groupId)).getMembers().isEmpty()) {
-            controllerService.deleteGroupEvent(user.getId(), UUID.fromString(groupId));
-        }
+    public boolean checkIfGroupEmpty(UUID groupId) {
+        return userService.getGroupById(groupId).getMembers().isEmpty();
     }
 
     public void throwIfNoAdmin(Group group, User user) {
@@ -85,16 +84,21 @@ public class ValidationService {
         return false;
     }
 
-    public boolean checkIfDemotingSelf(String userId, String groupId, Account account) {
-        if (userId.equals(account.getName())) {
-            if (controllerService.passIfLastAdmin(account, UUID.fromString(groupId))) {
-                throw new NoAdminAfterActionException("Du Otto bist letzter Admin");
+    public boolean checkIfLastAdmin(Account account, Group group) {
+        for (Map.Entry<String, Role> entry : group.getRoles().entrySet()) {
+            if (entry.getValue() == ADMIN) {
+                if (!(entry.getKey().equals(account.getName()))) {
+                    return false;
+                }
             }
-            controllerService.updateRole(userId, UUID.fromString(groupId));
-            return true;
         }
-        controllerService.updateRole(userId, UUID.fromString(groupId));
-        return false;
+        return true;
+    }
+
+    public void throwIfLastAdmin(Account account, Group group) {
+        if (checkIfLastAdmin(account, group)) {
+            throw new NoAdminAfterActionException("Du Otto bist letzter Admin!");
+        }
     }
 
     /**
@@ -134,8 +138,7 @@ public class ValidationService {
         }
     }
 
-    public void checkIfNewMaximumIsValid(Long newUserMaximum, String groupId) {
-        Group group = userService.getGroupById(UUID.fromString(groupId));
+    public void throwIfNewMaximumIsValid(Long newUserMaximum, Group group) {
         if (newUserMaximum == null) {
             throw new BadParameterException("Es wurde keine neue maximale Teilnehmeranzahl angegeben!");
         }
