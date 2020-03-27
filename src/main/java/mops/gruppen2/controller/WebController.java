@@ -296,7 +296,11 @@ public class WebController {
     public String postAcceptInvite(KeycloakAuthenticationToken token,
                                    @RequestParam("id") String groupId) {
 
-        controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), UUID.fromString(groupId));
+        User user = new User(keyCloakService.createAccountFromPrincipal(token));
+
+        if (!validationService.checkIfUserInGroup(userService.getGroupById(UUID.fromString(groupId)), user)) {
+            controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), UUID.fromString(groupId));
+        }
 
         return "redirect:/gruppen2/";
     }
