@@ -13,6 +13,7 @@ import mops.gruppen2.service.KeyCloakService;
 import mops.gruppen2.service.UserService;
 import mops.gruppen2.service.ValidationService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,6 +81,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/createOrga")
+    @CacheEvict(value = "groups", allEntries = true)
     public String postCrateGroupAsOrga(KeycloakAuthenticationToken token,
                                        @RequestParam("title") String title,
                                        @RequestParam("description") String description,
@@ -110,6 +112,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_studentin"})
     @PostMapping("/createStudent")
+    @CacheEvict(value = "groups", allEntries = true)
     public String postCreateGroupAsStudent(KeycloakAuthenticationToken token,
                                            @RequestParam("title") String title,
                                            @RequestParam("description") String description,
@@ -127,6 +130,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
     @PostMapping("/details/members/addUsersFromCsv")
+    @CacheEvict(value = "groups", allEntries = true)
     public String addUsersFromCsv(KeycloakAuthenticationToken token,
                                   @RequestParam("group_id") String groupId,
                                   @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
@@ -166,6 +170,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/changeMetadata")
+    @CacheEvict(value = "groups", allEntries = true)
     public String pChangeMetadata(KeycloakAuthenticationToken token,
                                   @RequestParam("title") String title,
                                   @RequestParam("description") String description,
@@ -232,6 +237,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/detailsBeitreten")
+    @CacheEvict(value = "groups", allEntries = true)
     public String joinGroup(KeycloakAuthenticationToken token,
                             Model model, @RequestParam("id") String groupId) throws EventException {
         model.addAttribute("account", keyCloakService.createAccountFromPrincipal(token));
@@ -263,8 +269,10 @@ public class WebController {
         return "detailsNoMember";
     }
 
+    //TODO: Muss post-mapping sein
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @GetMapping("/acceptinvite/{link}")
+    @PostMapping("/acceptinvite/{link}")
+    @CacheEvict(value = "groups", allEntries = true)
     public String acceptInvite(KeycloakAuthenticationToken token,
                                Model model,
                                @PathVariable("link") String link) throws EventException {
@@ -280,6 +288,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/leaveGroup")
+    @CacheEvict(value = "groups", allEntries = true)
     public String pLeaveGroup(KeycloakAuthenticationToken token,
                               @RequestParam("group_id") String groupId) throws EventException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
@@ -292,6 +301,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/deleteGroup")
+    @CacheEvict(value = "groups", allEntries = true)
     public String pDeleteGroup(KeycloakAuthenticationToken token,
                                @RequestParam("group_id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
@@ -320,6 +330,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/changeRole")
+    @CacheEvict(value = "groups", allEntries = true)
     public String changeRole(KeycloakAuthenticationToken token,
                              @RequestParam("group_id") String groupId,
                              @RequestParam("user_id") String userId) throws EventException {
@@ -332,6 +343,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/changeMaximum")
+    @CacheEvict(value = "groups", allEntries = true)
     public String changeMaxSize(@RequestParam("maximum") Long maximum,
                                 @RequestParam("group_id") String groupId,
                                 KeycloakAuthenticationToken token) {
@@ -343,6 +355,7 @@ public class WebController {
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
     @PostMapping("/details/members/deleteUser")
+    @CacheEvict(value = "groups", allEntries = true)
     public String deleteUser(@RequestParam("group_id") String groupId,
                              @RequestParam("user_id") String userId) throws EventException {
         User user = new User(userId, "", "", "");
