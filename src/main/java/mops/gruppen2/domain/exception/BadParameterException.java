@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 public class BadParameterException extends EventException {
 
     public BadParameterException(String info) {
-        super(HttpStatus.INTERNAL_SERVER_ERROR, "Fehlerhafter Parameter angegeben!", info);
+        super(HttpStatus.BAD_REQUEST, "Fehlerhafter Parameter angegeben!", info);
     }
 }
