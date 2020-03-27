@@ -34,8 +34,8 @@ class ControllerServiceTest {
     ControllerService controllerService;
     EventService eventService;
     UserService userService;
-    @Autowired
     ValidationService validationService;
+    @Autowired
     EventRepository eventRepository;
     GroupService groupService;
     @Autowired
@@ -243,7 +243,7 @@ class ControllerServiceTest {
         controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
-        User user = new User(account.getName(), "", "", "");
+        User user = new User(account2.getName(), "", "", "");
         controllerService.updateRole(user, groups.get(0).getId());
         groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         assertEquals(Role.ADMIN, groups.get(0).getRoles().get(account2.getName()));
@@ -253,18 +253,18 @@ class ControllerServiceTest {
     public void updateRoleNonUserTest() {
         controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
-        User user = new User(account.getName(), "", "", "");
+        User user = new User(account2.getName(), "", "", "");
         Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.updateRole(user, groups.get(0).getId()));
-        assertEquals("404 NOT_FOUND \"Der User wurde nicht gefunden.    (class mops.gruppen2.service.ControllerService)\"", exception.getMessage());
+        assertEquals("404 NOT_FOUND \"Der User wurde nicht gefunden.    (class mops.gruppen2.service.ValidationService)\"", exception.getMessage());
     }
 
     @Test
     public void deleteNonUserTest() {
         controllerService.createGroup(account, "test", "hi", true, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
-        User user = new User(account.getName(), "", "", "");
+        User user = new User(account2.getName(), "", "", "");
         Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.deleteUser(account, user, groups.get(0)));
-        assertEquals("404 NOT_FOUND \"Der User wurde nicht gefunden.    (class mops.gruppen2.service.ControllerService)\"", exception.getMessage());
+        assertEquals("404 NOT_FOUND \"Der User wurde nicht gefunden.    (class mops.gruppen2.service.ValidationService)\"", exception.getMessage());
     }
 
     void testTitleAndDescription(String title, String description) {
@@ -305,7 +305,6 @@ class ControllerServiceTest {
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
         controllerService.addUser(account3, groups.get(0).getId());
-        controllerService.changeRoleIfLastAdmin(account, groups.get(0));
         User user = new User(account.getName(), "", "", "");
         controllerService.deleteUser(account, user, groups.get(0));
         groups = userService.getUserGroups(new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail()));
