@@ -39,13 +39,15 @@ class ControllerServiceTest {
     GroupService groupService;
     @Autowired
     JsonService jsonService;
+    @Autowired
+    InviteService inviteService;
 
     @BeforeEach
     void setUp() {
         eventService = new EventService(jsonService, eventRepository);
         groupService = new GroupService(eventService, eventRepository);
         userService = new UserService(groupService, eventService);
-        controllerService = new ControllerService(eventService, userService);
+        controllerService = new ControllerService(eventService, userService, inviteService);
         Set<String> roles = new HashSet<>();
         roles.add("l");
         account = new Account("ich", "ich@hhu.de", "l", "ichdude", "jap", roles);
@@ -56,7 +58,7 @@ class ControllerServiceTest {
 
     @Test
     void createPublicGroupWithNoParentAndLimitedNumberTest() {
-        controllerService.createGroup(account, "test", "hi", null, null, 20L, null);
+        controllerService.createGroup(account, "test", "hi", null, null, null, 20L, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());
@@ -66,7 +68,7 @@ class ControllerServiceTest {
 
     @Test
     void createPublicGroupWithNoParentAndUnlimitedNumberTest() {
-        controllerService.createGroup(account, "test", "hi", null, true, null, null);
+        controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         List<Group> groups = userService.getUserGroups(user);
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
@@ -77,7 +79,7 @@ class ControllerServiceTest {
 
     @Test
     void createPrivateGroupWithNoParentAndUnlimitedNumberTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", true, null, true, null, null);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         List<Group> groups = userService.getUserGroups(user);
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
@@ -88,7 +90,7 @@ class ControllerServiceTest {
 
     @Test
     void createPrivateGroupWithNoParentAndLimitedNumberTest() {
-        controllerService.createGroup(account, "test", "hi", true, null, 20L, null);
+        controllerService.createGroup(account, "test", "hi", true, null, null, 20L, null);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         List<Group> groups = userService.getUserGroups(user);
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
@@ -99,10 +101,10 @@ class ControllerServiceTest {
 
     @Test
     void createPrivateGroupWithParentAndLimitedNumberTest() throws IOException {
-        controllerService.createOrga(account2, "test", "hi", null, null, true, null, null);
-        User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
+        controllerService.createGroupAsOrga(account2, "test", "hi", null, true, true, null, null, null);
+        User user = new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail());
         List<Group> groups1 = userService.getUserGroups(user);
-        controllerService.createGroup(account, "test", "hi", true, null, 20L, groups1.get(0).getId());
+        controllerService.createGroup(account, "test", "hi", true, null, null, 20L, groups1.get(0).getId());
         User user2 = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         List<Group> groups = userService.getUserGroups(user2);
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
@@ -113,9 +115,9 @@ class ControllerServiceTest {
 
     @Test
     void createPublicGroupWithParentAndLimitedNumberTest() throws IOException {
-        controllerService.createOrga(account2, "test", "hi", null, null, true, null, null);
+        controllerService.createGroupAsOrga(account2, "test", "hi", null, null, true, null, null, null);
         List<Group> groups1 = userService.getUserGroups(new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail()));
-        controllerService.createGroup(account, "test", "hi", null, null, 20L, groups1.get(0).getId());
+        controllerService.createGroup(account, "test", "hi", null, null, null, 20L, groups1.get(0).getId());
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());
@@ -125,9 +127,9 @@ class ControllerServiceTest {
 
     @Test
     void createPublicGroupWithParentAndUnlimitedNumberTest() throws IOException {
-        controllerService.createOrga(account2, "test", "hi", null, null, true, null, null);
+        controllerService.createGroupAsOrga(account2, "test", "hi", null, null, true, null, null, null);
         List<Group> groups1 = userService.getUserGroups(new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail()));
-        controllerService.createGroup(account, "test", "hi", null, true, null, groups1.get(0).getId());
+        controllerService.createGroup(account, "test", "hi", null, true, true, null,groups1.get(0).getId());
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());
@@ -137,9 +139,9 @@ class ControllerServiceTest {
 
     @Test
     void createPrivateGroupWithParentAndUnlimitedNumberTest() throws IOException {
-        controllerService.createOrga(account2, "test", "hi", null, null, true, null, null);
+        controllerService.createGroupAsOrga(account2, "test", "hi", null, null, true, null, null, null);
         List<Group> groups1 = userService.getUserGroups(new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail()));
-        controllerService.createGroup(account, "test", "hi", true, true, null, groups1.get(0).getId());
+        controllerService.createGroup(account, "test", "hi", true, true, true, null, groups1.get(0).getId());
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(Visibility.PRIVATE, groups.get(0).getVisibility());
@@ -149,7 +151,7 @@ class ControllerServiceTest {
 
     @Test
     void createPublicOrgaGroupWithNoParentAndLimitedNumberTest() throws IOException {
-        controllerService.createOrga(account, "test", "hi", null, null, null, 20L, null);
+        controllerService.createGroupAsOrga(account, "test", "hi", null, null, null, 20L, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(GroupType.SIMPLE, groups.get(0).getType());
@@ -160,7 +162,7 @@ class ControllerServiceTest {
 
     @Test
     void createPublicOrgaGroupWithNoParentAndUnlimitedNumberTest() throws IOException {
-        controllerService.createOrga(account, "test", "hi", null, null, true, null, null);
+        controllerService.createGroupAsOrga(account, "test", "hi", null, null, true, null, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(GroupType.SIMPLE, groups.get(0).getType());
@@ -171,7 +173,7 @@ class ControllerServiceTest {
 
     @Test
     void createPrivateOrgaGroupWithNoParentAndLimitedNumberTest() throws IOException {
-        controllerService.createOrga(account, "test", "hi", true, null, null, 20L, null);
+        controllerService.createGroupAsOrga(account, "test", "hi", true, null, null, 20L, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(GroupType.SIMPLE, groups.get(0).getType());
@@ -182,7 +184,7 @@ class ControllerServiceTest {
 
     @Test
     void createPrivateOrgaGroupWithNoParentAndUnlimitedNumberTest() throws IOException {
-        controllerService.createOrga(account, "test", "hi", true, null, true, null, null);
+        controllerService.createGroupAsOrga(account, "test", "hi", true, null, true, null, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(GroupType.SIMPLE, groups.get(0).getType());
@@ -193,7 +195,7 @@ class ControllerServiceTest {
 
     @Test
     void createOrgaLectureGroupAndLimitedNumberTest() throws IOException {
-        controllerService.createOrga(account, "test", "hi", null, true, null, 20L, null);
+        controllerService.createGroupAsOrga(account, "test", "hi", null, true, null, 20L, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(GroupType.LECTURE, groups.get(0).getType());
@@ -204,7 +206,7 @@ class ControllerServiceTest {
 
     @Test
     void createOrgaLectureGroupAndUnlimitedNumberTest() throws IOException {
-        controllerService.createOrga(account, "test", "hi", null, true, true, null, null);
+        controllerService.createGroupAsOrga(account, "test", "hi", null, true, true, null, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(GroupType.LECTURE, groups.get(0).getType());
@@ -215,7 +217,7 @@ class ControllerServiceTest {
 
     @Test
     public void deleteUserTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", true, true, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
         controllerService.deleteUser(account.getName(), groups.get(0).getId());
@@ -224,7 +226,7 @@ class ControllerServiceTest {
 
     @Test
     public void updateRoleAdminTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
         controllerService.updateRole(account.getName(), groups.get(0).getId());
@@ -234,7 +236,7 @@ class ControllerServiceTest {
 
     @Test
     public void updateRoleMemberTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
         controllerService.updateRole(account2.getName(), groups.get(0).getId());
@@ -244,7 +246,7 @@ class ControllerServiceTest {
 
     @Test
     public void updateRoleNonUserTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.updateRole(account2.getName(), groups.get(0).getId()));
         assertEquals("404 NOT_FOUND \"Der User wurde nicht gefunden.    (class mops.gruppen2.service.ControllerService)\"", exception.getMessage());
@@ -252,7 +254,7 @@ class ControllerServiceTest {
 
     @Test
     public void deleteNonUserTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", true, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.deleteUser(account2.getName(), groups.get(0).getId()));
         assertEquals("404 NOT_FOUND \"Der User wurde nicht gefunden.    (class mops.gruppen2.service.ControllerService)\"", exception.getMessage());
@@ -265,7 +267,7 @@ class ControllerServiceTest {
 
     @Test
     void passIfLastAdminTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
         controllerService.passIfLastAdmin(account, groups.get(0).getId());
@@ -276,7 +278,7 @@ class ControllerServiceTest {
 
     @Test
     void dontPassIfNotLastAdminTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
         controllerService.updateRole(account2.getName(), groups.get(0).getId());
@@ -289,7 +291,7 @@ class ControllerServiceTest {
 
     @Test
     void getVeteranMemberTest() {
-        controllerService.createGroup(account, "test", "hi", true, true, null, null);
+        controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
         controllerService.addUser(account3, groups.get(0).getId());
