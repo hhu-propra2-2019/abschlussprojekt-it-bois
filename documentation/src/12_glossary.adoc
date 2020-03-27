@@ -5,13 +5,20 @@
 
 [cols="1,2" options="header"]
 |===
-|Begriff
-|Definition
-
-|_<Begriff-1>_
-|_<Definition-1>_
-
-
-|_<Begriff-2_
-|_<Definition-2>_
+|Begriff |Definition
+|MOPS-Modul |MOPS steht für die "Modulare OrganisationsPlattform für Studenten", die ein neues Werkzeug für Studenten darstellt, mit dem ihnen verschiedenste Dienste zur Verfügung gestellt werden. MOPS ist die übergeordnete Anwendung, von der die "Gruppenbildung" ein Teil ist.
+|arc42 |arc42 ist ein Muster zum Erstellen einer guten Entwicklungsdokumentation während eines -prozesses.
+|Java 11 |Java 11 ist die 11. Version der Programmiersprache Java.
+|Framework |Ein Framework ist eine Ansammlung von Diensten, die zur Unterstützung der Entwickler dient. Durch das Verwenden eines Framworks können verschiedene Prozesse automatisiert werden, die sonst manuell durchgeführt oder implementiert werden müssten.
+|JUnit |JUnit ist ein auf Java basiertes Framework zum Schreiben von automatisierten Softwaretests.
+|Spring Framework |Spring ist ein Framework, das viele Dienste zum Aufbauen einer Software zur Verfügung stellt, wie z.B. die Automatisierung verschiedener Funktionen, die sonst per Hand implementiert werden müssten.
+|GitHub |Werkzeug zur Arbeit an Software von verschiedenen PCs aus und zur Versionskontrolle.
+|Branches und Master-Branch |Auf GitHub werden die Änderungen im Code online gespeichert. Wenn man Änderungen machen möchte, die aber nicht direkt in der endgültigen Software landen sollen, dann kann man sog. Branches erstellen, die den bestehenden Code kopieren, aber unabhängig davon bearbeitet werden. Der Haupt-Branch heißt der Master. Auf diesem liegt die endgültige Software.
+|Checkstyle und Spotbugs |Werkzeuge zum automatisierten Finden von Fehlern in Quellcode. Spotbugs findet Fehler in der Funktionalität und Checkstyle prüft die Schreibweise des Codes.
+|Continuous Integration/CI |Lässt Tests laufen, bevor Änderungen an der Software endgültig gespeichert werden können. So kann eine funktionierende Software zu jedem Zeitpunkt garantiert werden.
+|Log |Aufzeichnung der Meldungen während der Laufzeit einer Software. Darin kann man mögliche Fehler- oder Erfolgsmeldungen auslesen und so bessere Auskunft über die unsichtbaren Vorgänge innerhalb der Software erlangen.
+|Keycload |Externes Plugin, das die Authentifizierung und damit den Zugang zur Anwendung ermöglicht.
+|DTO |Data Transfer Object. Dies ist eine Vereinfachung einer Java-Instanz, die leichter innerhalb der Datenbank verwaltet werden kann.
+|Interface |Sammlung von Java-Methoden, die von Klassen implementiert werden können.
+|Queries |Zeichenketten, die in der Sprache einer Datenbank geschrieben sind und so die Kommunikation mit ihr ermöglichen.
 |===

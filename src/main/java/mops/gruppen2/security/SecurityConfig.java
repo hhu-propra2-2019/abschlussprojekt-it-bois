@@ -63,15 +63,8 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/actuator/**")
                 .hasRole("monitoring")
-                .and()
-                .authorizeRequests()
-                .antMatchers("/h2-console/**")
-                .permitAll()
                 .anyRequest()
                 .permitAll();
-
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
     }
 
     /**

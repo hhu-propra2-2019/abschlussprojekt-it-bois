@@ -10,6 +10,8 @@ import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.service.APIFormatterService;
 import mops.gruppen2.service.EventService;
 import mops.gruppen2.service.GroupService;
+import mops.gruppen2.service.UserService;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +30,16 @@ public class APIController {
 
     private final EventService eventService;
     private final GroupService groupService;
+    private final UserService userService;
 
-    public APIController(EventService eventService, GroupService groupService) {
+    public APIController(EventService eventService, GroupService groupService, UserService userService) {
         this.eventService = eventService;
         this.groupService = groupService;
+        this.userService = userService;
     }
 
     @GetMapping("/updateGroups/{status}")
-    //@Secured("ROLE_api_user")
+    @Secured("ROLE_api_user")
     @ApiOperation("Gibt alle Gruppen zurück in denen sich etwas geändert hat")
     public GroupRequestWrapper updateGroup(@ApiParam("Letzter Status des Anfragestellers") @PathVariable Long status) throws EventException {
         List<Event> events = eventService.getNewEvents(status);
@@ -44,16 +48,16 @@ public class APIController {
     }
 
     @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
-    //@Secured("ROLE_api_user")
+    @Secured("ROLE_api_user")
     @ApiOperation("Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
     public List<String> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) {
-        return eventService.findGroupIdsByUser(teilnehmer).stream()
-                           .map(UUID::toString)
-                           .collect(Collectors.toList());
+        return userService.getUserGroups(teilnehmer).stream()
+                          .map(group -> group.getId().toString())
+                          .collect(Collectors.toList());
     }
 
     @GetMapping("/getGroup/{groupId}")
-    //@Secured("ROLE_api_user")
+    @Secured("ROLE_api_user")
     @ApiOperation("Gibt die Gruppe mit der als Parameter mitgegebenden groupId zurück")
     public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable String groupId) throws EventException {
         List<Event> eventList = eventService.getEventsOfGroup(UUID.fromString(groupId));

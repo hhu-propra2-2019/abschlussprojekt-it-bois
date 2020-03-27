@@ -29,11 +29,11 @@ public class TestBuilder {
 
     public static Account account(String name) {
         return new Account(name,
-                           "",
-                           "",
-                           "",
-                           "",
-                           null);
+                "",
+                "",
+                "",
+                "",
+                null);
     }
 
     public static Group apply(Group group, Event... events) {
@@ -56,8 +56,8 @@ public class TestBuilder {
      */
     public static UUID uuidFromInt(int id) {
         return UUID.fromString("00000000-0000-0000-0000-"
-                                       + "0".repeat(11 - String.valueOf(id).length())
-                                       + id);
+                + "0".repeat(11 - String.valueOf(id).length())
+                + id);
     }
 
     /**
@@ -69,18 +69,18 @@ public class TestBuilder {
      */
     public static List<Event> completePublicGroups(int count, int membercount) {
         return IntStream.range(0, count)
-                        .parallel()
-                        .mapToObj(i -> completePublicGroup(membercount))
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList());
+                .parallel()
+                .mapToObj(i -> completePublicGroup(membercount))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public static List<Event> completePrivateGroups(int count, int membercount) {
         return IntStream.range(0, count)
-                        .parallel()
-                        .mapToObj(i -> completePrivateGroup(membercount))
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList());
+                .parallel()
+                .mapToObj(i -> completePrivateGroup(membercount))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public static List<Event> completePublicGroup(int membercount) {
@@ -123,25 +123,25 @@ public class TestBuilder {
      */
     public static List<Event> createPublicGroupEvents(int count) {
         return IntStream.range(0, count)
-                        .parallel()
-                        .mapToObj(i -> createPublicGroupEvent())
-                        .collect(Collectors.toList());
+                .parallel()
+                .mapToObj(i -> createPublicGroupEvent())
+                .collect(Collectors.toList());
     }
 
     public static List<Event> createPrivateGroupEvents(int count) {
         return IntStream.range(0, count)
-                        .parallel()
-                        .mapToObj(i -> createPublicGroupEvent())
-                        .collect(Collectors.toList());
+                .parallel()
+                .mapToObj(i -> createPublicGroupEvent())
+                .collect(Collectors.toList());
     }
 
     public static List<Event> createMixedGroupEvents(int count) {
         return IntStream.range(0, count)
-                        .parallel()
-                        .mapToObj(i -> faker.random().nextInt(0, 1) > 0.5
-                                ? createPublicGroupEvent()
-                                : createPrivateGroupEvent())
-                        .collect(Collectors.toList());
+                .parallel()
+                .mapToObj(i -> faker.random().nextInt(0, 1) > 0.5
+                        ? createPublicGroupEvent()
+                        : createPrivateGroupEvent())
+                .collect(Collectors.toList());
     }
 
     public static Event createPrivateGroupEvent(UUID groupId) {
@@ -195,9 +195,9 @@ public class TestBuilder {
      */
     public static List<Event> addUserEvents(int count, UUID groupId) {
         return IntStream.range(0, count)
-                        .parallel()
-                        .mapToObj(i -> addUserEvent(groupId, String.valueOf(i)))
-                        .collect(Collectors.toList());
+                .parallel()
+                .mapToObj(i -> addUserEvent(groupId, String.valueOf(i)))
+                .collect(Collectors.toList());
     }
 
     public static Event addUserEvent(UUID groupId, String userId) {
@@ -221,8 +221,8 @@ public class TestBuilder {
     public static List<Event> deleteUserEvents(int count, List<Event> eventList) {
         List<Event> removeEvents = new ArrayList<>();
         List<Event> shuffle = eventList.parallelStream()
-                                       .filter(event -> event instanceof AddUserEvent)
-                                       .collect(Collectors.toList());
+                .filter(event -> event instanceof AddUserEvent)
+                .collect(Collectors.toList());
 
         Collections.shuffle(shuffle);
 
@@ -245,8 +245,8 @@ public class TestBuilder {
      */
     public static List<Event> deleteUserEvents(Group group) {
         return group.getMembers().parallelStream()
-                    .map(user -> deleteUserEvent(group.getId(), user.getId()))
-                    .collect(Collectors.toList());
+                .map(user -> deleteUserEvent(group.getId(), user.getId()))
+                .collect(Collectors.toList());
     }
 
     public static Event deleteUserEvent(UUID groupId, String userId) {

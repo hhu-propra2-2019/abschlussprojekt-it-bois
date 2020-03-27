@@ -15,6 +15,7 @@ import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.event.UpdateUserMaxEvent;
 import mops.gruppen2.domain.exception.EventException;
+import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.domain.exception.WrongFileException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.io.CharConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -37,12 +39,14 @@ public class ControllerService {
     private final EventService eventService;
     private final UserService userService;
     private final ValidationService validationService;
+    private final InviteService inviteService;
     private final Logger logger;
 
     public ControllerService(EventService eventService, UserService userService, ValidationService validationService) {
         this.eventService = eventService;
         this.userService = userService;
         this.validationService = validationService;
+        this.inviteService = inviteService;
         this.logger = Logger.getLogger("controllerServiceLogger");
     }
 
@@ -65,6 +69,8 @@ public class ControllerService {
 
         CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, groupVisibility, userMaximum);
         eventService.saveEvent(createGroupEvent);
+
+        inviteService.createLink(groupId);
 
         User user = new User(account.getName(), "", "", "");
 
@@ -248,6 +254,7 @@ public class ControllerService {
 
     public void deleteGroupEvent(String userId, UUID groupId) {
         DeleteGroupEvent deleteGroupEvent = new DeleteGroupEvent(groupId, userId);
+        inviteService.destroyLink(groupId);
         eventService.saveEvent(deleteGroupEvent);
     }
 
