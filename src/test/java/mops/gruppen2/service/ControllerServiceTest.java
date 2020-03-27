@@ -222,7 +222,8 @@ class ControllerServiceTest {
         controllerService.createGroup(account, "test", "hi", true, true, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
-        controllerService.deleteUser(account.getName(), groups.get(0).getId());
+        User user = new User(account.getName(), "", "", "");
+        controllerService.deleteUser(account, user, groups.get(0));
         assertTrue(userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail())).isEmpty());
     }
 
@@ -231,7 +232,8 @@ class ControllerServiceTest {
         controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
-        controllerService.updateRole(account.getName(), groups.get(0).getId());
+        User user = new User(account.getName(), "", "", "");
+        controllerService.updateRole(user, groups.get(0).getId());
         groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         assertEquals(Role.MEMBER, groups.get(0).getRoles().get(account.getName()));
     }
@@ -241,7 +243,8 @@ class ControllerServiceTest {
         controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
-        controllerService.updateRole(account2.getName(), groups.get(0).getId());
+        User user = new User(account.getName(), "", "", "");
+        controllerService.updateRole(user, groups.get(0).getId());
         groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         assertEquals(Role.ADMIN, groups.get(0).getRoles().get(account2.getName()));
     }
@@ -250,7 +253,8 @@ class ControllerServiceTest {
     public void updateRoleNonUserTest() {
         controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
-        Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.updateRole(account2.getName(), groups.get(0).getId()));
+        User user = new User(account.getName(), "", "", "");
+        Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.updateRole(user, groups.get(0).getId()));
         assertEquals("404 NOT_FOUND \"Der User wurde nicht gefunden.    (class mops.gruppen2.service.ControllerService)\"", exception.getMessage());
     }
 
@@ -258,7 +262,8 @@ class ControllerServiceTest {
     public void deleteNonUserTest() {
         controllerService.createGroup(account, "test", "hi", true, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
-        Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.deleteUser(account2.getName(), groups.get(0).getId()));
+        User user = new User(account.getName(), "", "", "");
+        Throwable exception = assertThrows(UserNotFoundException.class, () -> controllerService.deleteUser(account, user, groups.get(0)));
         assertEquals("404 NOT_FOUND \"Der User wurde nicht gefunden.    (class mops.gruppen2.service.ControllerService)\"", exception.getMessage());
     }
 
@@ -272,8 +277,9 @@ class ControllerServiceTest {
         controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
-        controllerService.passIfLastAdmin(account, groups.get(0).getId());
-        controllerService.deleteUser(account.getName(), groups.get(0).getId());
+        controllerService.changeRoleIfLastAdmin(account, groups.get(0));
+        User user = new User(account.getName(), "", "", "");
+        controllerService.deleteUser(account, user, groups.get(0));
         groups = userService.getUserGroups(new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail()));
         assertEquals(Role.ADMIN, groups.get(0).getRoles().get(account2.getName()));
     }
@@ -283,10 +289,12 @@ class ControllerServiceTest {
         controllerService.createGroup(account, "test", "hi", null, null, true, null, null);
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
-        controllerService.updateRole(account2.getName(), groups.get(0).getId());
+        User user2 = new User(account2.getName(), "", "", "");
+        controllerService.updateRole(user2, groups.get(0).getId());
         controllerService.addUser(account3, groups.get(0).getId());
-        controllerService.passIfLastAdmin(account, groups.get(0).getId());
-        controllerService.deleteUser(account.getName(), groups.get(0).getId());
+        controllerService.changeRoleIfLastAdmin(account, groups.get(0));
+        User user = new User(account.getName(), "", "", "");
+        controllerService.deleteUser(account, user, groups.get(0));
         groups = userService.getUserGroups(new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail()));
         assertEquals(Role.MEMBER, groups.get(0).getRoles().get(account3.getName()));
     }
@@ -297,8 +305,9 @@ class ControllerServiceTest {
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         controllerService.addUser(account2, groups.get(0).getId());
         controllerService.addUser(account3, groups.get(0).getId());
-        controllerService.passIfLastAdmin(account, groups.get(0).getId());
-        controllerService.deleteUser(account.getName(), groups.get(0).getId());
+        controllerService.changeRoleIfLastAdmin(account, groups.get(0));
+        User user = new User(account.getName(), "", "", "");
+        controllerService.deleteUser(account, user, groups.get(0));
         groups = userService.getUserGroups(new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail()));
         assertEquals(Role.ADMIN, groups.get(0).getRoles().get(account2.getName()));
         assertEquals(Role.MEMBER, groups.get(0).getRoles().get(account3.getName()));

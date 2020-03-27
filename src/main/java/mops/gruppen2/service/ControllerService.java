@@ -259,7 +259,7 @@ public class ControllerService {
         eventService.saveEvent(deleteGroupEvent);
     }
 
-    private void changeRoleIfLastAdmin(Account account, Group group) {
+    public void changeRoleIfLastAdmin(Account account, Group group) {
         if (group.getMembers().size() <= 1) {
             return;
         }

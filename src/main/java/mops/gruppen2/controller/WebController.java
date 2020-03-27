@@ -311,7 +311,7 @@ public class WebController {
 
         User user = new User(acc.getName(), acc.getGivenname(), acc.getFamilyname(), acc.getEmail());
 
-        if (!validationService.checkIfUserInGroupWithoutNoAccessAcception(userService.getGroupById(UUID.fromString(groupId)), user)) {
+        if (!validationService.checkIfUserInGroup(userService.getGroupById(UUID.fromString(groupId)), user)) {
             controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), UUID.fromString(groupId));
         }
 
