@@ -9,14 +9,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-//TODO Rename Queries + Formatting
 public interface EventRepository extends CrudRepository<EventDTO, Long> {
 
-    @Query("SELECT DISTINCT group_id FROM event WHERE user_id = :id")
-    List<String> findGroup_idsWhereUser_id(@Param("id") String userId);
+    @Query("SELECT distinct group_id FROM event WHERE user_id =:id AND event_type = :type")
+    List<String> findGroupIdsWhereUserId(@Param("id") String userId, @Param("type") String type);
 
-    @Query("SELECT * FROM event WHERE group_id = :id")
-    List<EventDTO> findEventDTOByGroup_id(@Param("id") String groupId);
+    @Query("SELECT * from event WHERE group_id =:id")
+    List<EventDTO> findEventDTOByGroupId(@Param("id") String groupId);
 
     @Query("SELECT DISTINCT group_id FROM event WHERE event_id > :status")
     List<String> findNewEventSinceStatus(@Param("status") Long status);
@@ -25,7 +24,7 @@ public interface EventRepository extends CrudRepository<EventDTO, Long> {
     List<EventDTO> findAllEventsOfGroups(@Param("groupIds") List<String> groupIds);
 
     @Query("SELECT MAX(event_id) FROM event")
-    Long getHighesEvent_ID();
+    Long getHighesEventID();
 
     @Query("SELECT * FROM event WHERE event_type = :type")
     List<EventDTO> findAllEventsByType(@Param("type") String type);

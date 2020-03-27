@@ -62,7 +62,7 @@ public class WebController {
      */
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("")
-    public String index(KeycloakAuthenticationToken token, Model model) throws EventException {
+    public String index(KeycloakAuthenticationToken token, Model model) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
 
@@ -72,7 +72,7 @@ public class WebController {
         return "index";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
     @GetMapping("/createOrga")
     public String createGroupAsOrga(KeycloakAuthenticationToken token, Model model) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
@@ -82,7 +82,7 @@ public class WebController {
         return "createOrga";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
     @PostMapping("/createOrga")
     @CacheEvict(value = "groups", allEntries = true)
     public String postCrateGroupAsOrga(KeycloakAuthenticationToken token,
@@ -93,7 +93,7 @@ public class WebController {
                                        @RequestParam("userMaximum") Long userMaximum,
                                        @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
                                        @RequestParam(value = "parent", required = false) String parent,
-                                       @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, EventException {
+                                       @RequestParam(value = "file", required = false) MultipartFile file) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
@@ -123,7 +123,7 @@ public class WebController {
                                            @RequestParam(value = "visibility", required = false) Boolean visibility,
                                            @RequestParam("userMaximum") Long userMaximum,
                                            @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
-                                           @RequestParam(value = "parent", required = false) String parent) throws EventException {
+                                           @RequestParam(value = "parent", required = false) String parent) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         UUID parentUUID = controllerService.getUUID(parent);
@@ -134,7 +134,7 @@ public class WebController {
         return "redirect:/gruppen2/";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
     @PostMapping("/details/members/addUsersFromCsv")
     @CacheEvict(value = "groups", allEntries = true)
     public String addUsersFromCsv(KeycloakAuthenticationToken token,
@@ -173,7 +173,7 @@ public class WebController {
     public String postChangeMetadata(KeycloakAuthenticationToken token,
                                      @RequestParam("title") String title,
                                      @RequestParam("description") String description,
-                                     @RequestParam("groupId") String groupId) throws EventException {
+                                     @RequestParam("groupId") String groupId) {
 
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), "", "", "");
@@ -190,7 +190,7 @@ public class WebController {
     @GetMapping("/findGroup")
     public String findGroup(KeycloakAuthenticationToken token,
                             Model model,
-                            @RequestParam(value = "suchbegriff", required = false) String search) throws EventException {
+                            @RequestParam(value = "suchbegriff", required = false) String search) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         List<Group> groups = new ArrayList<>();
         groups = validationService.checkSearch(search, groups, account);
@@ -201,12 +201,12 @@ public class WebController {
         return "search";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/details/{id}")
     public String showGroupDetails(KeycloakAuthenticationToken token,
                                    Model model,
                                    HttpServletRequest request,
-                                   @PathVariable("id") String groupId) throws EventException {
+                                   @PathVariable("id") String groupId) {
 
         Group group = userService.getGroupById(UUID.fromString(groupId));
         Account account = keyCloakService.createAccountFromPrincipal(token);
@@ -244,7 +244,7 @@ public class WebController {
     @PostMapping("/detailsBeitreten")
     @CacheEvict(value = "groups", allEntries = true)
     public String joinGroup(KeycloakAuthenticationToken token,
-                            Model model, @RequestParam("id") String groupId) throws EventException {
+                            Model model, @RequestParam("id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(UUID.fromString(groupId));
@@ -262,7 +262,7 @@ public class WebController {
     @GetMapping("/detailsSearch")
     public String showGroupDetailsNoMember(KeycloakAuthenticationToken token,
                                            Model model,
-                                           @RequestParam("id") String groupId) throws EventException {
+                                           @RequestParam("id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
         UUID parentId = group.getParent();
@@ -286,7 +286,7 @@ public class WebController {
     @GetMapping("/acceptinvite/{link}")
     public String acceptInvite(KeycloakAuthenticationToken token,
                                Model model,
-                               @PathVariable("link") String link) throws EventException {
+                               @PathVariable("link") String link) {
         Group group = userService.getGroupById(inviteService.getGroupIdFromLink(link));
 
         validationService.throwIfGroupNotExisting(group.getTitle());
@@ -322,7 +322,7 @@ public class WebController {
     @PostMapping("/leaveGroup")
     @CacheEvict(value = "groups", allEntries = true)
     public String pLeaveGroup(KeycloakAuthenticationToken token,
-                              @RequestParam("group_id") String groupId) throws EventException {
+                              @RequestParam("group_id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), "", "", "");
         Group group = userService.getGroupById(UUID.fromString(groupId));
@@ -346,11 +346,11 @@ public class WebController {
         return "redirect:/gruppen2/";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/details/members/{id}")
     public String editMembers(Model model,
                               KeycloakAuthenticationToken token,
-                              @PathVariable("id") String groupId) throws EventException {
+                              @PathVariable("id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
         User user = new User(account.getName(), "", "", "");
@@ -364,12 +364,12 @@ public class WebController {
         return "editMembers";
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/members/changeRole")
     @CacheEvict(value = "groups", allEntries = true)
     public String changeRole(KeycloakAuthenticationToken token,
                              @RequestParam("group_id") String groupId,
-                             @RequestParam("user_id") String userId) throws EventException {
+                             @RequestParam("user_id") String userId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
         User principle = new User(account.getName(), "", "", "");
@@ -386,7 +386,7 @@ public class WebController {
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/members/changeMaximum")
     @CacheEvict(value = "groups", allEntries = true)
     public String changeMaxSize(@RequestParam("maximum") Long maximum,
@@ -401,12 +401,12 @@ public class WebController {
         return "redirect:/gruppen2/details/members/" + groupId;
     }
 
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator)"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/members/deleteUser")
     @CacheEvict(value = "groups", allEntries = true)
     public String deleteUser(@RequestParam("group_id") String groupId,
                              @RequestParam("user_id") String userId,
-                             KeycloakAuthenticationToken token) throws EventException {
+                             KeycloakAuthenticationToken token) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User principle = new User(account.getName(), "", "", "");
         User user = new User(userId, "", "", "");

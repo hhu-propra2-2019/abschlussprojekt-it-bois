@@ -40,9 +40,9 @@ public class GroupService {
     public List<Event> getGroupEvents(List<UUID> groupIds) {
         List<EventDTO> eventDTOS = new ArrayList<>();
         for (UUID groupId : groupIds) {
-            eventDTOS.addAll(eventRepository.findEventDTOByGroup_id(groupId.toString()));
+            eventDTOS.addAll(eventRepository.findEventDTOByGroupId(groupId.toString()));
         }
-        return eventService.translateEventDTOs(eventDTOS);
+        return eventService.getEventsFromDTOs(eventDTOS);
     }
 
     /**
@@ -62,6 +62,13 @@ public class GroupService {
         return new ArrayList<>(groupMap.values());
     }
 
+    /**
+     * Gibt die Gruppe mit der richtigen Id aus der übergebenen Map wieder, existiert diese nicht
+     * wird die Gruppe erstellt und der Map hizugefügt.
+     * @param groups Map aus GruppenIds und Gruppen
+     * @param groupId Die Id der Gruppe, die zurückgegeben werden soll
+     * @return Die gesuchte Gruppe
+     */
     private Group getOrCreateGroup(Map<UUID, Group> groups, UUID groupId) {
         if (!groups.containsKey(groupId)) {
             groups.put(groupId, new Group());
@@ -80,11 +87,11 @@ public class GroupService {
     //TODO Rename
     @Cacheable("groups")
     public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
-        List<Event> groupEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
-        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
-        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
-        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
-        groupEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
+        List<Event> groupEvents = eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
 
         List<Group> visibleGroups = projectEventList(groupEvents);
 
@@ -104,10 +111,10 @@ public class GroupService {
      */
     @Cacheable("groups")
     public List<Group> getAllLecturesWithVisibilityPublic() {
-        List<Event> createEvents = eventService.translateEventDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
-        createEvents.addAll(eventService.translateEventDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        List<Event> createEvents = eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        createEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        createEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        createEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
 
         List<Group> visibleGroups = projectEventList(createEvents);
 
@@ -140,6 +147,10 @@ public class GroupService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Sortiert die übergebene Liste an Gruppen, sodass Veranstaltungen am Anfang der Liste sind.
+     * @param groups Die Liste von Gruppen die sortiert werden soll
+     */
     public void sortByGroupType(List<Group> groups) {
         groups.sort((g1, g2) -> {
             if (g1.getType() == GroupType.LECTURE) {

@@ -1,6 +1,5 @@
 package mops.gruppen2.service;
 
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -21,7 +20,6 @@ import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.CharConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +57,7 @@ public class ControllerService {
      * @param title       Gruppentitel
      * @param description Gruppenbeschreibung
      */
-    public UUID createGroup(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent) throws EventException {
+    public UUID createGroup(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent) {
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
         Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
@@ -82,7 +80,20 @@ public class ControllerService {
         return groupId;
     }
 
-    public void createGroupAsOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) throws EventException, IOException {
+    /**
+     * Wie createGroup, nur das hier die Gruppe auch als Veranstaltung gesetzt werden kann und CSV Dateien mit Nutzern
+     * eingelesen werden können.
+     * @param account Der Nutzer der die Gruppe erstellt
+     * @param title Parameter für die neue Gruppe
+     * @param description Parameter für die neue Gruppe
+     * @param isVisibilityPrivate Parameter für die neue Gruppe
+     * @param isLecture Parameter für die neue Gruppe
+     * @param isMaximumInfinite Parameter für die neue Gruppe
+     * @param userMaximum Parameter für die neue Gruppe
+     * @param parent Parameter für die neue Gruppe
+     * @param file Parameter für die neue Gruppe
+     */
+    public void createGroupAsOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) {
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
         List<User> newUsers = readCsvFile(file);
@@ -140,7 +151,13 @@ public class ControllerService {
         }
     }
 
-
+    /**
+     * Wenn die maximale Useranzahl unendlich ist, wird das Maximum auf 100000 gesetzt. Praktisch gibt es also Maximla 100000
+     * Nutzer pro Gruppe.
+     * @param isMaximumInfinite Gibt an ob es unendlich viele User geben soll
+     * @param userMaximum Das Maximum an Usern, falls es eins gibt
+     * @return Maximum an Usern
+     */
     private Long checkInfiniteUsers(Boolean isMaximumInfinite, Long userMaximum) {
         isMaximumInfinite = isMaximumInfinite != null;
 
@@ -170,13 +187,13 @@ public class ControllerService {
         }
     }
 
-    private List<User> readCsvFile(MultipartFile file) throws EventException, IOException {
+    private List<User> readCsvFile(MultipartFile file) throws EventException{
         if(file == null) return new ArrayList<>();
         if (!file.isEmpty()) {
             try {
                 List<User> userList = CsvService.read(file.getInputStream());
                 return userList.stream().distinct().collect(Collectors.toList()); //filters duplicates from list
-            } catch (UnrecognizedPropertyException | CharConversionException ex) {
+            } catch (IOException ex) {
                 logger.warning("File konnte nicht gelesen werden");
                 throw new WrongFileException(file.getOriginalFilename());
             }
