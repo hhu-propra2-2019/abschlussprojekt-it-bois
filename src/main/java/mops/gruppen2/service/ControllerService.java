@@ -36,12 +36,14 @@ public class ControllerService {
 
     private final EventService eventService;
     private final UserService userService;
+    private final ValidationService validationService;
     private final InviteService inviteService;
     private final Logger logger;
 
-    public ControllerService(EventService eventService, UserService userService, InviteService inviteService) {
+    public ControllerService(EventService eventService, UserService userService, ValidationService validationService, InviteService inviteService) {
         this.eventService = eventService;
         this.userService = userService;
+        this.validationService = validationService;
         this.inviteService = inviteService;
         this.logger = Logger.getLogger("controllerServiceLogger");
     }
@@ -68,10 +70,12 @@ public class ControllerService {
 
         inviteService.createLink(groupId);
 
+        User user = new User(account.getName(), "", "", "");
+
         addUser(account, groupId);
         updateTitle(account, groupId, title);
         updateDescription(account, groupId, description);
-        updateRole(account.getName(), groupId);
+        updateRole(user, groupId);
 
         return groupId;
     }
@@ -105,6 +109,40 @@ public class ControllerService {
         UUID groupId = createGroup(account, title, description, isVisibilityPrivate, isLecture, isMaximumInfinite, userMaximum, parent);
 
         addUserList(newUsers, groupId);
+    }
+
+    public void addUsersFromCsv(Account account, MultipartFile file, String groupId) throws IOException{
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+
+        List<User> newUserList = readCsvFile(file);
+        removeOldUsersFromNewUsers(group.getMembers(), newUserList);
+
+        UUID groupUUID = getUUID(groupId);
+
+        Long newUserMaximum = adjustUserMaximum((long) newUserList.size(), (long) group.getMembers().size(), group.getUserMaximum());
+        if (newUserMaximum > group.getUserMaximum()){
+            updateMaxUser(account, groupUUID, newUserMaximum);
+        }
+
+        addUserList(newUserList, groupUUID);
+    }
+
+    public void changeMetaData(Account account, Group group, String title, String description) {
+        if (!title.equals(group.getTitle())){
+            updateTitle(account, group.getId(), title);
+        }
+
+        if (!description.equals(group.getDescription())) {
+            updateDescription(account, group.getId(), description);
+        }
+    }
+
+    public Group getParent(UUID parentId) {
+        Group parent = new Group();
+        if (!idIsEmpty(parentId)) {
+            parent = userService.getGroupById(parentId);
+        }
+        return parent;
     }
 
     private void removeOldUsersFromNewUsers(List<User> oldUsers, List<User> newUsers) {
@@ -175,8 +213,8 @@ public class ControllerService {
         eventService.saveEvent(addUserEvent);
     }
 
-    public void addUserList(List<User> users, UUID groupId) {
-        for (User user : users) {
+    public void addUserList(List<User> newUsers, UUID groupId) {
+        for (User user : newUsers) {
             Group group = userService.getGroupById(groupId);
             if (group.getMembers().contains(user)) {
                 logger.info("Benutzer " + user.getId() + " ist bereits in Gruppe");
@@ -202,41 +240,32 @@ public class ControllerService {
         eventService.saveEvent(updateUserMaxEvent);
     }
 
-    public void updateRole(String userId, UUID groupId) throws EventException {
+    public void updateRole(User user, UUID groupId) throws EventException {
         UpdateRoleEvent updateRoleEvent;
         Group group = userService.getGroupById(groupId);
-        User user = null;
-        for (User member : group.getMembers()) {
-            if (member.getId().equals(userId)) {
-                user = member;
-            }
-        }
-
-        if (user == null) {
-            throw new UserNotFoundException(this.getClass().toString());
-        }
+        validationService.throwIfNotInGroup(group, user);
 
         if (group.getRoles().get(user.getId()) == ADMIN) {
-            updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), Role.MEMBER);
+            updateRoleEvent = new UpdateRoleEvent(group.getId(), user.getId(), Role.MEMBER);
         } else {
-            updateRoleEvent = new UpdateRoleEvent(groupId, user.getId(), ADMIN);
+            updateRoleEvent = new UpdateRoleEvent(group.getId(), user.getId(), ADMIN);
         }
         eventService.saveEvent(updateRoleEvent);
     }
 
-    public void deleteUser(String userId, UUID groupId) throws EventException {
-        Group group = userService.getGroupById(groupId);
-        User user = null;
-        for (User member : group.getMembers()) {
-            if (member.getId().equals(userId)) {
-                user = member;
-            }
-        }
+    public void deleteUser(Account account, User user, Group group) throws EventException {
+        changeRoleIfLastAdmin(account, group);
 
-        if (user == null) {
-            throw new UserNotFoundException(this.getClass().toString());
-        }
+        validationService.throwIfNotInGroup(group, user);
 
+        deleteUserEvent(user, group.getId());
+
+        if (validationService.checkIfGroupEmpty(group.getId())) {
+            deleteGroupEvent(user.getId(), group.getId());
+        }
+    }
+
+    private void deleteUserEvent(User user, UUID groupId) {
         DeleteUserEvent deleteUserEvent = new DeleteUserEvent(groupId, user.getId());
         eventService.saveEvent(deleteUserEvent);
     }
@@ -247,36 +276,39 @@ public class ControllerService {
         eventService.saveEvent(deleteGroupEvent);
     }
 
-    public boolean passIfLastAdmin(Account account, UUID groupId) {
-        Group group = userService.getGroupById(groupId);
+    public void changeRoleIfLastAdmin(Account account, Group group) {
         if (group.getMembers().size() <= 1) {
-            return true;
+            return;
         }
-
-        if (isLastAdmin(account, group)) {
-            String newAdminId = getVeteranMember(account, group);
-            updateRole(newAdminId, groupId);
-        }
-        return false;
+        promoteVeteranMember(account, group);
     }
 
-    private boolean isLastAdmin(Account account, Group group) {
-        for (Map.Entry<String, Role> entry : group.getRoles().entrySet()) {
-            if (entry.getValue() == ADMIN) {
-                if (!(entry.getKey().equals(account.getName()))) {
-                    return false;
-                }
+    private void promoteVeteranMember(Account account, Group group) {
+        if (validationService.checkIfLastAdmin(account, group)) {
+            User newAdmin = getVeteranMember(account, group);
+            updateRole(newAdmin, group.getId());
+        }
+    }
+
+    public void changeRole(Account account, User user, Group group) {
+        if (user.getId().equals(account.getName())) {
+            if (group.getMembers().size() <= 1) {
+                validationService.throwIfLastAdmin(account, group);
             }
+            promoteVeteranMember(account, group);
         }
-        return true;
+        updateRole(user, group.getId());
     }
 
-    private String getVeteranMember(Account account, Group group) {
-        List<User> mitglieder = group.getMembers();
-        if (mitglieder.get(0).getId().equals(account.getName())) {
-            return mitglieder.get(1).getId();
+    private User getVeteranMember(Account account, Group group) {
+        List<User> members = group.getMembers();
+        String newAdminId;
+        if (members.get(0).getId().equals(account.getName())) {
+            newAdminId = members.get(1).getId();
+        } else {
+            newAdminId = members.get(0).getId();
         }
-        return mitglieder.get(0).getId();
+        return new User(newAdminId, "", "", "");
     }
 
     public UUID getUUID(String id) {

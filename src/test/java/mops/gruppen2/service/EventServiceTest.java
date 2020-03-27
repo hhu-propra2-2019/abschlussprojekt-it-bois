@@ -77,38 +77,6 @@ class EventServiceTest {
         assertThat(dto.getEvent_type()).isEqualTo("CreateGroupEvent");
     }
 
-    @Disabled
-    @Test
-    void getNewEvents_createGroupEvents() {
-        eventService.saveAll(createPrivateGroupEvents(10));
-
-        assertThat(eventService.getNewEvents(0L)).hasSize(10);
-        assertThat(eventService.getNewEvents(5L)).hasSize(5);
-        assertThat(eventService.getNewEvents(10L)).isEmpty();
-    }
-
-    @Disabled
-    @Test
-    void getNewEvents_mixedEvents() {
-        eventService.saveAll(createPrivateGroupEvent(uuidFromInt(0)),
-                             updateGroupDescriptionEvent(uuidFromInt(0)),
-                             createPrivateGroupEvent(uuidFromInt(1)),
-                             updateGroupDescriptionEvent(uuidFromInt(1)));
-
-        assertThat(eventService.getNewEvents(0L)).hasSize(4);
-        assertThat(eventService.getNewEvents(1L)).hasSize(4);
-        assertThat(eventService.getNewEvents(2L)).hasSize(2);
-        assertThat(eventService.getNewEvents(3L)).hasSize(2);
-    }
-
-    @Disabled
-    @Test
-    void getMaxEvent_id() {
-        eventService.saveAll(createPrivateGroupEvents(10));
-
-        assertThat(eventService.getMaxEvent_id()).isEqualTo(10);
-    }
-
     @Test
     void getEventsOfGroup() {
         eventService.saveAll(addUserEvents(10, uuidFromInt(0)),
