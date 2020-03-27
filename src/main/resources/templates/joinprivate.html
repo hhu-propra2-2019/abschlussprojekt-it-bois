@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Gruppenbildung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Gruppendetails</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         th:switch="${account.getRoles().contains('orga')}">
+        <ul>
+            <li>
+                <a href="/" th:href="@{/gruppen2}">Gruppen</a>
+            </li>
+            <li th:case="${true}">
+                <a href="/createOrga" th:href="@{/gruppen2/createOrga}">Erstellen</a>
+            </li>
+            <li th:case="${false}">
+                <a href="/createStudent" th:href="@{/gruppen2/createStudent}">Erstellen</a>
+            </li>
+            <li class="active">
+                <a href="/findGroup" th:href="@{/gruppen2/findGroup}">Suche</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-9">
+                <div class="shadow-sm p-4"
+                     style="border: 1px solid aliceblue; border-radius: 5px; background: aliceblue">
+                    <h1 style="color: black; font-weight: bold; font-optical-sizing: auto; overflow-wrap: break-word"
+                        th:text="${group.getTitle()}"></h1>
+                    <h3>Möchtest du dieser privaten Gruppe beitreten?</h3>
+                    <div class="shadow-sm p-4" style="background: white">
+                        <p style="overflow-wrap: break-word; font-optical-sizing: auto"
+                           th:text="${group.getDescription()}"></p>
+                    </div>
+                    <div class="form-group mt-2">
+                        <div class="text-right">
+                            <form method="post" th:action="@{/gruppen2/acceptinvite}">
+                                <input name="id" th:value="${group.getId()}" type="hidden"/>
+                                <button class="btn btn-primary"
+                                        style="background: #52a1eb; border-style: none;"
+                                        type="submit">Ja, Gruppe beitreten
+                                </button>
+                                <a class="btn btn-primary"
+                                   href="/gruppen2"
+                                   style="background: #52a1eb; border-style: none;"
+                                   type="submit">Ich will das nicht.
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3" style="white-space: nowrap">
+                <div style="display: inline-block; margin: 0">
+                    <h2>Mitglieder</h2>
+                    <div th:switch="${group.getUserMaximum() != 100000}">
+                        <h4 th:case="${true}">
+                            <a th:text="${group.getMembers().size()}"></a>
+                            <a>von maximal</a>
+                            <a th:text="${group.getUserMaximum()}"></a>
+                            <a>Benutzern.</a>
+                        </h4>
+                        <h4 th:case="false">unbegrenzte Teilnehmeranzahl</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

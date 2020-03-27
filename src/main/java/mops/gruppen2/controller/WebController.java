@@ -3,6 +3,7 @@ package mops.gruppen2.controller;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.PageNotFoundException;
 import mops.gruppen2.security.Account;
@@ -271,8 +272,7 @@ public class WebController {
 
     //TODO: Muss post-mapping sein
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @PostMapping("/acceptinvite/{link}")
-    @CacheEvict(value = "groups", allEntries = true)
+    @GetMapping("/acceptinvite/{link}")
     public String acceptInvite(KeycloakAuthenticationToken token,
                                Model model,
                                @PathVariable("link") String link) throws EventException {
@@ -281,9 +281,24 @@ public class WebController {
         validationService.checkGroup(group.getTitle());
         model.addAttribute("group", group);
 
-        controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), group.getId());
+        //controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), group.getId());
 
-        return "redirect:/gruppen2/details/" + group.getId();
+        if (group.getVisibility() == Visibility.PUBLIC) {
+            return "redirect:/gruppen2/details/" + group.getId();
+        }
+
+        return "joinprivate";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @PostMapping("/acceptinvite")
+    @CacheEvict(value = "groups", allEntries = true)
+    public String postAcceptInvite(KeycloakAuthenticationToken token,
+                                   @RequestParam("id") String groupId) {
+
+        controllerService.addUser(keyCloakService.createAccountFromPrincipal(token), UUID.fromString(groupId));
+
+        return "redirect:/gruppen2/";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
