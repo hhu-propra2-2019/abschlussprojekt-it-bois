@@ -1,0 +1,28 @@
+= Entscheidungsfindung
+
+=== Tag 1
+
+- H2 Datenbank: In-Memory, startet automatisch, schnell
+
+=== Tag 2
+
+- Swagger für API: Automatische Doku + Interaktive UI
+- MySql für Production: Wir wissen nix besseres + JSON Datatype
+- Checkstyle: Google als Basis, Einrückung auf 4 spaces erhöht
+
+=== Tag 3
+
+- Spring Security verringert für H2-Console
+- Event Sourcing: Hat jens gesagt klingt cool
+
+=== Tag 4
+
+-
+
+=== Tag 5
+
+- Jackson für JSON: Spring dabei + Einfaches handling von subklassen
+- Lombok event annotations: Jackson braucht den defaultconstructor
+- Fehlerbehandlung: Exceptions zum besseren umgang in tests etc
+
+=== Tag 6

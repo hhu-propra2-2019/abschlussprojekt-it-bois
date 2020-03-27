@@ -1,0 +1,24 @@
+= Tag 8
+
+== APIController
+
+Wir haben einen Controller für die Anfragen der anderen Gruppen geschrieben. Die Anfrage enthält den
+aktuellen Status der Gruppe und liefert als JSON Objekt den neuen Status und die Liste mit den Gruppen
+die sich geändert haben.
+Zzusätlich gibt es eine Wrapperklasse, um die Objekte die wir herausgeben mit der anderen Gruppenbildung-Gruppe
+anzugleichen.
+
+== Testing
+
+Der Eventbuilder wurde verbessert, sodass leichter mit großen Mengen von events getestet werden kann.
+
+Zusätlich gibt es eine Wrapperklasse, um die Objekte die wir herausgeben mit der anderen Gruppenbildung-Gruppe anzugleichen.
+
+== Dokumentation
+
+Wir haben heute fünf Punkte von Arc42 bearbeitet, da wir jetzt wissen, wie unser Projekt genau aussehen soll.
+Außerdem haben wir für eine bessere Lesbarkeit angefangen, den Funktionen Kommentare hinzuzufügen.
+
+== Frontend
+Wir heute wurde die Funktionalität des Erstellens von Gruppen und der Anzeige der eigenen Gruppen hergestellt. Das Template funktioniert nun korrekt mit dem Code.
+Außerdem haben wir das Styling der 3 bestehenden HTML-Templates verbessert und mit der Anwendung abgestimmt.

@@ -1,0 +1,27 @@
+= Fortschritt Tag 1
+
+=== GutHub-Repo
+
+- Branch-Protection aktiviert
+- CI-Workflow erstellt
+
+=== Spring-Skelett
+
+Projekt initialisiert mit
+- Spring-Actuator
+- Spring-Devtools
+- Thymeleaf
+- Spring Data JDBC
+- Spring Web
+- Spring Security
+- H2 Database
+- Lombok
+
+Wir haben uns für eine H2 Datenbank wärend der Entwicklung entschieden.
+Wir haben uns wegen kleinen Datenbankanforderungen und Verständnis für Spring Data JDBC entschieden.
+
+Zusätzliche Dependencies:
+- ArchUnit
+- AssertJ
+- Spotbugs
+- Checkstyle
