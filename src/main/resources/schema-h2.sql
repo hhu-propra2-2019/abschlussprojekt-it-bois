@@ -8,3 +8,12 @@ CREATE TABLE event
     event_type    VARCHAR(32),
     event_payload VARCHAR(2500)
 );
+
+DROP TABLE IF EXISTS invite;
+
+CREATE TABLE invite
+(
+    invite_id   INT PRIMARY KEY AUTO_INCREMENT,
+    group_id    VARCHAR(36) NOT NULL,
+    invite_link VARCHAR(36) NOT NULL
+);

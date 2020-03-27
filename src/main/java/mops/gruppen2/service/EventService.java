@@ -115,7 +115,6 @@ public class EventService {
         return translateEventDTOs(eventDTOList);
     }
 
-    //TODO: Nur AddUserEvents betrachten
     public List<UUID> findGroupIdsByUser(String userId) {
         return eventStore.findGroup_idsWhereUser_id(userId).stream()
                          .map(UUID::fromString)
