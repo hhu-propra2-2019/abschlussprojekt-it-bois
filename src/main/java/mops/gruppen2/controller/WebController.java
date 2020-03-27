@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -138,7 +139,7 @@ public class WebController {
     @CacheEvict(value = "groups", allEntries = true)
     public String addUsersFromCsv(KeycloakAuthenticationToken token,
                                   @RequestParam("group_id") String groupId,
-                                  @RequestParam(value = "file", required = false) MultipartFile file) {
+                                  @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         Account account = keyCloakService.createAccountFromPrincipal(token);
 
         controllerService.addUsersFromCsv(account, file, groupId);
