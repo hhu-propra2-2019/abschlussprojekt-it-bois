@@ -3,7 +3,6 @@ package mops.gruppen2.controller;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
-import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.InviteService;
@@ -40,6 +39,49 @@ public class GroupDetailsController {
         this.userService = userService;
         this.validationService = validationService;
         this.inviteService = inviteService;
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @GetMapping("/details/{id}")
+    public String showGroupDetails(KeycloakAuthenticationToken token,
+                                   Model model,
+                                   HttpServletRequest request,
+                                   @PathVariable("id") String groupId) {
+
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+        Account account = KeyCloakService.createAccountFromPrincipal(token);
+        User user = new User(account.getName(),
+                             account.getGivenname(),
+                             account.getFamilyname(),
+                             account.getEmail());
+        UUID parentId = group.getParent();
+        String actualURL = request.getRequestURL().toString();
+        String serverURL = actualURL.substring(0, actualURL.indexOf("gruppen2/"));
+        Group parent = controllerService.getParent(parentId);
+
+        validationService.throwIfGroupNotExisting(group.getTitle());
+
+        model.addAttribute("account", account);
+        if (!validationService.checkIfUserInGroup(group, user)) {
+            validationService.throwIfNoAccessToPrivate(group, user);
+            model.addAttribute("group", group);
+            model.addAttribute("parentId", parentId);
+            model.addAttribute("parent", parent);
+            return "detailsNoMember";
+        }
+
+        model.addAttribute("parentId", parentId);
+        model.addAttribute("parent", parent);
+        model.addAttribute("group", group);
+        model.addAttribute("roles", group.getRoles());
+        model.addAttribute("user", user);
+        model.addAttribute("admin", Role.ADMIN);
+
+        if (validationService.checkIfAdmin(group, user)) {
+            model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + inviteService.getLinkByGroupId(group.getId()));
+        }
+
+        return "detailsMember";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
@@ -87,173 +129,6 @@ public class GroupDetailsController {
         controllerService.changeMetaData(account, group, title, description);
 
         return "redirect:/gruppen2/details/" + groupId;
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @GetMapping("/details/{id}")
-    public String showGroupDetails(KeycloakAuthenticationToken token,
-                                   Model model,
-                                   HttpServletRequest request,
-                                   @PathVariable("id") String groupId) {
-
-        Group group = userService.getGroupById(UUID.fromString(groupId));
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
-        UUID parentId = group.getParent();
-        String actualURL = request.getRequestURL().toString();
-        String serverURL = actualURL.substring(0, actualURL.indexOf("gruppen2/"));
-        Group parent = controllerService.getParent(parentId);
-
-        validationService.throwIfGroupNotExisting(group.getTitle());
-
-        model.addAttribute("account", account);
-        if (!validationService.checkIfUserInGroup(group, user)) {
-            validationService.throwIfNoAccessToPrivate(group, user);
-            model.addAttribute("group", group);
-            model.addAttribute("parentId", parentId);
-            model.addAttribute("parent", parent);
-            return "detailsNoMember";
-        }
-
-        model.addAttribute("parentId", parentId);
-        model.addAttribute("parent", parent);
-        model.addAttribute("group", group);
-        model.addAttribute("roles", group.getRoles());
-        model.addAttribute("user", user);
-        model.addAttribute("admin", Role.ADMIN);
-
-        if (validationService.checkIfAdmin(group, user)) {
-            model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + inviteService.getLinkByGroupId(group.getId()));
-        }
-
-        return "detailsMember";
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @PostMapping("/detailsBeitreten")
-    @CacheEvict(value = "groups", allEntries = true)
-    public String joinGroup(KeycloakAuthenticationToken token,
-                            Model model,
-                            @RequestParam("id") String groupId) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
-        Group group = userService.getGroupById(UUID.fromString(groupId));
-
-        validationService.throwIfUserAlreadyInGroup(group, user);
-        validationService.throwIfGroupFull(group);
-
-        controllerService.addUser(account, UUID.fromString(groupId));
-
-        model.addAttribute("account", account);
-
-        return "redirect:/gruppen2";
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @GetMapping("/detailsSearch")
-    public String showGroupDetailsNoMember(KeycloakAuthenticationToken token,
-                                           Model model,
-                                           @RequestParam("id") String groupId) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        Group group = userService.getGroupById(UUID.fromString(groupId));
-        UUID parentId = group.getParent();
-        Group parent = controllerService.getParent(parentId);
-        //TODO: Replace
-        User user = new User(account.getName(), "", "", "");
-
-        model.addAttribute("account", account);
-        if (validationService.checkIfUserInGroup(group, user)) {
-            return "redirect:/gruppen2/details/" + groupId;
-        }
-
-        model.addAttribute("group", group);
-        model.addAttribute("parentId", parentId);
-        model.addAttribute("parent", parent);
-
-        return "detailsNoMember";
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @GetMapping("/acceptinvite/{link}")
-    public String acceptInvite(KeycloakAuthenticationToken token,
-                               Model model,
-                               @PathVariable("link") String link) {
-
-        Group group = userService.getGroupById(inviteService.getGroupIdFromLink(link));
-
-        validationService.throwIfGroupNotExisting(group.getTitle());
-
-        model.addAttribute("account", KeyCloakService.createAccountFromPrincipal(token));
-        model.addAttribute("group", group);
-
-        if (group.getVisibility() == Visibility.PUBLIC) {
-            return "redirect:/gruppen2/details/" + group.getId();
-        }
-
-        return "joinprivate";
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @PostMapping("/acceptinvite")
-    @CacheEvict(value = "groups", allEntries = true)
-    public String postAcceptInvite(KeycloakAuthenticationToken token,
-                                   @RequestParam("id") String groupId) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
-
-        if (!validationService.checkIfUserInGroup(userService.getGroupById(UUID.fromString(groupId)), user)) {
-            controllerService.addUser(KeyCloakService.createAccountFromPrincipal(token), UUID.fromString(groupId));
-        }
-
-        return "redirect:/gruppen2";
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @PostMapping("/leaveGroup")
-    @CacheEvict(value = "groups", allEntries = true)
-    public String pLeaveGroup(KeycloakAuthenticationToken token,
-                              @RequestParam("group_id") String groupId) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(), "", "", "");
-        Group group = userService.getGroupById(UUID.fromString(groupId));
-
-        controllerService.deleteUser(account, user, group);
-
-        return "redirect:/gruppen2";
-    }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @PostMapping("/deleteGroup")
-    @CacheEvict(value = "groups", allEntries = true)
-    public String pDeleteGroup(KeycloakAuthenticationToken token,
-                               @RequestParam("group_id") String groupId) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
-        Group group = userService.getGroupById(UUID.fromString(groupId));
-
-        validationService.throwIfNoAdmin(group, user);
-
-        controllerService.deleteGroupEvent(user.getId(), UUID.fromString(groupId));
-
-        return "redirect:/gruppen2";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
@@ -337,5 +212,64 @@ public class GroupDetailsController {
         }
 
         return "redirect:/gruppen2/details/members/" + groupId;
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @PostMapping("/detailsBeitreten")
+    @CacheEvict(value = "groups", allEntries = true)
+    public String joinGroup(KeycloakAuthenticationToken token,
+                            Model model,
+                            @RequestParam("id") String groupId) {
+
+        Account account = KeyCloakService.createAccountFromPrincipal(token);
+        User user = new User(account.getName(),
+                             account.getGivenname(),
+                             account.getFamilyname(),
+                             account.getEmail());
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+
+        validationService.throwIfUserAlreadyInGroup(group, user);
+        validationService.throwIfGroupFull(group);
+
+        controllerService.addUser(account, UUID.fromString(groupId));
+
+        model.addAttribute("account", account);
+
+        return "redirect:/gruppen2";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @PostMapping("/leaveGroup")
+    @CacheEvict(value = "groups", allEntries = true)
+    public String pLeaveGroup(KeycloakAuthenticationToken token,
+                              @RequestParam("group_id") String groupId) {
+
+        Account account = KeyCloakService.createAccountFromPrincipal(token);
+        User user = new User(account.getName(), "", "", "");
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+
+        controllerService.deleteUser(account, user, group);
+
+        return "redirect:/gruppen2";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @PostMapping("/deleteGroup")
+    @CacheEvict(value = "groups", allEntries = true)
+    public String pDeleteGroup(KeycloakAuthenticationToken token,
+                               @RequestParam("group_id") String groupId) {
+
+        Account account = KeyCloakService.createAccountFromPrincipal(token);
+        User user = new User(account.getName(),
+                             account.getGivenname(),
+                             account.getFamilyname(),
+                             account.getEmail());
+        Group group = userService.getGroupById(UUID.fromString(groupId));
+
+        validationService.throwIfNoAdmin(group, user);
+
+        controllerService.deleteGroupEvent(user.getId(), UUID.fromString(groupId));
+
+        return "redirect:/gruppen2";
     }
 }
