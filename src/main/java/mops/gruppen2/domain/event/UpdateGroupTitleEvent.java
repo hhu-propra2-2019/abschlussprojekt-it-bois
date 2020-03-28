@@ -25,11 +25,11 @@ public class UpdateGroupTitleEvent extends Event {
 
     @Override
     protected void applyEvent(Group group) {
-        if (this.getNewGroupTitle().isEmpty()) {
-            throw new NoValueException(this.getClass().toString());
+        if (newGroupTitle.isEmpty()) {
+            throw new NoValueException(getClass().toString());
         }
 
-        group.setTitle(this.newGroupTitle);
+        group.setTitle(newGroupTitle);
     }
 
 }

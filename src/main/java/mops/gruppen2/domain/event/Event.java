@@ -39,13 +39,13 @@ public abstract class Event {
         applyEvent(group);
     }
 
-    protected abstract void applyEvent(Group group) throws EventException;
-
     private void checkGroupIdMatch(UUID groupId) {
         if (groupId == null || this.groupId.equals(groupId)) {
             return;
         }
 
-        throw new GroupIdMismatchException(this.getClass().toString());
+        throw new GroupIdMismatchException(getClass().toString());
     }
+
+    protected abstract void applyEvent(Group group) throws EventException;
 }

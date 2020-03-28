@@ -11,9 +11,11 @@ import java.io.InputStream;
 import java.util.List;
 
 @Service
-public class CsvService {
+public final class CsvService {
 
-    public static List<User> read(InputStream stream) throws IOException {
+    private CsvService() {}
+
+    static List<User> read(InputStream stream) throws IOException {
         CsvMapper mapper = new CsvMapper();
 
         CsvSchema schema = mapper.schemaFor(User.class).withHeader().withColumnReordering(true);

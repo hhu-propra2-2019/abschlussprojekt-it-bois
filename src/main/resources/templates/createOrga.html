@@ -55,7 +55,8 @@
                         <div class="custom-control custom-checkbox">
                             <input class="custom-control-input" id="maxInfiniteUsers" th:name="maxInfiniteUsers"
                                    type="checkbox">
-                            <label class="custom-control-label" for="maxInfiniteUsers">Anzahl unbegrenzt</label>
+                            <label class="custom-control-label" for="maxInfiniteUsers">Anzahl
+                                                                                       unbegrenzt</label>
                         </div>
                         <div class="form-group mt-3" id="userMaximum">
                             <label for="userMaximum">Teilnehmeranzahl</label>
@@ -66,7 +67,7 @@
                             <input class="custom-control-input" id="visibility" th:name="visibility"
                                    type="checkbox">
                             <label class="custom-control-label" for="visibility">Private
-                                Gruppe</label>
+                                                                                 Gruppe</label>
                         </div>
                         <div class="custom-control custom-checkbox" id="lectureCheckbox">
                             <input class="custom-control-input" id="lecture" th:name="lecture"
@@ -76,7 +77,8 @@
                         <div class="form-group" id="lectureParent">
                             <label for="parent"></label>
                             <select class="form-control" id="parent" name="parent">
-                                <option disabled selected="true">--Bitte Veranstaltung auswählen--</option>
+                                <option disabled selected="true">--Bitte Veranstaltung auswählen--
+                                </option>
                                 <option th:each="lecture : ${lectures}" th:name="parent" th:value="${lecture.getId()}" th:text="${lecture.getTitle()}">
                                 </option>
                             </select>
@@ -88,7 +90,8 @@
                                         <input class="custom-file-input" id="file" th:name="file"
                                                type="file">
                                         <label class="custom-file-label" for="file">CSV Datei von
-                                            Mitgliedern hochladen</label>
+                                                                                    Mitgliedern
+                                                                                    hochladen</label>
                                     </div>
                                 </div>
                             </div>

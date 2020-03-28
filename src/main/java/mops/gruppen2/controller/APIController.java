@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 /**
  * Ein Beispiel für eine API mit Swagger.
  */
+//TODO: Testing
+//TODO: API-Service
 @RestController
 @RequestMapping("/gruppen2/api")
 public class APIController {
@@ -40,16 +42,16 @@ public class APIController {
 
     @GetMapping("/updateGroups/{status}")
     @Secured("ROLE_api_user")
-    @ApiOperation("Gibt alle Gruppen zurück in denen sich etwas geändert hat")
+    @ApiOperation("Gibt alle Gruppen zurück, in denen sich etwas geändert hat")
     public GroupRequestWrapper updateGroup(@ApiParam("Letzter Status des Anfragestellers") @PathVariable Long status) throws EventException {
         List<Event> events = eventService.getNewEvents(status);
 
-        return APIFormatterService.wrap(eventService.getMaxEvent_id(), groupService.projectEventList(events));
+        return APIFormatterService.wrap(eventService.getMaxEventId(), groupService.projectEventList(events));
     }
 
     @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
     @Secured("ROLE_api_user")
-    @ApiOperation("Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
+    @ApiOperation("Gibt alle Gruppen zurück, in denen sich ein Teilnehmer befindet")
     public List<String> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) {
         return userService.getUserGroups(teilnehmer).stream()
                           .map(group -> group.getId().toString())

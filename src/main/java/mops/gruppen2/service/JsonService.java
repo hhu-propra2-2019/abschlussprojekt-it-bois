@@ -9,17 +9,21 @@ import org.springframework.stereotype.Service;
  * Übersetzt JSON-Event-Payloads zu Java-Event-Repräsentationen und zurück.
  */
 @Service
-public class JsonService {
+public final class JsonService {
+
+    private JsonService() {}
 
     /**
      * Übersetzt mithilfe der Jackson-Library eine Java-Event-Repräsentation zu einem JSON-Event-Payload.
      *
      * @param event Java-Event-Repräsentation
+     *
      * @return JSON-Event-Payload als String
+     *
      * @throws JsonProcessingException Bei JSON Fehler
      */
 
-    public String serializeEvent(Event event) throws JsonProcessingException {
+    static String serializeEvent(Event event) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(event);
     }
@@ -28,10 +32,12 @@ public class JsonService {
      * Übersetzt mithilfe der Jackson-Library einen JSON-Event-Payload zu einer Java-Event-Repräsentation.
      *
      * @param json JSON-Event-Payload als String
+     *
      * @return Java-Event-Repräsentation
+     *
      * @throws JsonProcessingException Bei JSON Fehler
      */
-    public Event deserializeEvent(String json) throws JsonProcessingException {
+    static Event deserializeEvent(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, Event.class);
     }

@@ -5,6 +5,7 @@ import mops.gruppen2.domain.exception.PageNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -16,7 +17,7 @@ public class MopsController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request) throws Exception {
+    public String logout(HttpServletRequest request) throws ServletException {
         request.logout();
         return "redirect:/gruppen2/";
     }

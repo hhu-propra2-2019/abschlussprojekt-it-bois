@@ -16,6 +16,7 @@ import java.util.UUID;
 @Setter
 public class Group {
 
+    //TODO: List to Hashmap
     private final List<User> members;
     private final Map<String, Role> roles;
     private UUID id;
@@ -27,8 +28,8 @@ public class Group {
     private UUID parent;
 
     public Group() {
-        this.members = new ArrayList<>();
-        this.roles = new HashMap<>();
+        members = new ArrayList<>();
+        roles = new HashMap<>();
     }
 
 }

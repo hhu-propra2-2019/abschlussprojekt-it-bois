@@ -35,23 +35,24 @@
                 <h1>Gruppensuche</h1>
                 <div class="shadow-sm p-2"
                      style="border: 10px solid aliceblue; border-radius: 5px; background: aliceblue">
-                        <form method="get" th:action="@{/gruppen2/findGroup}">
-                            <div class="form-group">
-                                <label for="suchleiste">Suchbegriff:</label>
-                                <input class="form-control" id="suchleiste"
-                                       placeholder="z.B. Programmieren, Lerngruppe, ..."
-                                       th:name="suchbegriff" type="text">
-                            </div>
-                            <button class="btn btn-primary"
-                                    style="background: #52a1eb; border-style: none"
-                                    type="submit">Suchen
-                            </button>
-                            <button class="btn btn-primary"
-                                    style="background: deepskyblue; border-style: none"
-                                    type="submit">
-                                <a style="color: white" href="/gruppen2/findGroup?suchbegriff=">Alle anzeigen</a>
-                            </button>
-                        </form>
+                    <form method="get" th:action="@{/gruppen2/findGroup}">
+                        <div class="form-group">
+                            <label for="suchleiste">Suchbegriff:</label>
+                            <input class="form-control" id="suchleiste"
+                                   placeholder="z.B. Programmieren, Lerngruppe, ..."
+                                   th:name="suchbegriff" type="text">
+                        </div>
+                        <button class="btn btn-primary"
+                                style="background: #52a1eb; border-style: none"
+                                type="submit">Suchen
+                        </button>
+                        <button class="btn btn-primary"
+                                style="background: deepskyblue; border-style: none"
+                                type="submit">
+                            <a href="/gruppen2/findGroup?suchbegriff=" style="color: white">Alle
+                                                                                            anzeigen</a>
+                        </button>
+                    </form>
                 </div>
                 <br>
                 <table class="table">
