@@ -51,7 +51,7 @@ public class EventService {
     public EventDTO getDTOFromEvent(Event event) {
         String payload = "";
         try {
-            payload = jsonService.serializeEvent(event);
+            payload = JsonService.serializeEvent(event);
         } catch (JsonProcessingException e) {
             LOG.error("Event ({}) konnte nicht serialisiert werden!", event.getClass());
         }
@@ -113,7 +113,7 @@ public class EventService {
 
         for (EventDTO eventDTO : eventDTOS) {
             try {
-                events.add(jsonService.deserializeEvent(eventDTO.getEvent_payload()));
+                events.add(JsonService.deserializeEvent(eventDTO.getEvent_payload()));
             } catch (JsonProcessingException e) {
                 LOG.error("Payload\n {}\n konnte nicht deserialisiert werden!", eventDTO.getEvent_payload());
             }
