@@ -4,10 +4,8 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.exception.PageNotFoundException;
 import mops.gruppen2.security.Account;
 import mops.gruppen2.service.ControllerService;
-import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.InviteService;
 import mops.gruppen2.service.KeyCloakService;
 import mops.gruppen2.service.UserService;
@@ -22,168 +20,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-//TODO: Remove duplicate Injections
 @Controller
 @SessionScope
 @RequestMapping("/gruppen2")
-public class WebController {
+public class GroupDetailsController {
 
-    private final GroupService groupService;
-    private final UserService userService;
     private final ControllerService controllerService;
+    private final UserService userService;
     private final ValidationService validationService;
     private final InviteService inviteService;
 
-    public WebController(GroupService groupService,
-                         UserService userService,
-                         ControllerService controllerService,
-                         ValidationService validationService,
-                         InviteService inviteService) {
-        this.groupService = groupService;
-        this.userService = userService;
+    public GroupDetailsController(ControllerService controllerService, UserService userService, ValidationService validationService, InviteService inviteService) {
         this.controllerService = controllerService;
+        this.userService = userService;
         this.validationService = validationService;
         this.inviteService = inviteService;
     }
 
-    /**
-     * Zeigt die index.html an.
-     *
-     * @param token toller token
-     * @param model tolles model
-     *
-     * @return index.html
-     */
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @GetMapping("")
-    public String index(KeycloakAuthenticationToken token,
-                        Model model) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        //TODO: new Contructor/method
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
-
-        model.addAttribute("account", account);
-        model.addAttribute("gruppen", userService.getUserGroups(user));
-        model.addAttribute("user", user);
-
-        return "index";
-    }
-
-    //TODO: CreateController
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
-    @GetMapping("/createOrga")
-    public String createGroupAsOrga(KeycloakAuthenticationToken token,
-                                    Model model) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-
-        model.addAttribute("account", account);
-        model.addAttribute("lectures", groupService.getAllLecturesWithVisibilityPublic());
-
-        return "createOrga";
-    }
-
-    //TODO: CreateController
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
-    @PostMapping("/createOrga")
-    @CacheEvict(value = "groups", allEntries = true)
-    public String postCrateGroupAsOrga(KeycloakAuthenticationToken token,
-                                       @RequestParam("title") String title,
-                                       @RequestParam("description") String description,
-                                       @RequestParam(value = "visibility", required = false) Boolean visibility,
-                                       @RequestParam(value = "lecture", required = false) Boolean lecture,
-                                       @RequestParam("userMaximum") Long userMaximum,
-                                       @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
-                                       @RequestParam(value = "parent", required = false) String parent,
-                                       @RequestParam(value = "file", required = false) MultipartFile file) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        UUID parentUUID = controllerService.getUUID(parent);
-
-        validationService.checkFields(description, title, userMaximum, maxInfiniteUsers);
-
-        controllerService.createGroupAsOrga(account,
-                                            title,
-                                            description,
-                                            visibility,
-                                            lecture,
-                                            maxInfiniteUsers,
-                                            userMaximum,
-                                            parentUUID,
-                                            file);
-        return "redirect:/gruppen2";
-    }
-
-    //TODO: CreateController
-    @RolesAllowed("ROLE_studentin")
-    @GetMapping("/createStudent")
-    public String createGroupAsStudent(KeycloakAuthenticationToken token,
-                                       Model model) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-
-        model.addAttribute("account", account);
-        model.addAttribute("lectures", groupService.getAllLecturesWithVisibilityPublic());
-
-        return "createStudent";
-    }
-
-    //TODO: CreateController
-    @RolesAllowed("ROLE_studentin")
-    @PostMapping("/createStudent")
-    @CacheEvict(value = "groups", allEntries = true)
-    public String postCreateGroupAsStudent(KeycloakAuthenticationToken token,
-                                           @RequestParam("title") String title,
-                                           @RequestParam("description") String description,
-                                           @RequestParam("userMaximum") Long userMaximum,
-                                           @RequestParam(value = "visibility", required = false) Boolean visibility,
-                                           @RequestParam(value = "maxInfiniteUsers", required = false) Boolean maxInfiniteUsers,
-                                           @RequestParam(value = "parent", required = false) String parent) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        UUID parentUUID = controllerService.getUUID(parent);
-
-        validationService.checkFields(description, title, userMaximum, maxInfiniteUsers);
-
-        controllerService.createGroup(account,
-                                      title,
-                                      description,
-                                      visibility,
-                                      null,
-                                      maxInfiniteUsers,
-                                      userMaximum,
-                                      parentUUID);
-
-        return "redirect:/gruppen2";
-    }
-
-    //TODO: CreateController
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
-    @PostMapping("/details/members/addUsersFromCsv")
-    @CacheEvict(value = "groups", allEntries = true)
-    public String addUsersFromCsv(KeycloakAuthenticationToken token,
-                                  @RequestParam("group_id") String groupId,
-                                  @RequestParam(value = "file", required = false) MultipartFile file) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        controllerService.addUsersFromCsv(account, file, groupId);
-
-        return "redirect:/gruppen2/details/members/" + groupId;
-    }
-
-    //TODO: DetailsController
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @GetMapping("/details/changeMetadata/{id}")
     public String changeMetadata(KeycloakAuthenticationToken token,
@@ -210,7 +68,6 @@ public class WebController {
         return "changeMetadata";
     }
 
-    //TODO: DetailsController
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/details/changeMetadata")
     @CacheEvict(value = "groups", allEntries = true)
@@ -230,24 +87,6 @@ public class WebController {
         controllerService.changeMetaData(account, group, title, description);
 
         return "redirect:/gruppen2/details/" + groupId;
-    }
-
-    //TODO: SearchController
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    @GetMapping("/findGroup")
-    public String findGroup(KeycloakAuthenticationToken token,
-                            Model model,
-                            @RequestParam(value = "suchbegriff", required = false) String search) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        List<Group> groups = new ArrayList<>();
-        groups = validationService.checkSearch(search, groups, account);
-
-        model.addAttribute("account", account);
-        model.addAttribute("gruppen", groups);
-        model.addAttribute("inviteService", inviteService);
-
-        return "search";
     }
 
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
@@ -498,10 +337,5 @@ public class WebController {
         }
 
         return "redirect:/gruppen2/details/members/" + groupId;
-    }
-
-    @GetMapping("*")
-    public String defaultLink() throws PageNotFoundException {
-        throw new PageNotFoundException("\uD83D\uDE41");
     }
 }
