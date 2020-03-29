@@ -4,13 +4,18 @@ on:
   push:
     branches: 
       - master
+      - dev
   pull_request:
     branches: 
       - master
+      - dev
     paths-ignore:
       - 'documentation/**'
+      - 'mysql/**'
       - 'README.adoc'
       - 'Dockerfile'
+      - 'docker-compose.yaml'
+      - '.gitignore'
 jobs:
   build:
     runs-on: ubuntu-latest
