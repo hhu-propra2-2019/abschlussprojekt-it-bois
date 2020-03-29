@@ -11,7 +11,7 @@ public final class APIFormatterService {
 
     private APIFormatterService() {}
 
-    public static GroupRequestWrapper wrap(Long status, List<Group> groupList) {
+    public static GroupRequestWrapper wrap(long status, List<Group> groupList) {
         return new GroupRequestWrapper(status, groupList);
     }
 }

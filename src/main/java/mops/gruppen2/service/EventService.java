@@ -18,11 +18,9 @@ import java.util.stream.Collectors;
 public class EventService {
 
     private static final Logger LOG = LoggerFactory.getLogger(EventService.class);
-    private final JsonService jsonService;
     private final EventRepository eventStore;
 
-    public EventService(JsonService jsonService, EventRepository eventStore) {
-        this.jsonService = jsonService;
+    public EventService(EventRepository eventStore) {
         this.eventStore = eventStore;
     }
 
@@ -121,8 +119,16 @@ public class EventService {
         return events;
     }
 
-    public Long getMaxEventId() {
-        return eventStore.getHighesEventID();
+    public long getMaxEventId() {
+        long highestEvent = 0;
+
+        try {
+            highestEvent = eventStore.getHighesEventID();
+        } catch (NullPointerException e) {
+            LOG.debug("Eine maxId von 0 wurde zurückgegeben, da keine Events vorhanden sind.");
+        }
+
+        return highestEvent;
     }
 
     /**

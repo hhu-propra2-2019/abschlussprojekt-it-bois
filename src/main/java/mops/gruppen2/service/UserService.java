@@ -25,7 +25,7 @@ public class UserService {
 
     @Cacheable("groups")
     public List<Group> getUserGroups(String userId) throws EventException {
-        return getUserGroups(new User(userId, null, null, null));
+        return getUserGroups(new User(userId, "", "", ""));
     }
 
     /**
@@ -35,6 +35,7 @@ public class UserService {
      *
      * @return Liste aus Gruppen
      */
+    //TODO: Nur AddUserEvents + DeleteUserEvents betrachten
     @Cacheable("groups")
     public List<Group> getUserGroups(User user) {
         List<UUID> groupIds = eventService.findGroupIdsByUser(user.getId());
