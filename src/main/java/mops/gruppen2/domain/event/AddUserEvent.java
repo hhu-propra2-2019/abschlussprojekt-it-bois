@@ -1,6 +1,5 @@
 package mops.gruppen2.domain.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.Group;
@@ -16,7 +15,6 @@ import java.util.UUID;
  * Fügt einen einzelnen Nutzer einer Gruppe hinzu.
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor // For Jackson
 public class AddUserEvent extends Event {
 
@@ -33,14 +31,14 @@ public class AddUserEvent extends Event {
 
     @Override
     protected void applyEvent(Group group) throws EventException {
-        User user = new User(this.userId, this.givenname, this.familyname, this.email);
+        User user = new User(userId, givenname, familyname, email);
 
         if (group.getMembers().contains(user)) {
-            throw new UserAlreadyExistsException(this.getClass().toString());
+            throw new UserAlreadyExistsException(getClass().toString());
         }
 
         if (group.getMembers().size() >= group.getUserMaximum()) {
-            throw new GroupFullException(this.getClass().toString());
+            throw new GroupFullException(getClass().toString());
         }
 
         group.getMembers().add(user);
