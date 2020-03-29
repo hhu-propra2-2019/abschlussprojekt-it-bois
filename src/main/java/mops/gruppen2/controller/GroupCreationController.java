@@ -117,17 +117,4 @@ public class GroupCreationController {
 
         return "redirect:/gruppen2";
     }
-
-    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
-    @PostMapping("/details/members/addUsersFromCsv")
-    @CacheEvict(value = "groups", allEntries = true)
-    public String addUsersFromCsv(KeycloakAuthenticationToken token,
-                                  @RequestParam("group_id") String groupId,
-                                  @RequestParam(value = "file", required = false) MultipartFile file) {
-
-        Account account = KeyCloakService.createAccountFromPrincipal(token);
-        controllerService.addUsersFromCsv(account, file, groupId);
-
-        return "redirect:/gruppen2/details/members/" + groupId;
-    }
 }

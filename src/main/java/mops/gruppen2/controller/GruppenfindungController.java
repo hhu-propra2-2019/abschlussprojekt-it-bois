@@ -34,7 +34,6 @@ public class GruppenfindungController {
                         Model model) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-        //TODO: new Contructor/method
         User user = new User(account);
 
         model.addAttribute("account", account);
