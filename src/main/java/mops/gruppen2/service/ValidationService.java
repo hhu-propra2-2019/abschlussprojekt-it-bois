@@ -4,7 +4,13 @@ import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.domain.exception.*;
+import mops.gruppen2.domain.exception.BadParameterException;
+import mops.gruppen2.domain.exception.GroupFullException;
+import mops.gruppen2.domain.exception.GroupNotFoundException;
+import mops.gruppen2.domain.exception.NoAccessException;
+import mops.gruppen2.domain.exception.NoAdminAfterActionException;
+import mops.gruppen2.domain.exception.UserAlreadyExistsException;
+import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 

@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -139,7 +138,7 @@ public class WebController {
     @CacheEvict(value = "groups", allEntries = true)
     public String addUsersFromCsv(KeycloakAuthenticationToken token,
                                   @RequestParam("group_id") String groupId,
-                                  @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+                                  @RequestParam(value = "file", required = false) MultipartFile file) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
 
         controllerService.addUsersFromCsv(account, file, groupId);
@@ -152,8 +151,6 @@ public class WebController {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail());
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        UUID parentId = group.getParent();
-        Group parent = new Group();
 
         validationService.throwIfNoAdmin(group, user);
 
@@ -265,14 +262,15 @@ public class WebController {
                                            @RequestParam("id") String groupId) {
         Account account = keyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        UUID parentId = group.getParent();
-        Group parent = controllerService.getParent(parentId);
         User user = new User(account.getName(), "", "", "");
 
         model.addAttribute("account", account);
-        if (validationService.checkIfUserInGroup(group, user)){
+        if (validationService.checkIfUserInGroup(group, user)) {
             return "redirect:/gruppen2/details/" + groupId;
         }
+
+        UUID parentId = group.getParent();
+        Group parent = controllerService.getParent(parentId);
 
         model.addAttribute("group", group);
         model.addAttribute("parentId", parentId);

@@ -48,15 +48,6 @@ public class ControllerService {
         this.logger = Logger.getLogger("controllerServiceLogger");
     }
 
-    /**
-     * Erzeugt eine neue Gruppe, fügt den User, der die Gruppe erstellt hat, hinzu und setzt seine Rolle als Admin fest.
-     * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
-     * Aus diesen Event Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
-     *
-     * @param account     Keycloak-Account
-     * @param title       Gruppentitel
-     * @param description Gruppenbeschreibung
-     */
     public UUID createGroup(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent) {
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
@@ -73,9 +64,9 @@ public class ControllerService {
         User user = new User(account.getName(), "", "", "");
 
         addUser(account, groupId);
+        updateRole(user, groupId);
         updateTitle(account, groupId, title);
         updateDescription(account, groupId, description);
-        updateRole(user, groupId);
 
         return groupId;
     }
@@ -111,7 +102,7 @@ public class ControllerService {
         addUserList(newUsers, groupId);
     }
 
-    public void addUsersFromCsv(Account account, MultipartFile file, String groupId) throws IOException{
+    public void addUsersFromCsv(Account account, MultipartFile file, String groupId) {
         Group group = userService.getGroupById(UUID.fromString(groupId));
 
         List<User> newUserList = readCsvFile(file);
@@ -120,7 +111,7 @@ public class ControllerService {
         UUID groupUUID = getUUID(groupId);
 
         Long newUserMaximum = adjustUserMaximum((long) newUserList.size(), (long) group.getMembers().size(), group.getUserMaximum());
-        if (newUserMaximum > group.getUserMaximum()){
+        if (newUserMaximum > group.getUserMaximum()) {
             updateMaxUser(account, groupUUID, newUserMaximum);
         }
 
@@ -128,7 +119,7 @@ public class ControllerService {
     }
 
     public void changeMetaData(Account account, Group group, String title, String description) {
-        if (!title.equals(group.getTitle())){
+        if (!title.equals(group.getTitle())) {
             updateTitle(account, group.getId(), title);
         }
 
@@ -187,8 +178,10 @@ public class ControllerService {
         }
     }
 
-    private List<User> readCsvFile(MultipartFile file) throws EventException{
-        if(file == null) return new ArrayList<>();
+    private List<User> readCsvFile(MultipartFile file) throws EventException {
+        if (file == null) {
+            return new ArrayList<>();
+        }
         if (!file.isEmpty()) {
             try {
                 List<User> userList = CsvService.read(file.getInputStream());
