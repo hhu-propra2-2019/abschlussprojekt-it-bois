@@ -241,8 +241,8 @@ public class GroupDetailsController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/leaveGroup")
     @CacheEvict(value = "groups", allEntries = true)
-    public String pLeaveGroup(KeycloakAuthenticationToken token,
-                              @RequestParam("group_id") String groupId) {
+    public String leaveGroup(KeycloakAuthenticationToken token,
+                             @RequestParam("group_id") String groupId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(), "", "", "");
@@ -256,8 +256,8 @@ public class GroupDetailsController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     @PostMapping("/deleteGroup")
     @CacheEvict(value = "groups", allEntries = true)
-    public String pDeleteGroup(KeycloakAuthenticationToken token,
-                               @RequestParam("group_id") String groupId) {
+    public String deleteGroup(KeycloakAuthenticationToken token,
+                              @RequestParam("group_id") String groupId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
         User user = new User(account.getName(),
