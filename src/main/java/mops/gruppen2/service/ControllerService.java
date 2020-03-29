@@ -1,5 +1,6 @@
 package mops.gruppen2.service;
 
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -15,7 +16,6 @@ import mops.gruppen2.domain.event.UpdateRoleEvent;
 import mops.gruppen2.domain.event.UpdateUserMaxEvent;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.domain.exception.WrongFileException;
-import mops.gruppen2.security.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -72,20 +72,35 @@ public class ControllerService {
      * @param parent              Parameter für die neue Gruppe
      * @param file                Parameter für die neue Gruppe
      */
-    public void createGroupAsOrga(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent, MultipartFile file) {
+    public void createGroupAsOrga(Account account,
+                                  String title,
+                                  String description,
+                                  Boolean isVisibilityPrivate,
+                                  Boolean isLecture,
+                                  Boolean isMaximumInfinite,
+                                  Long userMaximum,
+                                  UUID parent,
+                                  MultipartFile file) {
+
         userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
 
         List<User> newUsers = readCsvFile(file);
 
         List<User> oldUsers = new ArrayList<>();
-        User user = new User(account.getName(), "", "", "");
+        User user = new User(account);
         oldUsers.add(user);
 
         removeOldUsersFromNewUsers(oldUsers, newUsers);
 
         userMaximum = adjustUserMaximum((long) newUsers.size(), 1L, userMaximum);
 
-        UUID groupId = createGroup(account, title, description, isVisibilityPrivate, isLecture, isMaximumInfinite, userMaximum, parent);
+        UUID groupId = createGroup(account,
+                                   title,
+                                   description,
+                                   isVisibilityPrivate,
+                                   isLecture,
+                                   isMaximumInfinite,
+                                   userMaximum, parent);
 
         addUserList(newUsers, groupId);
     }
@@ -99,7 +114,7 @@ public class ControllerService {
      *
      * @return Maximum an Usern
      */
-    private Long checkInfiniteUsers(Boolean isMaximumInfinite, Long userMaximum) {
+    private static Long checkInfiniteUsers(Boolean isMaximumInfinite, Long userMaximum) {
         isMaximumInfinite = isMaximumInfinite != null;
 
         if (isMaximumInfinite) {
@@ -107,6 +122,52 @@ public class ControllerService {
         }
 
         return userMaximum;
+    }
+
+    /**
+     * Erzeugt eine neue Gruppe, fügt den User, der die Gruppe erstellt hat, hinzu und setzt seine Rolle als Admin fest.
+     * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
+     * Aus diesen Event-Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
+     *
+     * @param account     Keycloak-Account
+     * @param title       Gruppentitel
+     * @param description Gruppenbeschreibung
+     */
+    //TODO: remove booleans
+    public UUID createGroup(Account account,
+                            String title,
+                            String description,
+                            Boolean isVisibilityPrivate,
+                            Boolean isLecture,
+                            Boolean isMaximumInfinite,
+                            Long userMaximum,
+                            UUID parent) {
+
+        userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
+
+        Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
+        UUID groupId = UUID.randomUUID();
+
+        GroupType groupType = setGroupType(isLecture);
+
+        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId,
+                                                                 account.getName(),
+                                                                 parent,
+                                                                 groupType,
+                                                                 groupVisibility,
+                                                                 userMaximum);
+        eventService.saveEvent(createGroupEvent);
+
+        inviteService.createLink(groupId);
+
+        User user = new User(account.getName(), "", "", "");
+
+        addUser(account, groupId);
+        updateTitle(account, groupId, title);
+        updateDescription(account, groupId, description);
+        updateRole(user, groupId);
+
+        return groupId;
     }
 
     private static List<User> readCsvFile(MultipartFile file) throws EventException {
@@ -136,39 +197,6 @@ public class ControllerService {
             maxUsers = oldUsers + newUsers;
         }
         return maxUsers;
-    }
-
-    /**
-     * Erzeugt eine neue Gruppe, fügt den User, der die Gruppe erstellt hat, hinzu und setzt seine Rolle als Admin fest.
-     * Zudem wird der Gruppentitel und die Gruppenbeschreibung erzeugt, welche vorher der Methode übergeben wurden.
-     * Aus diesen Event Objekten wird eine Liste erzeugt, welche daraufhin mithilfe des EventServices gesichert wird.
-     *
-     * @param account     Keycloak-Account
-     * @param title       Gruppentitel
-     * @param description Gruppenbeschreibung
-     */
-    //TODO: remove booleans
-    public UUID createGroup(Account account, String title, String description, Boolean isVisibilityPrivate, Boolean isLecture, Boolean isMaximumInfinite, Long userMaximum, UUID parent) {
-        userMaximum = checkInfiniteUsers(isMaximumInfinite, userMaximum);
-
-        Visibility groupVisibility = setGroupVisibility(isVisibilityPrivate);
-        UUID groupId = UUID.randomUUID();
-
-        GroupType groupType = setGroupType(isLecture);
-
-        CreateGroupEvent createGroupEvent = new CreateGroupEvent(groupId, account.getName(), parent, groupType, groupVisibility, userMaximum);
-        eventService.saveEvent(createGroupEvent);
-
-        inviteService.createLink(groupId);
-
-        User user = new User(account.getName(), "", "", "");
-
-        addUser(account, groupId);
-        updateTitle(account, groupId, title);
-        updateDescription(account, groupId, description);
-        updateRole(user, groupId);
-
-        return groupId;
     }
 
     private void addUserList(List<User> newUsers, UUID groupId) {

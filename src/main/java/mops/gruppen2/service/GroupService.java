@@ -1,5 +1,6 @@
 package mops.gruppen2.service;
 
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Visibility;
@@ -7,7 +8,6 @@ import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.repository.EventRepository;
-import mops.gruppen2.security.Account;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +60,10 @@ public class GroupService {
 
         List<Group> visibleGroups = projectEventList(createEvents);
 
-        return visibleGroups.stream().filter(group -> group.getType() == GroupType.LECTURE).filter(group -> group.getVisibility() == Visibility.PUBLIC).collect(Collectors.toList());
+        return visibleGroups.stream()
+                            .filter(group -> group.getType() == GroupType.LECTURE)
+                            .filter(group -> group.getVisibility() == Visibility.PUBLIC)
+                            .collect(Collectors.toList());
     }
 
     /**
@@ -76,7 +79,8 @@ public class GroupService {
     public List<Group> projectEventList(List<Event> events) throws EventException {
         Map<UUID, Group> groupMap = new HashMap<>();
 
-        events.parallelStream().forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
+        events.parallelStream()
+              .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
 
         return new ArrayList<>(groupMap.values());
     }

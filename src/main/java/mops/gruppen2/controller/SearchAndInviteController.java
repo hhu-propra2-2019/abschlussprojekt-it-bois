@@ -1,9 +1,9 @@
 package mops.gruppen2.controller;
 
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.Visibility;
-import mops.gruppen2.security.Account;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.InviteService;
 import mops.gruppen2.service.KeyCloakService;
@@ -69,8 +69,7 @@ public class SearchAndInviteController {
         Group group = userService.getGroupById(UUID.fromString(groupId));
         UUID parentId = group.getParent();
         Group parent = controllerService.getParent(parentId);
-        //TODO: Replace
-        User user = new User(account.getName(), "", "", "");
+        User user = new User(account);
 
         model.addAttribute("account", account);
         if (validationService.checkIfUserInGroup(group, user)) {
@@ -111,12 +110,7 @@ public class SearchAndInviteController {
                                    @RequestParam("id") String groupId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
-
+        User user = new User(account);
         Group group = userService.getGroupById(UUID.fromString(groupId));
 
         validationService.throwIfUserAlreadyInGroup(group, user);

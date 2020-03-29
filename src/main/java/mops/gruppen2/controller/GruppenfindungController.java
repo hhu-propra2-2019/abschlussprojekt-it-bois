@@ -1,8 +1,8 @@
 package mops.gruppen2.controller;
 
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.User;
 import mops.gruppen2.domain.exception.PageNotFoundException;
-import mops.gruppen2.security.Account;
 import mops.gruppen2.service.KeyCloakService;
 import mops.gruppen2.service.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -35,10 +35,7 @@ public class GruppenfindungController {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
         //TODO: new Contructor/method
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
+        User user = new User(account);
 
         model.addAttribute("account", account);
         model.addAttribute("gruppen", userService.getUserGroups(user));

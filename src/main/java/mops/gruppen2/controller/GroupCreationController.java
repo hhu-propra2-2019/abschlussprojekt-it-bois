@@ -1,6 +1,6 @@
 package mops.gruppen2.controller;
 
-import mops.gruppen2.security.Account;
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.GroupService;
 import mops.gruppen2.service.KeyCloakService;

@@ -1,4 +1,4 @@
-package mops.gruppen2.security;
+package mops.gruppen2.domain;
 
 import lombok.Value;
 

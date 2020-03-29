@@ -1,5 +1,6 @@
 package mops.gruppen2.service;
 
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
@@ -11,7 +12,6 @@ import mops.gruppen2.domain.exception.NoAccessException;
 import mops.gruppen2.domain.exception.NoAdminAfterActionException;
 import mops.gruppen2.domain.exception.UserAlreadyExistsException;
 import mops.gruppen2.domain.exception.UserNotFoundException;
-import mops.gruppen2.security.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -99,10 +99,8 @@ public class ValidationService {
 
     boolean checkIfLastAdmin(Account account, Group group) {
         for (Map.Entry<String, Role> entry : group.getRoles().entrySet()) {
-            if (entry.getValue() == ADMIN) {
-                if (!(entry.getKey().equals(account.getName()))) {
-                    return false;
-                }
+            if (entry.getValue() == ADMIN && !(entry.getKey().equals(account.getName()))) {
+                return false;
             }
         }
         return true;
@@ -128,10 +126,8 @@ public class ValidationService {
             throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
         }
 
-        if (userMaximum != null) {
-            if (userMaximum < 1 || userMaximum > 10000L) {
-                throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
-            }
+        if (userMaximum != null && (userMaximum < 1 || userMaximum > 10000L)) {
+            throw new BadParameterException("Teilnehmeranzahl wurde nicht korrekt angegeben");
         }
     }
 

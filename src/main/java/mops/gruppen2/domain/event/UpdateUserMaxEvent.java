@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UpdateUserMaxEvent extends Event {
 
-    private  Long userMaximum;
+    private Long userMaximum;
 
     public UpdateUserMaxEvent(UUID groupId, String userId, Long userMaximum) {
         super(groupId, userId);
@@ -22,6 +22,6 @@ public class UpdateUserMaxEvent extends Event {
 
     @Override
     protected void applyEvent(Group group) throws EventException {
-        group.setUserMaximum(this.userMaximum);
+        group.setUserMaximum(userMaximum);
     }
 }

@@ -1,6 +1,6 @@
 package mops.gruppen2.service;
 
-import mops.gruppen2.security.Account;
+import mops.gruppen2.domain.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;

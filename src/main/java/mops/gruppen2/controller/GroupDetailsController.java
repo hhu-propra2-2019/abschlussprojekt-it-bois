@@ -1,9 +1,9 @@
 package mops.gruppen2.controller;
 
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
-import mops.gruppen2.security.Account;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.InviteService;
 import mops.gruppen2.service.KeyCloakService;
@@ -50,10 +50,7 @@ public class GroupDetailsController {
 
         Group group = userService.getGroupById(UUID.fromString(groupId));
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
+        User user = new User(account);
         UUID parentId = group.getParent();
         String actualURL = request.getRequestURL().toString();
         String serverURL = actualURL.substring(0, actualURL.indexOf("gruppen2/"));
@@ -91,10 +88,7 @@ public class GroupDetailsController {
                                  @PathVariable("id") String groupId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
+        User user = new User(account);
         Group group = userService.getGroupById(UUID.fromString(groupId));
 
         validationService.throwIfNoAdmin(group, user);
@@ -119,8 +113,7 @@ public class GroupDetailsController {
                                      @RequestParam("groupId") String groupId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-        //TODO: new Constructor/Method
-        User user = new User(account.getName(), "", "", "");
+        User user = new User(account);
         Group group = userService.getGroupById(UUID.fromString(groupId));
 
         validationService.throwIfNoAdmin(group, user);
@@ -139,7 +132,7 @@ public class GroupDetailsController {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        User user = new User(account.getName(), "", "", "");
+        User user = new User(account);
 
         validationService.throwIfNoAdmin(group, user);
 
@@ -160,7 +153,7 @@ public class GroupDetailsController {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
         Group group = userService.getGroupById(UUID.fromString(groupId));
-        User principle = new User(account.getName(), "", "", "");
+        User principle = new User(account);
         User user = new User(userId, "", "", "");
 
         validationService.throwIfNoAdmin(group, principle);
@@ -199,7 +192,7 @@ public class GroupDetailsController {
                              @RequestParam("user_id") String userId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User principle = new User(account.getName(), "", "", "");
+        User principle = new User(account);
         User user = new User(userId, "", "", "");
         Group group = userService.getGroupById(UUID.fromString(groupId));
 
@@ -222,10 +215,7 @@ public class GroupDetailsController {
                             @RequestParam("id") String groupId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
+        User user = new User(account);
         Group group = userService.getGroupById(UUID.fromString(groupId));
 
         validationService.throwIfUserAlreadyInGroup(group, user);
@@ -245,7 +235,7 @@ public class GroupDetailsController {
                              @RequestParam("group_id") String groupId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(), "", "", "");
+        User user = new User(account);
         Group group = userService.getGroupById(UUID.fromString(groupId));
 
         controllerService.deleteUser(account, user, group);
@@ -260,10 +250,7 @@ public class GroupDetailsController {
                               @RequestParam("group_id") String groupId) {
 
         Account account = KeyCloakService.createAccountFromPrincipal(token);
-        User user = new User(account.getName(),
-                             account.getGivenname(),
-                             account.getFamilyname(),
-                             account.getEmail());
+        User user = new User(account);
         Group group = userService.getGroupById(UUID.fromString(groupId));
 
         validationService.throwIfNoAdmin(group, user);
