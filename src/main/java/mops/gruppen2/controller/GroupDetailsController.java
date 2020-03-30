@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -258,5 +259,18 @@ public class GroupDetailsController {
         controllerService.deleteGroupEvent(user.getId(), UUID.fromString(groupId));
 
         return "redirect:/gruppen2";
+    }
+
+    @RolesAllowed({"ROLE_orga", "ROLE_actuator"})
+    @PostMapping("/details/members/addUsersFromCsv")
+    @CacheEvict(value = "groups", allEntries = true)
+    public String addUsersFromCsv(KeycloakAuthenticationToken token,
+                                  @RequestParam("group_id") String groupId,
+                                  @RequestParam(value = "file", required = false) MultipartFile file) {
+
+        Account account = KeyCloakService.createAccountFromPrincipal(token);
+        controllerService.addUsersFromCsv(account, file, groupId);
+
+        return "redirect:/gruppen2/details/members/" + groupId;
     }
 }

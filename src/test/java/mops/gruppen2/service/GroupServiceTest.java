@@ -59,10 +59,6 @@ class GroupServiceTest {
     //TODO: Wofür ist dieser Test?
     @Test
     void rightClassForSuccessfulGroup() {
-        /*List<Event> eventList = new ArrayList<>();
-        UUID id = UUID.randomUUID();
-        eventList.add(new CreateGroupEvent(id, "Prof", null, GroupType.LECTURE, Visibility.PRIVATE, 1000L));
-        eventList.add(new AddUserEvent(id, "Ulli", "Ulli", "Honnis", "FC@B.de"));*/
         List<Event> eventList = completePrivateGroup(1);
 
         List<Group> groups = groupService.projectEventList(eventList);
@@ -93,9 +89,6 @@ class GroupServiceTest {
 
     @Test
     void getGroupEvents() {
-        //CreateGroupEvent test1 = new CreateGroupEvent(uuidFromInt(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L);
-        //CreateGroupEvent test2 = new CreateGroupEvent(uuidFromInt(1), "test2", null, GroupType.SIMPLE, Visibility.PUBLIC, 10L);
-
         eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
                              createPublicGroupEvent(uuidMock(1)),
                              createPrivateGroupEvent(uuidMock(2)));
@@ -109,14 +102,8 @@ class GroupServiceTest {
 
     @Test
     void getAllGroupWithVisibilityPublicTestCreateAndDeleteSameGroup() {
-        //CreateGroupEvent test1 = new CreateGroupEvent(uuidFromInt(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L);
-        //DeleteGroupEvent test2 = new DeleteGroupEvent(uuidFromInt(0), "test1");
         Event test1 = createPublicGroupEvent(uuidMock(0));
         Event test2 = deleteGroupEvent(uuidMock(0));
-
-        //Group group = new Group();
-        //test1.apply(group);
-        //test2.apply(group);
 
         //TODO: Hier projectEventlist()?
         Group group = TestBuilder.apply(test1, test2);
@@ -127,11 +114,6 @@ class GroupServiceTest {
 
     @Test
     void getAllGroupWithVisibilityPublicTestGroupPublic() {
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        //eventService.saveEvent(new DeleteGroupEvent(uuidFromInt(0), "test1"));
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        //eventService.saveEvent(new UpdateRoleEvent(uuidFromInt(1), "test2", Role.MEMBER)); //Wofür ist das
-
         eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
                              deleteGroupEvent(uuidMock(0)),
                              createPublicGroupEvent());
@@ -141,14 +123,6 @@ class GroupServiceTest {
 
     @Test
     void getAllGroupWithVisibilityPublicTestAddSomeEvents() {
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        //eventService.saveEvent(new DeleteGroupEvent(uuidFromInt(0), "test1"));
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        //eventService.saveEvent(new UpdateRoleEvent(uuidFromInt(1), "test2", Role.MEMBER)); // Wofür?
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(2), "test3", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(3), "test4", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(4), "test5", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-
         eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
                              deleteGroupEvent(uuidMock(0)),
                              createPublicGroupEvent(),
@@ -161,16 +135,10 @@ class GroupServiceTest {
 
     @Test
     void getAllGroupWithVisibilityPublic_UserInGroup() {
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        //eventService.saveEvent(new AddUserEvent(uuidFromInt(0), "test1", "test", "test", "test@test"));
-
         eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
                              addUserEvent(uuidMock(0), "kobold"),
                              createPrivateGroupEvent(),
                              createPublicGroupEvent());
-
-        //Das kommt glaube ich eher in einen Test für die Projektion
-        //assertThat(groupService.getAllGroupWithVisibilityPublic("test2").get(0).getMembers().size()).isEqualTo(1);
 
         assertThat(groupService.getAllGroupWithVisibilityPublic("kobold")).hasSize(1);
         assertThat(groupService.getAllGroupWithVisibilityPublic("peter")).hasSize(2);
@@ -178,13 +146,6 @@ class GroupServiceTest {
 
     @Test
     void getAllLecturesWithVisibilityPublic() {
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(1), "test2", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        //eventService.saveEvent(new UpdateRoleEvent(uuidFromInt(1), "test2", Role.MEMBER)); // Hä
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(2), "test3", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(3), "test4", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(4), "test5", null, GroupType.LECTURE, Visibility.PUBLIC, 10L));
-
         eventService.saveAll(createLectureEvent(),
                              createPublicGroupEvent(),
                              createLectureEvent(),
@@ -196,18 +157,11 @@ class GroupServiceTest {
 
     @Test
     void findGroupWith_UserMember_AllGroups() {
-        //eventService.saveEvent(new CreateGroupEvent(uuidFromInt(0), "test1", null, GroupType.SIMPLE, Visibility.PUBLIC, 20L));
-        //eventService.saveEvent(new AddUserEvent(uuidFromInt(0), "test1", "test", "test", "test@test"));
-        //eventService.saveEvent(new UpdateGroupTitleEvent(uuidFromInt(0), "test1", "TestGroup"));
-        //eventService.saveEvent(new UpdateGroupDescriptionEvent(uuidFromInt(0), "test1", "TestDescription"));
-        //eventService.saveEvent(new UpdateRoleEvent(uuidFromInt(0), "test1", Role.MEMBER));
-
         eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
                              addUserEvent(uuidMock(0), "jens"),
                              updateGroupTitleEvent(uuidMock(0)),
                              updateGroupDescriptionEvent(uuidMock(0)));
 
-        //assertThat(groupService.findGroupWith("T", new Account("jens", "a@A", "test", "peter", "mueller", null)).size()).isEqualTo(1);
         assertThat(groupService.findGroupWith("", account("jens"))).isEmpty();
     }
 

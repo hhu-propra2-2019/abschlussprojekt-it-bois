@@ -1,6 +1,5 @@
 package mops.gruppen2.domain.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.Group;
@@ -13,7 +12,6 @@ import java.util.UUID;
  * Aktualisiert die Gruppenrolle eines Teilnehmers.
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor // For Jackson
 public class UpdateRoleEvent extends Event {
 
@@ -26,12 +24,12 @@ public class UpdateRoleEvent extends Event {
 
     @Override
     protected void applyEvent(Group group) throws UserNotFoundException {
-        if (group.getRoles().containsKey(this.userId)) {
-            group.getRoles().put(this.userId, this.newRole);
+        if (group.getRoles().containsKey(userId)) {
+            group.getRoles().put(userId, newRole);
             return;
         }
 
-        throw new UserNotFoundException(this.getClass().toString());
+        throw new UserNotFoundException(getClass().toString());
     }
 
 }

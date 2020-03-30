@@ -1,10 +1,9 @@
 package mops.gruppen2.domain.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.exception.NoValueException;
+import mops.gruppen2.domain.exception.BadParameterException;
 
 import java.util.UUID;
 
@@ -12,7 +11,6 @@ import java.util.UUID;
  * Ändert nur den Gruppentitel.
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor // For Jackson
 public class UpdateGroupTitleEvent extends Event {
 
@@ -26,7 +24,7 @@ public class UpdateGroupTitleEvent extends Event {
     @Override
     protected void applyEvent(Group group) {
         if (newGroupTitle.isEmpty()) {
-            throw new NoValueException(getClass().toString());
+            throw new BadParameterException("Der Titel ist leer.");
         }
 
         group.setTitle(newGroupTitle);
