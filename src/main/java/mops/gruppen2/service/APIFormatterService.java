@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class APIFormatterService {
+public final class APIFormatterService {
+
+    private APIFormatterService() {}
 
     public static GroupRequestWrapper wrap(Long status, List<Group> groupList) {
         return new GroupRequestWrapper(status, groupList);

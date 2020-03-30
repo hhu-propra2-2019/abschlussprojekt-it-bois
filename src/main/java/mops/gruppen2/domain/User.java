@@ -15,4 +15,11 @@ public class User {
     private String givenname;
     private String familyname;
     private String email;
+
+    public User(Account account) {
+        id = account.getName();
+        givenname = account.getGivenname();
+        familyname = account.getFamilyname();
+        email = account.getEmail();
+    }
 }
