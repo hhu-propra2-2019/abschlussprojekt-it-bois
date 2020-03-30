@@ -45,13 +45,11 @@ class ControllerServiceTest {
     EventRepository eventRepository;
     GroupService groupService;
     @Autowired
-    JsonService jsonService;
-    @Autowired
     InviteService inviteService;
 
     @BeforeEach
     void setUp() {
-        eventService = new EventService(jsonService, eventRepository);
+        eventService = new EventService(eventRepository);
         groupService = new GroupService(eventService, eventRepository);
         userService = new UserService(groupService, eventService);
         validationService = new ValidationService(userService, groupService);

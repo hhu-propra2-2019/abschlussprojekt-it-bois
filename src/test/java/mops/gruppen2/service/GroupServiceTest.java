@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ import static mops.gruppen2.TestBuilder.createPublicGroupEvent;
 import static mops.gruppen2.TestBuilder.deleteGroupEvent;
 import static mops.gruppen2.TestBuilder.updateGroupDescriptionEvent;
 import static mops.gruppen2.TestBuilder.updateGroupTitleEvent;
-import static mops.gruppen2.TestBuilder.uuidFromInt;
+import static mops.gruppen2.TestBuilder.uuidMock;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -44,11 +45,15 @@ class GroupServiceTest {
     @Autowired
     private EventService eventService;
     private GroupService groupService;
+    @Autowired
+    private JdbcTemplate template;
 
     @BeforeEach
     void setUp() {
         groupService = new GroupService(eventService, eventRepository);
         eventRepository.deleteAll();
+        //noinspection SqlResolve
+        template.execute("ALTER TABLE event ALTER COLUMN event_id RESTART WITH 1");
     }
 
     //TODO: Wofür ist dieser Test?
@@ -84,21 +89,21 @@ class GroupServiceTest {
 
     @Test
     void getGroupEvents() {
-        eventService.saveAll(createPublicGroupEvent(uuidFromInt(0)),
-                             createPublicGroupEvent(uuidFromInt(1)),
-                             createPrivateGroupEvent(uuidFromInt(2)));
+        eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
+                             createPublicGroupEvent(uuidMock(1)),
+                             createPrivateGroupEvent(uuidMock(2)));
 
-        List<UUID> groupIds = Arrays.asList(uuidFromInt(0), uuidFromInt(1));
+        List<UUID> groupIds = Arrays.asList(uuidMock(0), uuidMock(1));
 
         assertThat(groupService.getGroupEvents(groupIds)).hasSize(2);
-        assertThat(groupService.getGroupEvents(groupIds).get(0).getGroupId()).isEqualTo(uuidFromInt(0));
-        assertThat(groupService.getGroupEvents(groupIds).get(1).getGroupId()).isEqualTo(uuidFromInt(1));
+        assertThat(groupService.getGroupEvents(groupIds).get(0).getGroupId()).isEqualTo(uuidMock(0));
+        assertThat(groupService.getGroupEvents(groupIds).get(1).getGroupId()).isEqualTo(uuidMock(1));
     }
 
     @Test
     void getAllGroupWithVisibilityPublicTestCreateAndDeleteSameGroup() {
-        Event test1 = createPublicGroupEvent(uuidFromInt(0));
-        Event test2 = deleteGroupEvent(uuidFromInt(0));
+        Event test1 = createPublicGroupEvent(uuidMock(0));
+        Event test2 = deleteGroupEvent(uuidMock(0));
 
         //TODO: Hier projectEventlist()?
         Group group = TestBuilder.apply(test1, test2);
@@ -109,8 +114,8 @@ class GroupServiceTest {
 
     @Test
     void getAllGroupWithVisibilityPublicTestGroupPublic() {
-        eventService.saveAll(createPublicGroupEvent(uuidFromInt(0)),
-                             deleteGroupEvent(uuidFromInt(0)),
+        eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
+                             deleteGroupEvent(uuidMock(0)),
                              createPublicGroupEvent());
 
         assertThat(groupService.getAllGroupWithVisibilityPublic("test1").size()).isEqualTo(1);
@@ -118,8 +123,8 @@ class GroupServiceTest {
 
     @Test
     void getAllGroupWithVisibilityPublicTestAddSomeEvents() {
-        eventService.saveAll(createPublicGroupEvent(uuidFromInt(0)),
-                             deleteGroupEvent(uuidFromInt(0)),
+        eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
+                             deleteGroupEvent(uuidMock(0)),
                              createPublicGroupEvent(),
                              createPublicGroupEvent(),
                              createPublicGroupEvent(),
@@ -130,8 +135,8 @@ class GroupServiceTest {
 
     @Test
     void getAllGroupWithVisibilityPublic_UserInGroup() {
-        eventService.saveAll(createPublicGroupEvent(uuidFromInt(0)),
-                             addUserEvent(uuidFromInt(0), "kobold"),
+        eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
+                             addUserEvent(uuidMock(0), "kobold"),
                              createPrivateGroupEvent(),
                              createPublicGroupEvent());
 
@@ -152,10 +157,10 @@ class GroupServiceTest {
 
     @Test
     void findGroupWith_UserMember_AllGroups() {
-        eventService.saveAll(createPublicGroupEvent(uuidFromInt(0)),
-                             addUserEvent(uuidFromInt(0), "jens"),
-                             updateGroupTitleEvent(uuidFromInt(0)),
-                             updateGroupDescriptionEvent(uuidFromInt(0)));
+        eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
+                             addUserEvent(uuidMock(0), "jens"),
+                             updateGroupTitleEvent(uuidMock(0)),
+                             updateGroupDescriptionEvent(uuidMock(0)));
 
         assertThat(groupService.findGroupWith("", account("jens"))).isEmpty();
     }
@@ -170,12 +175,12 @@ class GroupServiceTest {
 
     @Test
     void findGroupWith_FilterGroups() {
-        eventService.saveAll(createPublicGroupEvent(uuidFromInt(0)),
-                             updateGroupTitleEvent(uuidFromInt(0), "KK"),
-                             updateGroupDescriptionEvent(uuidFromInt(0), "ABCDE"),
-                             createPublicGroupEvent(uuidFromInt(1)),
-                             updateGroupTitleEvent(uuidFromInt(1), "ABCDEFG"),
-                             updateGroupDescriptionEvent(uuidFromInt(1), "KK"),
+        eventService.saveAll(createPublicGroupEvent(uuidMock(0)),
+                             updateGroupTitleEvent(uuidMock(0), "KK"),
+                             updateGroupDescriptionEvent(uuidMock(0), "ABCDE"),
+                             createPublicGroupEvent(uuidMock(1)),
+                             updateGroupTitleEvent(uuidMock(1), "ABCDEFG"),
+                             updateGroupDescriptionEvent(uuidMock(1), "KK"),
                              createPrivateGroupEvent());
 
         assertThat(groupService.findGroupWith("A", account("jesus"))).hasSize(2);

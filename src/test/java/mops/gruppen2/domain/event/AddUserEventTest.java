@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static mops.gruppen2.TestBuilder.addUserEvent;
 import static mops.gruppen2.TestBuilder.apply;
 import static mops.gruppen2.TestBuilder.createPublicGroupEvent;
-import static mops.gruppen2.TestBuilder.uuidFromInt;
+import static mops.gruppen2.TestBuilder.uuidMock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -16,8 +16,8 @@ class AddUserEventTest {
 
     @Test
     void applyEvent() {
-        Event createEvent = createPublicGroupEvent(uuidFromInt(0));
-        Event addEvent = new AddUserEvent(uuidFromInt(0), "A", "Thomas", "Tom", "tho@mail.de");
+        Event createEvent = createPublicGroupEvent(uuidMock(0));
+        Event addEvent = new AddUserEvent(uuidMock(0), "A", "Thomas", "Tom", "tho@mail.de");
 
         Group group = apply(createEvent, addEvent);
 
@@ -29,10 +29,10 @@ class AddUserEventTest {
 
     @Test
     void applyEvent_userAlreadyExists() {
-        Event createEvent = createPublicGroupEvent(uuidFromInt(0));
-        Event addEventA = addUserEvent(uuidFromInt(0), "A");
-        Event addEventB = addUserEvent(uuidFromInt(0), "B");
-        Event addEventC = addUserEvent(uuidFromInt(0), "A");
+        Event createEvent = createPublicGroupEvent(uuidMock(0));
+        Event addEventA = addUserEvent(uuidMock(0), "A");
+        Event addEventB = addUserEvent(uuidMock(0), "B");
+        Event addEventC = addUserEvent(uuidMock(0), "A");
 
         Group group = apply(createEvent, addEventA, addEventB);
 
@@ -43,11 +43,11 @@ class AddUserEventTest {
 
     @Test
     void applyEvent_groupFull() {
-        Event createEvent = createPublicGroupEvent(uuidFromInt(0));
-        Event maxSizeEvent = new UpdateUserMaxEvent(uuidFromInt(0), "A", 2L);
-        Event addEventA = addUserEvent(uuidFromInt(0), "A");
-        Event addEventB = addUserEvent(uuidFromInt(0), "B");
-        Event addEventC = addUserEvent(uuidFromInt(0), "C");
+        Event createEvent = createPublicGroupEvent(uuidMock(0));
+        Event maxSizeEvent = new UpdateUserMaxEvent(uuidMock(0), "A", 2L);
+        Event addEventA = addUserEvent(uuidMock(0), "A");
+        Event addEventB = addUserEvent(uuidMock(0), "B");
+        Event addEventC = addUserEvent(uuidMock(0), "C");
 
         Group group = apply(createEvent, maxSizeEvent, addEventA, addEventB);
 

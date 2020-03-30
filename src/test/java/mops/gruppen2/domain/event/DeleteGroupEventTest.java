@@ -6,20 +6,20 @@ import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Visibility;
 import org.junit.jupiter.api.Test;
 
-import static mops.gruppen2.TestBuilder.uuidFromInt;
+import static mops.gruppen2.TestBuilder.uuidMock;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DeleteGroupEventTest {
 
     @Test
     void applyEvent() {
-        Event createEvent = new CreateGroupEvent(uuidFromInt(0),
+        Event createEvent = new CreateGroupEvent(uuidMock(0),
                                                  "A",
-                                                 uuidFromInt(1),
+                                                 uuidMock(1),
                                                  GroupType.SIMPLE,
                                                  Visibility.PUBLIC,
                                                  100L);
-        Event deleteEvent = new DeleteGroupEvent(uuidFromInt(0), "A");
+        Event deleteEvent = new DeleteGroupEvent(uuidMock(0), "A");
 
         Group group = TestBuilder.apply(createEvent, deleteEvent);
 
@@ -27,7 +27,7 @@ class DeleteGroupEventTest {
         assertThat(group.getType()).isEqualTo(null);
         assertThat(group.getVisibility()).isEqualTo(null);
         assertThat(group.getUserMaximum()).isEqualTo(0);
-        assertThat(group.getId()).isEqualTo(uuidFromInt(0));
+        assertThat(group.getId()).isEqualTo(uuidMock(0));
         assertThat(group.getParent()).isEqualTo(null);
     }
 }

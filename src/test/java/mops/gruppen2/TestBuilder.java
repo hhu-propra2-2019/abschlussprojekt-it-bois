@@ -55,10 +55,11 @@ public class TestBuilder {
      *
      * @return UUID
      */
-    public static UUID uuidFromInt(int id) {
+    public static UUID uuidMock(int id) {
+        String idString = String.valueOf(Math.abs(id + 1));
         return UUID.fromString("00000000-0000-0000-0000-"
-                               + "0".repeat(11 - String.valueOf(id).length())
-                               + id);
+                               + "0".repeat(11 - idString.length())
+                               + idString);
     }
 
     /**

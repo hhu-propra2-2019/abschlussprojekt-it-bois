@@ -6,7 +6,7 @@ import mops.gruppen2.domain.exception.BadParameterException;
 import org.junit.jupiter.api.Test;
 
 import static mops.gruppen2.TestBuilder.createPublicGroupEvent;
-import static mops.gruppen2.TestBuilder.uuidFromInt;
+import static mops.gruppen2.TestBuilder.uuidMock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -14,8 +14,8 @@ class UpdateGroupDescriptionEventTest {
 
     @Test
     void applyEvent() {
-        Event createEvent = createPublicGroupEvent(uuidFromInt(0));
-        Event updateEvent = new UpdateGroupDescriptionEvent(uuidFromInt(0), "A", "desc.");
+        Event createEvent = createPublicGroupEvent(uuidMock(0));
+        Event updateEvent = new UpdateGroupDescriptionEvent(uuidMock(0), "A", "desc.");
 
         Group group = TestBuilder.apply(createEvent, updateEvent);
 
@@ -24,9 +24,9 @@ class UpdateGroupDescriptionEventTest {
 
     @Test
     void applyEvent_badDescription() {
-        Event createEvent = createPublicGroupEvent(uuidFromInt(0));
-        Event updateEventA = new UpdateGroupDescriptionEvent(uuidFromInt(0), "A", "");
-        Event updateEventB = new UpdateGroupDescriptionEvent(uuidFromInt(0), "A", "  ");
+        Event createEvent = createPublicGroupEvent(uuidMock(0));
+        Event updateEventA = new UpdateGroupDescriptionEvent(uuidMock(0), "A", "");
+        Event updateEventB = new UpdateGroupDescriptionEvent(uuidMock(0), "A", "  ");
 
         Group group = TestBuilder.apply(createEvent);
 
