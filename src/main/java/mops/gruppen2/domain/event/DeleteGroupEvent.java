@@ -23,5 +23,6 @@ public class DeleteGroupEvent extends Event {
         group.setVisibility(null);
         group.setType(null);
         group.setParent(null);
+        group.setUserMaximum(0L);
     }
 }
