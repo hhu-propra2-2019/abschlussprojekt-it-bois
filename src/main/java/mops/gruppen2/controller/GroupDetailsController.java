@@ -4,6 +4,7 @@ import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.service.ControllerService;
 import mops.gruppen2.service.InviteService;
 import mops.gruppen2.service.KeyCloakService;
@@ -74,6 +75,8 @@ public class GroupDetailsController {
         model.addAttribute("roles", group.getRoles());
         model.addAttribute("user", user);
         model.addAttribute("admin", Role.ADMIN);
+        model.addAttribute("public", Visibility.PUBLIC);
+        model.addAttribute("private", Visibility.PRIVATE);
 
         if (validationService.checkIfAdmin(group, user)) {
             model.addAttribute("link", serverURL + "gruppen2/acceptinvite/" + inviteService.getLinkByGroupId(group.getId()));
@@ -158,6 +161,8 @@ public class GroupDetailsController {
         User user = new User(userId, "", "", "");
 
         validationService.throwIfNoAdmin(group, principle);
+
+        //TODO: checkIfAdmin checkt nicht, dass die rolle geändert wurde. oder die rolle wird nicht geändert
 
         controllerService.changeRole(account, user, group);
 
