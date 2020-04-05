@@ -1,4 +1,4 @@
-package mops.gruppen2.security;
+package mops.gruppen2.config;
 
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
@@ -33,8 +33,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        KeycloakAuthenticationProvider keycloakAuthenticationProvider
-                = keycloakAuthenticationProvider();
+        KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
         keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
@@ -42,28 +41,26 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Bean
     @Override
     protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new RegisterSessionAuthenticationStrategy(
-                new SessionRegistryImpl());
-    }
-
-    @Bean
-    @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public AccessToken getAccessToken() {
-        HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder
-                        .currentRequestAttributes()).getRequest();
-        return ((KeycloakPrincipal) request.getUserPrincipal())
-                .getKeycloakSecurityContext().getToken();
+        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .antMatchers("/actuator/**")
-                .hasRole("monitoring")
-                .anyRequest()
-                .permitAll();
+            .antMatchers("/actuator/**")
+            .hasRole("monitoring")
+            .anyRequest()
+            .permitAll();
+    }
+
+    @Bean
+    @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public AccessToken getAccessToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                .currentRequestAttributes()).getRequest();
+        return ((KeycloakPrincipal) request.getUserPrincipal())
+                .getKeycloakSecurityContext().getToken();
     }
 
     /**

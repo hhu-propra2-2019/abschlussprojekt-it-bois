@@ -22,8 +22,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Ein Beispiel für eine API mit Swagger.
+ * Api zum Datenabgleich mit Gruppenfindung.
  */
+//TODO: API-Service?
 @RestController
 @RequestMapping("/gruppen2/api")
 public class APIController {
@@ -38,20 +39,20 @@ public class APIController {
         this.userService = userService;
     }
 
-    @GetMapping("/updateGroups/{status}")
+    @GetMapping("/updateGroups/{lastEventId}")
     @Secured("ROLE_api_user")
-    @ApiOperation("Gibt alle Gruppen zurück in denen sich etwas geändert hat")
-    public GroupRequestWrapper updateGroup(@ApiParam("Letzter Status des Anfragestellers") @PathVariable Long status) throws EventException {
-        List<Event> events = eventService.getNewEvents(status);
+    @ApiOperation("Gibt alle Gruppen zurück, in denen sich etwas geändert hat")
+    public GroupRequestWrapper updateGroups(@ApiParam("Letzter Status des Anfragestellers") @PathVariable Long lastEventId) throws EventException {
+        List<Event> events = eventService.getNewEvents(lastEventId);
 
-        return APIFormatterService.wrap(eventService.getMaxEvent_id(), groupService.projectEventList(events));
+        return APIFormatterService.wrap(eventService.getMaxEventId(), groupService.projectEventList(events));
     }
 
-    @GetMapping("/getGroupIdsOfUser/{teilnehmer}")
+    @GetMapping("/getGroupIdsOfUser/{userId}")
     @Secured("ROLE_api_user")
-    @ApiOperation("Gibt alle Gruppen zurück in denen sich ein Teilnehmer befindet")
-    public List<String> getGroupsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String teilnehmer) {
-        return userService.getUserGroups(teilnehmer).stream()
+    @ApiOperation("Gibt alle Gruppen zurück, in denen sich ein Teilnehmer befindet")
+    public List<String> getGroupIdsOfUser(@ApiParam("Teilnehmer dessen groupIds zurückgegeben werden sollen") @PathVariable String userId) {
+        return userService.getUserGroups(userId).stream()
                           .map(group -> group.getId().toString())
                           .collect(Collectors.toList());
     }
@@ -59,9 +60,13 @@ public class APIController {
     @GetMapping("/getGroup/{groupId}")
     @Secured("ROLE_api_user")
     @ApiOperation("Gibt die Gruppe mit der als Parameter mitgegebenden groupId zurück")
-    public Group getGroupFromId(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable String groupId) throws EventException {
+    public Group getGroupById(@ApiParam("GruppenId der gefordeten Gruppe") @PathVariable String groupId) throws EventException {
         List<Event> eventList = eventService.getEventsOfGroup(UUID.fromString(groupId));
         List<Group> groups = groupService.projectEventList(eventList);
+
+        if (groups.isEmpty()) {
+            return null;
+        }
 
         return groups.get(0);
     }

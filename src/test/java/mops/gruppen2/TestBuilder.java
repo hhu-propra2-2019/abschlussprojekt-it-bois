@@ -1,6 +1,7 @@
 package mops.gruppen2;
 
 import com.github.javafaker.Faker;
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Role;
@@ -13,7 +14,6 @@ import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.event.UpdateGroupDescriptionEvent;
 import mops.gruppen2.domain.event.UpdateGroupTitleEvent;
 import mops.gruppen2.domain.event.UpdateRoleEvent;
-import mops.gruppen2.security.Account;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,11 +29,11 @@ public class TestBuilder {
 
     public static Account account(String name) {
         return new Account(name,
-                "",
-                "",
-                "",
-                "",
-                null);
+                           "",
+                           "",
+                           "",
+                           "",
+                           null);
     }
 
     public static Group apply(Group group, Event... events) {
@@ -52,12 +52,14 @@ public class TestBuilder {
      * Baut eine UUID.
      *
      * @param id Integer id
+     *
      * @return UUID
      */
-    public static UUID uuidFromInt(int id) {
+    public static UUID uuidMock(int id) {
+        String idString = String.valueOf(Math.abs(id + 1));
         return UUID.fromString("00000000-0000-0000-0000-"
-                + "0".repeat(11 - String.valueOf(id).length())
-                + id);
+                               + "0".repeat(11 - idString.length())
+                               + idString);
     }
 
     /**
@@ -65,22 +67,23 @@ public class TestBuilder {
      *
      * @param count       Gruppenanzahl
      * @param membercount Mitgliederanzahl pro Gruppe
+     *
      * @return Eventliste
      */
     public static List<Event> completePublicGroups(int count, int membercount) {
         return IntStream.range(0, count)
-                .parallel()
-                .mapToObj(i -> completePublicGroup(membercount))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                        .parallel()
+                        .mapToObj(i -> completePublicGroup(membercount))
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
     }
 
     public static List<Event> completePrivateGroups(int count, int membercount) {
         return IntStream.range(0, count)
-                .parallel()
-                .mapToObj(i -> completePrivateGroup(membercount))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                        .parallel()
+                        .mapToObj(i -> completePrivateGroup(membercount))
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
     }
 
     public static List<Event> completePublicGroup(int membercount) {
@@ -119,29 +122,30 @@ public class TestBuilder {
      * Generiert mehrere CreateGroupEvents, 1 <= groupId <= count.
      *
      * @param count Anzahl der verschiedenen Gruppen
+     *
      * @return Eventliste
      */
     public static List<Event> createPublicGroupEvents(int count) {
         return IntStream.range(0, count)
-                .parallel()
-                .mapToObj(i -> createPublicGroupEvent())
-                .collect(Collectors.toList());
+                        .parallel()
+                        .mapToObj(i -> createPublicGroupEvent())
+                        .collect(Collectors.toList());
     }
 
     public static List<Event> createPrivateGroupEvents(int count) {
         return IntStream.range(0, count)
-                .parallel()
-                .mapToObj(i -> createPublicGroupEvent())
-                .collect(Collectors.toList());
+                        .parallel()
+                        .mapToObj(i -> createPublicGroupEvent())
+                        .collect(Collectors.toList());
     }
 
     public static List<Event> createMixedGroupEvents(int count) {
         return IntStream.range(0, count)
-                .parallel()
-                .mapToObj(i -> faker.random().nextInt(0, 1) > 0.5
-                        ? createPublicGroupEvent()
-                        : createPrivateGroupEvent())
-                .collect(Collectors.toList());
+                        .parallel()
+                        .mapToObj(i -> faker.random().nextInt(0, 1) > 0.5
+                                ? createPublicGroupEvent()
+                                : createPrivateGroupEvent())
+                        .collect(Collectors.toList());
     }
 
     public static Event createPrivateGroupEvent(UUID groupId) {
@@ -191,13 +195,14 @@ public class TestBuilder {
      *
      * @param count   Anzahl der Mitglieder
      * @param groupId Gruppe, zu welcher geaddet wird
+     *
      * @return Eventliste
      */
     public static List<Event> addUserEvents(int count, UUID groupId) {
         return IntStream.range(0, count)
-                .parallel()
-                .mapToObj(i -> addUserEvent(groupId, String.valueOf(i)))
-                .collect(Collectors.toList());
+                        .parallel()
+                        .mapToObj(i -> addUserEvent(groupId, String.valueOf(i)))
+                        .collect(Collectors.toList());
     }
 
     public static Event addUserEvent(UUID groupId, String userId) {
@@ -221,8 +226,8 @@ public class TestBuilder {
     public static List<Event> deleteUserEvents(int count, List<Event> eventList) {
         List<Event> removeEvents = new ArrayList<>();
         List<Event> shuffle = eventList.parallelStream()
-                .filter(event -> event instanceof AddUserEvent)
-                .collect(Collectors.toList());
+                                       .filter(event -> event instanceof AddUserEvent)
+                                       .collect(Collectors.toList());
 
         Collections.shuffle(shuffle);
 
@@ -241,12 +246,13 @@ public class TestBuilder {
      * Erzeugt mehrere DeleteUserEvents, sodass eine Gruppe komplett geleert wird.
      *
      * @param group Gruppe welche geleert wird
+     *
      * @return Eventliste
      */
     public static List<Event> deleteUserEvents(Group group) {
         return group.getMembers().parallelStream()
-                .map(user -> deleteUserEvent(group.getId(), user.getId()))
-                .collect(Collectors.toList());
+                    .map(user -> deleteUserEvent(group.getId(), user.getId()))
+                    .collect(Collectors.toList());
     }
 
     public static Event deleteUserEvent(UUID groupId, String userId) {

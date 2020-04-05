@@ -56,7 +56,8 @@
                                     <input class="custom-file-input" id="file" th:name="file"
                                            type="file">
                                     <label class="custom-file-label" for="file">CSV Datei von
-                                        Mitgliedern hochladen</label>
+                                                                                Mitgliedern
+                                                                                hochladen</label>
                                 </div>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary"
@@ -99,7 +100,7 @@
                         </thead>
                         <tbody class="table-striped">
                         <tr th:each="member : ${group.getMembers()}">
-                            <th th:text="${member.getId()}"></th>
+                            <th th:text="${#strings.abbreviate(member.getGivenname(), 15)  + ' ' + member.getFamilyname().substring(0, 1) + '.'}"></th>
                             <td>
                                 <span th:if='${group.getRoles().get(member.getId()) != admin}'>Mitglied</span>
                                 <span th:if='${group.getRoles().get(member.getId()) == admin}'>Admin</span>
@@ -113,8 +114,7 @@
                                         <input th:name="user_id" th:value="${member.getId()}"
                                                type="hidden">
                                         <button class="btn btn-warning btn-sm" type="submit"
-                                                style="margin: 5px">Rolle
-                                            ändern
+                                                style="margin: 5px;">Rolle ändern
                                         </button>
                                     </form>
                                     <form method="post"
@@ -134,7 +134,9 @@
                         </tbody>
                     </table>
                     <form method="get" th:action="@{/gruppen2/details/{id}(id=${group.getId()})}">
-                        <button class="btn btn-primary" style="background: #52a1eb; border-style: none" type="submit">Fertig</button>
+                        <button class="btn btn-primary" style="background: #52a1eb; border-style: none" type="submit">
+                            Fertig
+                        </button>
                     </form>
                 </div>
             </div>

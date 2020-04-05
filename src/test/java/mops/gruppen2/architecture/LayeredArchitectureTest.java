@@ -14,18 +14,17 @@ public class LayeredArchitectureTest {
             .layer("Domain").definedBy("..domain..")
             .layer("Service").definedBy("..service")
             .layer("Controller").definedBy("..controller..")
-            .layer("Repository").definedBy("..repository..")
-            .layer("Config").definedBy("..config..");
+            .layer("Repository").definedBy("..repository..");
 
     @ArchTest
     public static final ArchRule domainLayerShouldOnlyBeAccessedByServiceAndControllerLayer = layeredArchitecture
             .whereLayer("Domain")
-            .mayOnlyBeAccessedByLayers("Service", "Controller", "Config");
+            .mayOnlyBeAccessedByLayers("Service", "Controller");
 
     @ArchTest
     public static final ArchRule serviceLayerShouldOnlyBeAccessedByControllerLayer = layeredArchitecture
             .whereLayer("Service")
-            .mayOnlyBeAccessedByLayers("Controller", "Config");
+            .mayOnlyBeAccessedByLayers("Controller");
 
     @ArchTest
     public static final ArchRule repositoryLayerShouldOnlyBeAccessedByServiceLayer = layeredArchitecture

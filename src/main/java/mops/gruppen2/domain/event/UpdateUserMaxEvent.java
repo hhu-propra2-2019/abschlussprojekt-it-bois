@@ -1,19 +1,18 @@
 package mops.gruppen2.domain.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.exception.BadParameterException;
 import mops.gruppen2.domain.exception.EventException;
 
 import java.util.UUID;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserMaxEvent extends Event {
 
-    private  Long userMaximum;
+    private Long userMaximum;
 
     public UpdateUserMaxEvent(UUID groupId, String userId, Long userMaximum) {
         super(groupId, userId);
@@ -22,6 +21,10 @@ public class UpdateUserMaxEvent extends Event {
 
     @Override
     protected void applyEvent(Group group) throws EventException {
-        group.setUserMaximum(this.userMaximum);
+        if (userMaximum <= 0 || userMaximum < group.getMembers().size()) {
+            throw new BadParameterException("Usermaximum zu klein.");
+        }
+
+        group.setUserMaximum(userMaximum);
     }
 }

@@ -23,11 +23,19 @@ public class UserService {
         this.eventService = eventService;
     }
 
+    @Cacheable("groups")
+    public List<Group> getUserGroups(String userId) throws EventException {
+        return getUserGroups(new User(userId, "", "", ""));
+    }
+
     /**
      * Gibt eine Liste aus Gruppen zurück, in denen sich der übergebene User befindet.
+     *
      * @param user Der User
+     *
      * @return Liste aus Gruppen
      */
+    //TODO: Nur AddUserEvents + DeleteUserEvents betrachten
     @Cacheable("groups")
     public List<Group> getUserGroups(User user) {
         List<UUID> groupIds = eventService.findGroupIdsByUser(user.getId());
@@ -45,15 +53,13 @@ public class UserService {
         return newGroups;
     }
 
-    @Cacheable("groups")
-    public List<Group> getUserGroups(String userId) throws EventException {
-        return getUserGroups(new User(userId, null, null, null));
-    }
-
     /**
      * Gibt die Gruppe zurück, die zu der übergebenen Id passt.
+     *
      * @param groupId Die Id der gesuchten Gruppe
+     *
      * @return Die gesuchte Gruppe
+     *
      * @throws EventException Wenn die Gruppe nicht gefunden wird
      */
     public Group getGroupById(UUID groupId) throws EventException {

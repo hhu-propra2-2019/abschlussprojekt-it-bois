@@ -1,10 +1,17 @@
 = Gruppenbildung
 
-Das System bietet eine zentrale Oberfläche zum erstellen und verwalten von Gruppen. Diese kann von anderen Systemen eingebunden werden, oder von Studierenden direkt aufgerufen werden. Außerdem wird eine API bereitgestellt für die Nutzung in anderen Systemen. Man kann Private und Öffentliche Gruppen erstellen. Private Gruppen kann man nur über einen Beitrittslink beitreten. Öffentliche Gruppen kann man ohne diesen beitreten. Man kann nach Öffentlichen Gruppen über eine Suchfunktion suchen.
+Das System bietet eine zentrale Oberfläche zum erstellen und verwalten von Gruppen.
+Diese kann von anderen Systemen eingebunden werden, oder von Studierenden direkt aufgerufen werden.
+Außerdem wird eine API bereitgestellt für die Nutzung in anderen Systemen.
+Man kann Private und Öffentliche Gruppen erstellen.
+Private Gruppen kann man nur über einen Beitrittslink beitreten.
+Öffentliche Gruppen kann man ohne diesen beitreten.
+Man kann nach Öffentlichen Gruppen über eine Suchfunktion suchen.
 
 === Problem
 
-Die meisten Teilsysteme von MOPS arbeiten mit Gruppierungen von Studenten: Materialien für Lerngruppen/Veranstaltungen, Gruppenportfolios, Gruppenabstimmungen etc. Jedes System müsste dementsprechend eine Gruppenverwaltung implementieren, was zeitaufwändig ist.
+Die meisten Teilsysteme von MOPS arbeiten mit Gruppierungen von Studenten: Materialien für Lerngruppen/Veranstaltungen, Gruppenportfolios, Gruppenabstimmungen etc.
+Jedes System müsste dementsprechend eine Gruppenverwaltung implementieren, was zeitaufwändig ist.
 
 === Ziele
 
@@ -36,7 +43,8 @@ Die Gruppenverwaltung wird bieten:
 
 Über *Mitglied* (interne Rolle):
 
-* Mitglieder haben keine Rechte in der Gruppe. Sie können nur eigenständig aus der Gruppe austreten.
+* Mitglieder haben keine Rechte in der Gruppe.
+Sie können nur eigenständig aus der Gruppe austreten.
 
 Für *Organisatoren* (keycloak Rolle):
 
@@ -62,3 +70,6 @@ Für *Studenten* (keycloak Rolle) :
 === Verwendung
 
 Die Anwendung kann mit `docker-compse up` im Wurzelverzeichnis gestartet werden, eine API-Doku befindet sich im Dokumentation-Ordner (das swagger-zip).
+
+Der Import über CSV erfolgt nach dem Format `id,givenname,familyname,email`
+

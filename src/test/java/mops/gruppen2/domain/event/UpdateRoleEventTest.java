@@ -1,38 +1,39 @@
 package mops.gruppen2.domain.event;
 
-import mops.gruppen2.TestBuilder;
 import mops.gruppen2.domain.Group;
+import mops.gruppen2.domain.Role;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static mops.gruppen2.TestBuilder.addUserEvent;
+import static mops.gruppen2.TestBuilder.apply;
 import static mops.gruppen2.TestBuilder.createPublicGroupEvent;
 import static mops.gruppen2.TestBuilder.uuidMock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class DeleteUserEventTest {
+class UpdateRoleEventTest {
 
     @Test
     void applyEvent() {
         Event createEvent = createPublicGroupEvent(uuidMock(0));
         Event addEvent = addUserEvent(uuidMock(0), "A");
-        Event deleteEvent = new DeleteUserEvent(uuidMock(0), "A");
+        Event updateEvent = new UpdateRoleEvent(uuidMock(0), "A", Role.ADMIN);
 
-        Group group = TestBuilder.apply(createEvent, addEvent, deleteEvent);
+        Group group = apply(createEvent, addEvent, updateEvent);
 
-        assertThat(group.getMembers()).hasSize(0);
+        assertThat(group.getRoles().get("A")).isEqualTo(Role.ADMIN);
     }
 
     @Test
     void applyEvent_userNotFound() {
         Event createEvent = createPublicGroupEvent(uuidMock(0));
         Event addEvent = addUserEvent(uuidMock(0), "A");
-        Event deleteEvent = new DeleteUserEvent(uuidMock(0), "B");
+        Event updateEvent = new UpdateRoleEvent(uuidMock(0), "B", Role.ADMIN);
 
-        Group group = TestBuilder.apply(createEvent, addEvent);
+        Group group = apply(createEvent, addEvent);
 
-        assertThrows(UserNotFoundException.class, () -> deleteEvent.apply(group));
-        assertThat(group.getMembers()).hasSize(1);
+        assertThrows(UserNotFoundException.class, () -> updateEvent.apply(group));
+        assertThat(group.getRoles().get("A")).isEqualTo(Role.MEMBER);
     }
 }

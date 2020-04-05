@@ -1,14 +1,14 @@
 package mops.gruppen2.service;
 
 import mops.gruppen2.Gruppen2Application;
-import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
-import mops.gruppen2.domain.Role;
-import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.GroupType;
+import mops.gruppen2.domain.Role;
+import mops.gruppen2.domain.User;
+import mops.gruppen2.domain.Visibility;
 import mops.gruppen2.domain.exception.UserNotFoundException;
 import mops.gruppen2.repository.EventRepository;
-import mops.gruppen2.security.Account;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 @Rollback
 class ControllerServiceTest {
+
     Account account;
     Account account2;
     Account account3;
@@ -44,13 +45,11 @@ class ControllerServiceTest {
     EventRepository eventRepository;
     GroupService groupService;
     @Autowired
-    JsonService jsonService;
-    @Autowired
     InviteService inviteService;
 
     @BeforeEach
     void setUp() {
-        eventService = new EventService(jsonService, eventRepository);
+        eventService = new EventService(eventRepository);
         groupService = new GroupService(eventService, eventRepository);
         userService = new UserService(groupService, eventService);
         validationService = new ValidationService(userService, groupService);
@@ -136,7 +135,7 @@ class ControllerServiceTest {
     void createPublicGroupWithParentAndUnlimitedNumberTest() throws IOException {
         controllerService.createGroupAsOrga(account2, "test", "hi", null, null, true, null, null, null);
         List<Group> groups1 = userService.getUserGroups(new User(account2.getName(), account2.getGivenname(), account2.getFamilyname(), account2.getEmail()));
-        controllerService.createGroup(account, "test", "hi", null, true, true, null,groups1.get(0).getId());
+        controllerService.createGroup(account, "test", "hi", null, true, true, null, groups1.get(0).getId());
         List<Group> groups = userService.getUserGroups(new User(account.getName(), account.getGivenname(), account.getFamilyname(), account.getEmail()));
         testTitleAndDescription(groups.get(0).getTitle(), groups.get(0).getDescription());
         assertEquals(Visibility.PUBLIC, groups.get(0).getVisibility());

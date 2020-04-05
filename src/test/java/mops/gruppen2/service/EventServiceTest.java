@@ -5,26 +5,23 @@ import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static mops.gruppen2.TestBuilder.addUserEvent;
 import static mops.gruppen2.TestBuilder.addUserEvents;
-import static mops.gruppen2.TestBuilder.createPrivateGroupEvent;
 import static mops.gruppen2.TestBuilder.createPrivateGroupEvents;
 import static mops.gruppen2.TestBuilder.createPublicGroupEvent;
 import static mops.gruppen2.TestBuilder.createPublicGroupEvents;
-import static mops.gruppen2.TestBuilder.updateGroupDescriptionEvent;
-import static mops.gruppen2.TestBuilder.uuidFromInt;
+import static mops.gruppen2.TestBuilder.uuidMock;
 import static org.assertj.core.api.Assertions.assertThat;
 
-//TODO: Der ID autocounter wird nicht resettet -> Tests schlagen fehl beim nacheinanderausführen
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Gruppen2Application.class)
 @Transactional
@@ -33,14 +30,16 @@ class EventServiceTest {
 
     @Autowired
     private EventRepository eventRepository;
-    @Autowired
-    private JsonService jsonService;
     private EventService eventService;
+    @Autowired
+    private JdbcTemplate template;
 
     @BeforeEach
     void setUp() {
-        eventService = new EventService(jsonService, eventRepository);
+        eventService = new EventService(eventRepository);
         eventRepository.deleteAll();
+        //noinspection SqlResolve
+        template.execute("ALTER TABLE event ALTER COLUMN event_id RESTART WITH 1");
     }
 
     @Test
@@ -79,20 +78,20 @@ class EventServiceTest {
 
     @Test
     void getEventsOfGroup() {
-        eventService.saveAll(addUserEvents(10, uuidFromInt(0)),
-                             addUserEvents(5, uuidFromInt(1)));
+        eventService.saveAll(addUserEvents(10, uuidMock(0)),
+                             addUserEvents(5, uuidMock(1)));
 
-        assertThat(eventService.getEventsOfGroup(uuidFromInt(0))).hasSize(10);
-        assertThat(eventService.getEventsOfGroup(uuidFromInt(1))).hasSize(5);
+        assertThat(eventService.getEventsOfGroup(uuidMock(0))).hasSize(10);
+        assertThat(eventService.getEventsOfGroup(uuidMock(1))).hasSize(5);
     }
 
     @Test
     void findGroupIdsByUser() {
-        eventService.saveAll(addUserEvent(uuidFromInt(0), "A"),
-                             addUserEvent(uuidFromInt(1), "A"),
-                             addUserEvent(uuidFromInt(2), "A"),
-                             addUserEvent(uuidFromInt(3), "A"),
-                             addUserEvent(uuidFromInt(3), "B"));
+        eventService.saveAll(addUserEvent(uuidMock(0), "A"),
+                             addUserEvent(uuidMock(1), "A"),
+                             addUserEvent(uuidMock(2), "A"),
+                             addUserEvent(uuidMock(3), "A"),
+                             addUserEvent(uuidMock(3), "B"));
 
         assertThat(eventService.findGroupIdsByUser("A")).hasSize(4);
         assertThat(eventService.findGroupIdsByUser("B")).hasSize(1);

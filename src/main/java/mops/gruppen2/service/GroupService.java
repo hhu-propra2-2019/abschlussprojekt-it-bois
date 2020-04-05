@@ -1,5 +1,6 @@
 package mops.gruppen2.service;
 
+import mops.gruppen2.domain.Account;
 import mops.gruppen2.domain.Group;
 import mops.gruppen2.domain.GroupType;
 import mops.gruppen2.domain.Visibility;
@@ -7,7 +8,6 @@ import mops.gruppen2.domain.dto.EventDTO;
 import mops.gruppen2.domain.event.Event;
 import mops.gruppen2.domain.exception.EventException;
 import mops.gruppen2.repository.EventRepository;
-import mops.gruppen2.security.Account;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -34,74 +34,16 @@ public class GroupService {
      * Wandelt die Zeilen in Events um und gibt davon eine Liste zurück.
      *
      * @param groupIds Liste an IDs
+     *
      * @return Liste an Events
      */
-    //TODO Das vielleicht in den EventRepoService?
+    //TODO: Das vielleicht in den EventRepoService?
     public List<Event> getGroupEvents(List<UUID> groupIds) {
         List<EventDTO> eventDTOS = new ArrayList<>();
         for (UUID groupId : groupIds) {
             eventDTOS.addAll(eventRepository.findEventDTOByGroupId(groupId.toString()));
         }
         return eventService.getEventsFromDTOs(eventDTOS);
-    }
-
-    /**
-     * Erzeugt eine neue Map wo Gruppen aus den Events erzeugt und den Gruppen_ids zugeordnet werden.
-     * Die Gruppen werden als Liste zurückgegeben
-     *
-     * @param events Liste an Events
-     * @return Liste an Projizierten Gruppen
-     * @throws EventException Projektionsfehler
-     */
-    public List<Group> projectEventList(List<Event> events) throws EventException {
-        Map<UUID, Group> groupMap = new HashMap<>();
-
-        events.parallelStream()
-                .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
-
-        return new ArrayList<>(groupMap.values());
-    }
-
-    /**
-     * Gibt die Gruppe mit der richtigen Id aus der übergebenen Map wieder, existiert diese nicht
-     * wird die Gruppe erstellt und der Map hizugefügt.
-     * @param groups Map aus GruppenIds und Gruppen
-     * @param groupId Die Id der Gruppe, die zurückgegeben werden soll
-     * @return Die gesuchte Gruppe
-     */
-    private Group getOrCreateGroup(Map<UUID, Group> groups, UUID groupId) {
-        if (!groups.containsKey(groupId)) {
-            groups.put(groupId, new Group());
-        }
-
-        return groups.get(groupId);
-    }
-
-    /**
-     * Wird verwendet bei der Suche nach Gruppen: Titel, Beschreibung werden benötigt.
-     * Außerdem wird beachtet, ob der eingeloggte User bereits in entsprechenden Gruppen mitglied ist.
-     *
-     * @return Liste von projizierten Gruppen
-     * @throws EventException Projektionsfehler
-     */
-    //TODO Rename
-    @Cacheable("groups")
-    public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
-        List<Event> groupEvents = eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
-        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
-        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
-        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
-        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
-
-        List<Group> visibleGroups = projectEventList(groupEvents);
-
-        sortByGroupType(visibleGroups);
-
-        return visibleGroups.stream()
-                .filter(group -> group.getType() != null)
-                .filter(group -> !eventService.userInGroup(group.getId(), userId))
-                .filter(group -> group.getVisibility() == Visibility.PUBLIC)
-                .collect(Collectors.toList());
     }
 
     /**
@@ -119,18 +61,55 @@ public class GroupService {
         List<Group> visibleGroups = projectEventList(createEvents);
 
         return visibleGroups.stream()
-                .filter(group -> group.getType() == GroupType.LECTURE)
-                .filter(group -> group.getVisibility() == Visibility.PUBLIC)
-                .collect(Collectors.toList());
+                            .filter(group -> group.getType() == GroupType.LECTURE)
+                            .filter(group -> group.getVisibility() == Visibility.PUBLIC)
+                            .collect(Collectors.toList());
     }
 
+    /**
+     * Erzeugt eine neue Map wo Gruppen aus den Events erzeugt und den Gruppen_ids zugeordnet werden.
+     * Die Gruppen werden als Liste zurückgegeben.
+     *
+     * @param events Liste an Events
+     *
+     * @return Liste an Projizierten Gruppen
+     *
+     * @throws EventException Projektionsfehler
+     */
+    public List<Group> projectEventList(List<Event> events) throws EventException {
+        Map<UUID, Group> groupMap = new HashMap<>();
+
+        events.parallelStream()
+              .forEachOrdered(event -> event.apply(getOrCreateGroup(groupMap, event.getGroupId())));
+
+        return new ArrayList<>(groupMap.values());
+    }
+
+    /**
+     * Gibt die Gruppe mit der richtigen Id aus der übergebenen Map wieder, existiert diese nicht
+     * wird die Gruppe erstellt und der Map hizugefügt.
+     *
+     * @param groups  Map aus GruppenIds und Gruppen
+     * @param groupId Die Id der Gruppe, die zurückgegeben werden soll
+     *
+     * @return Die gesuchte Gruppe
+     */
+    private static Group getOrCreateGroup(Map<UUID, Group> groups, UUID groupId) {
+        if (!groups.containsKey(groupId)) {
+            groups.put(groupId, new Group());
+        }
+
+        return groups.get(groupId);
+    }
 
     /**
      * Filtert alle öffentliche Gruppen nach dem Suchbegriff und gibt diese als Liste von Gruppen zurück.
      * Groß und Kleinschreibung wird nicht beachtet.
      *
      * @param search Der Suchstring
+     *
      * @return Liste von projizierten Gruppen
+     *
      * @throws EventException Projektionsfehler
      */
     //Todo Rename
@@ -140,19 +119,44 @@ public class GroupService {
             return getAllGroupWithVisibilityPublic(account.getName());
         }
 
-        return getAllGroupWithVisibilityPublic(account.getName())
-                .parallelStream()
-                .filter(group -> group.getTitle().toLowerCase().contains(search.toLowerCase())
-                        || group.getDescription().toLowerCase().contains(search.toLowerCase()))
-                .collect(Collectors.toList());
+        return getAllGroupWithVisibilityPublic(account.getName()).parallelStream().filter(group -> group.getTitle().toLowerCase().contains(search.toLowerCase()) || group.getDescription().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList());
+    }
+
+    /**
+     * Wird verwendet bei der Suche nach Gruppen: Titel, Beschreibung werden benötigt.
+     * Außerdem wird beachtet, ob der eingeloggte User bereits in entsprechenden Gruppen mitglied ist.
+     *
+     * @return Liste von projizierten Gruppen
+     *
+     * @throws EventException Projektionsfehler
+     */
+    //TODO Rename
+    @Cacheable("groups")
+    public List<Group> getAllGroupWithVisibilityPublic(String userId) throws EventException {
+        List<Event> groupEvents = eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("CreateGroupEvent"));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupDescriptionEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateGroupTitleEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("DeleteGroupEvent")));
+        groupEvents.addAll(eventService.getEventsFromDTOs(eventRepository.findAllEventsByType("UpdateUserMaxEvent")));
+
+        List<Group> visibleGroups = projectEventList(groupEvents);
+
+        sortByGroupType(visibleGroups);
+
+        return visibleGroups.stream()
+                            .filter(group -> group.getType() != null)
+                            .filter(group -> !eventService.userInGroup(group.getId(), userId))
+                            .filter(group -> group.getVisibility() == Visibility.PUBLIC)
+                            .collect(Collectors.toList());
     }
 
     /**
      * Sortiert die übergebene Liste an Gruppen, sodass Veranstaltungen am Anfang der Liste sind.
+     *
      * @param groups Die Liste von Gruppen die sortiert werden soll
      */
-    public void sortByGroupType(List<Group> groups) {
-        groups.sort((g1, g2) -> {
+    void sortByGroupType(List<Group> groups) {
+        groups.sort((Group g1, Group g2) -> {
             if (g1.getType() == GroupType.LECTURE) {
                 return -1;
             }

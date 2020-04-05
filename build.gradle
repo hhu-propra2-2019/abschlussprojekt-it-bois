@@ -1,90 +1,103 @@
 import com.github.spotbugs.SpotBugsTask
 
 plugins {
-	id 'org.springframework.boot' version '2.2.5.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
 
-	id 'com.github.spotbugs' version '3.0.0'
-	id 'checkstyle'
+    id 'com.github.spotbugs' version '3.0.0'
+    id 'checkstyle'
+    id 'pmd'
 }
 
 group = 'mops'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-spotbugs{
-	ignoreFailures = true
-	reportLevel = "high"
-	effort = "max"
-	toolVersion = '4.0.0-RC1'
+spotbugs {
+    ignoreFailures = false
+    reportLevel = "high"
+    effort = "max"
+    toolVersion = '4.0.0-RC1'
 }
 
 tasks.withType(SpotBugsTask) {
-	reports {
-		xml.enabled = false
-		html.enabled = true
-	}
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+pmd {
+    consoleOutput = true
+    ignoreFailures = true
+    toolVersion = "6.21.0"
+    rulePriority = 5
+    ruleSets = ["category/java/errorprone.xml",
+                "category/java/bestpractices.xml",
+                "category/java/security.xml",
+                "category/java/performance.xml",
+                "category/java/design.xml"]
 }
 
 checkstyle {
-	toolVersion = "8.28"
-	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-	ignoreFailures = true
+    toolVersion = "8.28"
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    ignoreFailures = true
 }
 
 configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	maven {
-		url = 'https://s3.cs.hhu.de/public/mops/'
-		metadataSources {
-			artifact()
-		}
-	}
-	mavenCentral()
+    maven {
+        url = 'https://s3.cs.hhu.de/public/mops/'
+        metadataSources {
+            artifact()
+        }
+    }
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE'
 
-	implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
-	implementation 'org.keycloak.bom:keycloak-adapter-bom:9.0.0'
-	implementation 'mops:styleguide:2.1.0'
-	implementation 'io.springfox:springfox-swagger2:2.9.2'
-	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-	implementation 'com.github.javafaker:javafaker:1.0.2'
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.10.3'
+    implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
+    implementation 'org.keycloak.bom:keycloak-adapter-bom:9.0.0'
+    implementation 'mops:styleguide:2.1.0'
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.10.3'
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'mysql:mysql-connector-java'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
 
-	testImplementation 'org.assertj:assertj-core:3.15.0'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.1'
+    testImplementation 'org.assertj:assertj-core:3.15.0'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.1'
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
