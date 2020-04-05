@@ -15,7 +15,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 spotbugs {
-    ignoreFailures = true
+    ignoreFailures = false
     reportLevel = "high"
     effort = "max"
     toolVersion = '4.0.0-RC1'
