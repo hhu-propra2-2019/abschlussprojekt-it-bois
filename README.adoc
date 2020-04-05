@@ -72,3 +72,4 @@ Für *Studenten* (keycloak Rolle) :
 Die Anwendung kann mit `docker-compse up` im Wurzelverzeichnis gestartet werden, eine API-Doku befindet sich im Dokumentation-Ordner (das swagger-zip).
 
 Der Import über CSV erfolgt nach dem Format `id,givenname,familyname,email`
+
