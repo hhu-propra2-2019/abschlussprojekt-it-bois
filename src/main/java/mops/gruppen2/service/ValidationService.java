@@ -93,7 +93,7 @@ public class ValidationService {
 
     void throwIfLastAdmin(Account account, Group group) {
         if (checkIfLastAdmin(account, group)) {
-            throw new NoAdminAfterActionException("Du Otto bist letzter Admin!");
+            throw new NoAdminAfterActionException("Du bist letzter Admin!");
         }
     }
 
